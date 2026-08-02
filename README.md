@@ -2,11 +2,13 @@
 
 A complete capture of the live site at **https://formulamobilecardetailing.com.au** taken **2 Aug 2026**, kept as the reference base for the rebuild/transfer.
 
+Every page and asset in `site/` was verified to be byte-identical to what the origin server returns (SHA-256 compared against live URLs at capture time).
+
 ## What's here
 
 | Path | Contents |
 |---|---|
-| `site/` | Byte-exact mirror of the live site — 6 pages, 64 assets (~6.5 MB) |
+| `site/` | Byte-exact mirror of the live site — 6 pages, 63 assets (~6.5 MB) |
 | `docs/AUDIT.md` | Front-end / back-end audit of the existing site |
 | `docs/mirror-manifest.json` | Every URL captured, plus external refs and dead links |
 | `tools/mirror.py` | The crawler used to produce `site/` (re-runnable) |
