@@ -86,7 +86,7 @@ SERVICES = [
     {
         "slug": "full-detail",
         "name": "Full Detail",
-        "img": "/assets/images/services/img02.jpg",
+        "img": "/assets/images/services/img11.jpg",
         "blurb": "The complete service. Engine bay degreased, clay bar, hand polish, "
                  "full interior extraction and leather conditioned.",
         "intro": "Everything the mini detail covers, plus the engine bay, door jams, clay "
@@ -135,7 +135,7 @@ SERVICES = [
     {
         "slug": "exterior-detail",
         "name": "Exterior Detail",
-        "img": "/assets/images/services/img04.jpg",
+        "img": "/assets/images/services/img05.jpg",
         "blurb": "A four stage process for brush marks, spider webbing, oxidised, dull "
                  "or plain neglected paint work.",
         "intro": "We specialise in surface damage that may need our 4 stage process. Whether "
@@ -160,7 +160,7 @@ SERVICES = [
     {
         "slug": "overspray-removal",
         "name": "Overspray Removal",
-        "img": "/assets/images/services/img05.jpg",
+        "img": "/assets/images/services/img06.jpg",
         "blurb": "Industrial fallout, paint overspray, concrete, acid rain and tree sap "
                  "lifted off your duco.",
         "intro": "Overspray and industrial fallout caused by airborne particles of paint, "
@@ -172,7 +172,7 @@ SERVICES = [
     {
         "slug": "ceramic-coating",
         "name": "Ceramic Coatings",
-        "img": "/assets/images/services/img06.jpg",
+        "img": "/assets/images/services/img07.jpg",
         "blurb": "Graphene Pro 10H N1, Quartz 9H Pro and Quartz 9H — industrial-grade "
                  "polymer sealers that chemically bond to your paint.",
         "intro": "Automotive ceramic coatings are made from an advanced industrial grade "
@@ -208,7 +208,7 @@ SERVICES = [
     {
         "slug": "paint-correction",
         "name": "Paint Correction",
-        "img": "/assets/images/services/img07.jpg",
+        "img": "/assets/images/services/img02.jpg",
         "blurb": "Three to six stage correction in our specialty studio, matched to the "
                  "depth of the damage and the type of duco.",
         "intro": "Conducted in our specialty studio created for these applications. Paint "
@@ -231,6 +231,19 @@ SERVICES = [
         ],
     },
 ]
+
+# Backdrop + colour grade per service for the /services/select/ carousel.
+# Only the four slider shots are large, so backdrops are blurred hard and each
+# gets its own grade — the worlds differ, the accent stays Formula red.
+SELECT_LOOKS = {
+    "mini-detail":       ("/assets/images/gallery/03.jpg", "#27455f"),
+    "full-detail":       ("/assets/images/slider01.jpg", "#3a3f4a"),
+    "interior-detail":   ("/assets/images/gallery/04.jpg", "#6b4526"),
+    "exterior-detail":   ("/assets/images/slider02.jpg", "#1d3a5e"),
+    "overspray-removal": ("/assets/images/services/img06.jpg", "#1d4f47"),
+    "ceramic-coating":   ("/assets/images/slider03.jpg", "#6b5320"),
+    "paint-correction":  ("/assets/images/slider04.jpg", "#3f2a5e"),
+}
 
 TESTIMONIALS = [
     ("Service and attention to detail is what we look for when we get our clients cars "
@@ -697,6 +710,14 @@ def build_services_index():
     <p class="lede">We can accommodate any request you have for your vehicle and put together
       a package that suits your needs and budget &mdash; whether that's a full detail, an
       exterior or interior detail, or even just a wash.</p>
+    <p style="margin-top:1.6rem">
+      <a class="btn btn--lg" href="/services/select/">
+        Browse all seven
+        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
+          <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+      </a>
+    </p>
   </div>
 </section>
 <section class="band band--tight">
@@ -812,6 +833,111 @@ def build_service(s):
 # --------------------------------------------------------------------------
 # remaining pages
 # --------------------------------------------------------------------------
+
+def build_select():
+    """Standalone game-style service selector — full viewport, no page scroll."""
+    bgs, cards, pips = [], [], []
+
+    for i, s in enumerate(SERVICES):
+        img, grade = SELECT_LOOKS[s["slug"]]
+        bgs.append(f"""
+      <div class="sel__bg{' is-on' if i == 0 else ''}" data-bg style="--grade:{grade}">
+        <img src="{img}" alt="" aria-hidden="true" {'fetchpriority="high"' if i == 0 else 'loading="lazy"'}>
+      </div>""")
+
+        cards.append(f"""
+      <article class="sel__card" data-card aria-label="{esc(s['name'])}">
+        <div class="sel__reticle" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="sel__art">
+          <img src="{s['img']}" alt="{esc(s['name'])}" loading="lazy" width="500" height="300">
+        </div>
+        <div class="sel__body">
+          <span class="sel__idx">{i + 1:02d} / {len(SERVICES):02d}</span>
+          <h2 class="sel__name">{esc(s['name'])}</h2>
+          <p class="sel__blurb">{esc(s['blurb'])}</p>
+          <a class="sel__go" href="/services/{s['slug']}/">
+            Select
+            <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
+              <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </a>
+        </div>
+      </article>""")
+
+        pips.append(
+            f'        <button class="sel__pip" data-pip type="button" role="tab" '
+            f'aria-selected="{"true" if i == 0 else "false"}" '
+            f'aria-label="{esc(s["name"])}"></button>'
+        )
+
+    trail = [("/", "Home"), ("/services/", "Services"), ("/services/select/", "Choose a service")]
+
+    # full-bleed experience: the standard nav/footer would fight it
+    return f"""{head(
+        "Choose a Service | Formula Mobile Car Detailing",
+        "Browse all seven Formula Mobile Car Detailing services — mini and full detailing, "
+        "interior, exterior, overspray removal, ceramic coatings and paint correction.",
+        "/services/select/", SERVICES[0]["img"], breadcrumb_schema(trail))}
+<link rel="stylesheet" href="/assets/css/select.css">
+
+<div class="sel" data-select>
+  <div class="sel__bgs" aria-hidden="true">{''.join(bgs)}
+  </div>
+  <div class="sel__veil" aria-hidden="true"></div>
+
+  <div class="sel__stage">
+    <div class="sel__track" role="tablist" aria-label="Services">{''.join(cards)}
+    </div>
+  </div>
+
+  <div class="sel__hud">
+    <div class="sel__top">
+      <a class="sel__back" href="/services/">
+        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
+          <path d="M13 4.5H2M5.5 1L2 4.5 5.5 8" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+        All services
+      </a>
+      <a href="/" aria-label="Formula Mobile Car Detailing — home">
+        <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="501" height="189">
+      </a>
+      <a class="sel__back" href="tel:{PHONE_LINK}">{PHONE_DISPLAY}</a>
+    </div>
+
+    <div></div>
+
+    <div class="sel__bottom">
+      <span class="sel__counter"><b data-cur>01</b> / {len(SERVICES):02d}</span>
+      <div class="sel__pips" role="tablist" aria-label="Choose a service">
+{chr(10).join(pips)}
+      </div>
+      <span class="sel__hint">
+        <svg width="11" height="13" viewBox="0 0 11 13" fill="none" aria-hidden="true">
+          <rect x=".75" y=".75" width="9.5" height="11.5" rx="4.75" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M5.5 3.5v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Scroll or drag<span class="sel__kbd"> &middot; or use &larr; &rarr;</span>
+      </span>
+    </div>
+  </div>
+
+  <button class="sel__arrow sel__arrow--prev" data-prev type="button" aria-label="Previous service">
+    <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+      <path d="M15 5.5H2M6 1L2 5.5 6 10" stroke="currentColor" stroke-width="1.7"/>
+    </svg>
+  </button>
+  <button class="sel__arrow sel__arrow--next" data-next type="button" aria-label="Next service">
+    <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+      <path d="M0 5.5h13M9 1l4 4.5L9 10" stroke="currentColor" stroke-width="1.7"/>
+    </svg>
+  </button>
+</div>
+
+<script src="/assets/js/select.js" defer></script>
+</body>
+</html>
+"""
+
 
 def build_gallery():
     tiles = "\n".join(f"""
@@ -1202,6 +1328,7 @@ def main():
 
     write("/", build_home());                       routes.append(("/", "1.0"))
     write("/services/", build_services_index());    routes.append(("/services/", "0.9"))
+    write("/services/select/", build_select());     routes.append(("/services/select/", "0.7"))
     for s in SERVICES:
         write(f"/services/{s['slug']}/", build_service(s))
         routes.append((f"/services/{s['slug']}/", "0.8"))
