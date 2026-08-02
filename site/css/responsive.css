@@ -1,0 +1,199 @@
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+.clearfix:after {
+  clear: both;
+}
+
+@media (min-width: 1921px) and (max-width: 3500px) {
+
+}
+
+@media (min-width: 1500px) and (max-width: 1920px) {
+
+}
+
+@media (max-width: 1250px) {
+
+
+
+}
+
+
+@media (min-width: 1200px) and (max-width: 1293px) {
+.nav > li {  margin-left: 36px;}
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+
+.curv-h { display: none; }
+.nav > li { margin-left: 27px;}
+.right-cart .fa {  margin: 10px 0 0 19px;}
+.footer .top-cnt small { font-size: 12px;}
+.footer .top-cnt { font-size: 17px;}
+.footer .top-d { padding: 15px;}
+
+.products-decs h4 {font-size: 13px;}
+.products-decs .price-t { font-size: 25px;}
+.right-decs a { font-size: 12px; }
+.products-decs { padding: 15px;}
+.products-decs h5 { font-size: 15px;}
+.products-decs h5 small { font-size: 13px;}
+
+.advertisement h5 { font-size: 21px;}
+
+
+}
+
+@media (min-width: 1025px) {	
+
+}
+
+
+@media (min-width: 992px) {	
+
+
+}
+
+@media (max-width: 991px) {
+
+.welcome img { margin-top: 30px; }
+.map { margin-top: 30px; }
+
+}
+
+@media (min-width: 768px) {
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+
+
+.curv-h { display: none; }
+.nav > li { margin-left: 18px;}
+.navbar-default .navbar-nav > li > a { font-size: 14px;}
+.right-cart .fa {  margin: 9px 0 0 9px;}
+
+.products-decs h4 {font-size: 13px;}
+.products-decs .price-t { font-size: 25px;}
+.right-decs a { font-size: 12px; }
+.products-decs { padding: 15px;}
+.products-decs h5 { font-size: 15px;}
+.products-decs h5 small { font-size: 13px;}
+
+
+.advertisement h5 {  font-size: 17px;}
+
+.services .col-sm-2 img { height: 100px; width: 100px;  }
+.services .col-sm-2 h4 { font-size: 15px; }
+.ferrari { width: 410px;}
+}
+
+
+
+@media (max-width: 767px) {	
+
+.logo { display: table; width: 100%;}
+.logo img { width: 250px; margin: 5px auto 15px;  display: table; text-align: center;}
+
+.curv-h { display: none; }
+.middleBar { background: #000; position: inherit; padding: 15px 0 0;}
+.middleBar .vertical-align .col-sm-3 .form-control {background: #303030;}
+.navbar-header { background: #282828; }
+.middleBar .btn.btn-default, .middleBar .btn.btn-default:hover { background-color: red; border: 1px solid red;}
+
+.nav > li {  text-align: left; }
+.nav > li > a { padding: 8px 0;}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a, .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover  {color: #fff;}
+.navbar-default .navbar-nav .open .dropdown-menu > li > a { padding:5px 0; }
+
+.right-cart { position: absolute; z-index: 11;}
+.topBar .pull-left li { margin-right: 0; }
+
+
+.banner .carousel-caption h1 { font-size: 45px; }
+.banner .carousel-caption h1 small { font-size: 20px;}
+.banner .carousel-caption p { font-size: 11px; width: 310px;}
+.banner .carousel-caption .quote-btn {  padding: 11px 23px;  margin-top: 0px; font-size: 11px;}
+
+
+
+.services .col-xs-4 { width: 33.33%; }
+
+.gallery-head-list button { padding: 8px 8px;  font-size: 12px;}
+.gallery-head-list span { height: 6px;  width: 6px;}
+
+.footer-social .fa { padding: 12px 0; width: 100%; height: 40px; font-size: 14px;}
+.footer-social a { float: left; width: 25%;   }
+.footer-social { bottom: 0; top: inherit;  width: 100%;}
+.footer-social .fa:hover { width: 100%; }
+
+.top1 { margin-top: 0; }
+.top2 { margin-top: 0; }
+.top3 { margin-top: 0; }  
+.ferrari {
+    margin: 20px auto;
+    position: inherit;
+}
+
+.sub-banner { padding: 20px 0 20px;}
+
+}
+
+
+@media (max-width: 665px){
+.banner .carousel-caption { top: 5%;}
+
+}
+
+@media (max-width: 567px){
+
+}
+
+@media (min-width: 566px){
+
+}
+
+@media (max-width: 565px){
+.products-decs h5 { font-size: 15px;}
+.products-decs h5 small { font-size: 13px;}
+.left-decs { width: 49%;}
+.right-decs { width: 51%;}
+.right-decs a { font-size: 13px; }
+.advertisement h5 {  font-size: 17px;}
+
+.services .col-xs-4 { width: 50%; }
+
+}
+
+@media (max-width: 500px){
+
+}
+
+@media (min-width: 481px){
+
+}
+@media (max-width: 480px) {
+
+  .car-img img { height: auto; }
+  .car-cato .col-xs-6 { width: 100%; }
+  .car-cato-bg1 { height: auto; }
+  .car-cato-bg2 { height: auto; }
+}
+
+@media (max-width: 400px){
+
+.gallery-images-list .col-xs-6 { width: 100%; }
+
+}
+
+@media (min-width: 320px) and (max-width: 380px) {
+
+}
