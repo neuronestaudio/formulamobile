@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<title>Formula Mobile Car Detailing — Site Audit</title>
+<style>
+@font-face { font-family:'Bebas Neue'; src:url('file:///C:/Users/dlint/formulamobile/www/assets/fonts/bebas-neue-400.woff2') format('woff2'); font-weight:400; }
+@font-face { font-family:'DM Sans'; src:url('file:///C:/Users/dlint/formulamobile/www/assets/fonts/dm-sans-latin.woff2') format('woff2'); font-weight:100 1000; }
+
+@page { size: A4; margin: 18mm 16mm 20mm; }
+@page :first { margin: 0; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body {
+  margin: 0;
+  font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  font-size: 10.2pt;
+  line-height: 1.62;
+  color: #1c1d22;
+  background: #fff;
+}
+
+/* ---------- cover ---------- */
+.cover {
+  position: relative;
+  height: 297mm;
+  width: 210mm;
+  margin: 0;
+  background: #0a0a0d;
+  color: #fff;
+  padding: 30mm 20mm;
+  display: flex;
+  flex-direction: column;
+  page-break-after: always;
+  overflow: hidden;
+}
+.cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64'%3E%3Cpath d='M28 0l24 16v32L28 64 4 48V16z' fill='none' stroke='%23ffffff' stroke-opacity='.06' stroke-width='1'/%3E%3C/svg%3E");
+}
+.cover::after {
+  content: "";
+  position: absolute;
+  left: -30%; bottom: -55%;
+  width: 130%; height: 90%;
+  background: radial-gradient(closest-side, rgba(245,52,45,.30), transparent 72%);
+}
+.cover > * { position: relative; z-index: 1; }
+
+.cover__logo { width: 62mm; margin-bottom: auto; }
+.cover__eyebrow {
+  font-size: 8pt; font-weight: 700; letter-spacing: .26em;
+  text-transform: uppercase; color: #f5342d; margin-bottom: 6mm;
+}
+.cover h1 {
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: 46pt; line-height: .93; letter-spacing: .01em;
+  text-transform: uppercase; margin: 0 0 6mm; font-weight: 400;
+  /* must be explicit: the generic `h1` rule below sets a near-black colour,
+     and it wins over inheritance from .cover — leaving this line invisible. */
+  color: #fff;
+}
+.cover h1 em { font-style: italic; color: #f5342d; }
+.cover__sub {
+  font-size: 12pt; color: rgba(255,255,255,.72);
+  max-width: 105mm; margin: 0 0 12mm;
+}
+.cover__meta {
+  border-top: 1px solid rgba(255,255,255,.16);
+  padding-top: 6mm; display: flex; gap: 14mm; flex-wrap: wrap;
+  font-size: 9pt; color: rgba(255,255,255,.55);
+}
+.cover__meta b { display: block; color: #fff; font-weight: 600; margin-top: 1mm; }
+
+/* ---------- body ---------- */
+.body { padding-top: 2mm; }
+
+h1, h2, h3 {
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-weight: 400; text-transform: uppercase;
+  letter-spacing: .02em; line-height: 1;
+  color: #0a0a0d;
+}
+h1 { font-size: 24pt; margin: 0 0 5mm; }
+h2 {
+  font-size: 19pt; margin: 11mm 0 4mm;
+  padding-bottom: 2.5mm; border-bottom: 2px solid #0a0a0d;
+  page-break-after: avoid;
+}
+h3 { font-size: 13pt; margin: 7mm 0 2.5mm; page-break-after: avoid; }
+h2:first-child, h1:first-child { margin-top: 0; }
+
+p { margin: 0 0 3.2mm; }
+strong { font-weight: 700; color: #0a0a0d; }
+a { color: #b3231d; text-decoration: none; }
+
+ul, ol { margin: 0 0 3.6mm; padding-left: 5.5mm; }
+li { margin-bottom: 1.4mm; }
+li::marker { color: #f5342d; }
+
+hr { border: 0; border-top: 1px solid #dcdde1; margin: 8mm 0; }
+
+code {
+  font-family: "Consolas", "SF Mono", monospace;
+  font-size: 8.6pt; background: #f1f2f4;
+  border: 1px solid #e2e3e7; border-radius: 3px;
+  padding: .4mm 1.2mm; color: #2b2c31;
+}
+
+blockquote {
+  margin: 0 0 4mm; padding: 3mm 4mm;
+  background: #fbf3f2; border-left: 3px solid #f5342d;
+  border-radius: 0 4px 4px 0;
+}
+blockquote p:last-child { margin-bottom: 0; }
+
+/* ---------- tables ---------- */
+table {
+  width: 100%; border-collapse: collapse;
+  margin: 0 0 5mm; font-size: 9.1pt;
+  page-break-inside: auto;
+}
+thead { display: table-header-group; }
+tr { page-break-inside: avoid; page-break-after: auto; }
+th {
+  text-align: left; background: #0a0a0d; color: #fff;
+  font-size: 7.6pt; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; padding: 2.4mm 3mm;
+}
+td { padding: 2.6mm 3mm; border-bottom: 1px solid #e4e5e9; vertical-align: top; }
+tbody tr:nth-child(even) td { background: #fafafb; }
+/* first column of the finding tables is the id (1.1, 2.3 ...) */
+td:first-child { white-space: nowrap; font-weight: 700; color: #f5342d; }
+table th:first-child { width: 13mm; }
+
+/* ---------- severity chips ---------- */
+.sev {
+  display: inline-block; vertical-align: middle;
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-size: 7.4pt; font-weight: 700; letter-spacing: .13em;
+  text-transform: uppercase; color: #fff;
+  padding: 1mm 2.4mm; border-radius: 3px; margin-left: 3mm;
+  position: relative; top: -1.5mm;
+}
+.sev--critical { background: #c1121f; }
+.sev--high     { background: #d9601a; }
+.sev--medium   { background: #b08900; }
+
+/* keep the "what's actually fine" block visually distinct */
+#whats-actually-fine + p + ul { background: #f3f8f4; border-left: 3px solid #2e7d4f;
+  padding: 4mm 4mm 4mm 9mm; border-radius: 0 4px 4px 0; }
+#whats-actually-fine + p + ul li::marker { color: #2e7d4f; }
+
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <img class="cover__logo" src="file:///C:/Users/dlint/formulamobile/www/assets/images/logo.png" alt="Formula Mobile Car Detailing">
+  <div class="cover__eyebrow">Website audit</div>
+  <h1>Where the site<br>is <em>losing you<br>work</em></h1>
+  <p class="cover__sub">A front-end, back-end, SEO and conversion review of
+     formulamobilecardetailing.com.au — every finding verified against the live server.</p>
+  <div class="cover__meta">
+    <div>Prepared for<b>Formula Mobile Car Detailing</b></div>
+    <div>Audited<b>2 August 2026</b></div>
+    <div>Site<b>formulamobilecardetailing.com.au</b></div>
+  </div>
+</section>
+
+<div class="body">
+<p>Every claim below was verified against the live server. Findings that looked bad on first pass but tested clean are listed in <a href="#whats-actually-fine">What's actually fine</a> so the pitch doesn't overreach.</p>
+<hr>
+<h2 id="executive-summary">Executive summary</h2>
+<p>The site is a 2021–2022-era static build (Apache/PHP, Bootstrap 3, jQuery) that has been left untouched for roughly four years. The <strong>hosting layer is in better shape than expected</strong> — HTTP/2, TLS 1.3, gzip and a valid certificate are all live. The problems are in the build itself and in what the site <em>doesn't do</em>.</p>
+<p>Three things matter commercially:</p>
+<ol>
+<li><strong>The site is quietly broken.</strong> Four CSS/JS files referenced on every page return 404, jQuery is loaded twice on the homepage in a way that breaks Bootstrap's JavaScript, and the contact-page map points at the middle of the Indian Ocean instead of Melbourne.</li>
+<li><strong>It is close to invisible to local search.</strong> No structured data, no canonical tags, no suburb pages, and an H1 that never once says "car detailing" or "Melbourne". For a <em>mobile</em> detailer whose entire market is geographic, this is the single largest missed opportunity.</li>
+<li><strong>There is no way to buy.</strong> No pricing, no online booking, no quote flow. Every enquiry has to funnel through one phone number or one unvalidated contact form whose delivery destination is unconfirmed.</li>
+</ol>
+<p>The underlying content is genuinely good — the service descriptions have real technical depth. This is a presentation, findability and conversion problem, not a "start from nothing" problem.</p>
+<hr>
+<h2>1. Broken in production<span class="sev sev--critical">Critical</span></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Finding</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.1</td>
+<td><strong>Four referenced files 404 on every page:</strong> <code>snavvy.css</code>, <code>assets/css/style.css</code>, <code>assets/css/media.css</code>, <code>js/core.js</code>. <code>js/core.js</code> is script-tagged on all six pages.</td>
+<td>Styling and behaviour the original developer wrote are simply absent. Every page load fires four failed requests. Whatever <code>core.js</code> did, it has not run since the files went missing.</td>
+</tr>
+<tr>
+<td>1.2</td>
+<td><strong>jQuery is loaded twice on the homepage.</strong> All pages load jQuery 1.12.4 from <code>ajax.googleapis.com</code>; the homepage then loads jQuery 3.2.1 locally <em>after</em> <code>bootstrap.min.js</code>. The second load replaces <code>window.jQuery</code>, orphaning every plugin bound to the first.</td>
+<td>Bootstrap's JS components on the homepage are bound to a jQuery instance that no longer exists. Silent, intermittent breakage — the classic "sometimes the menu doesn't work" bug.</td>
+</tr>
+<tr>
+<td>1.3</td>
+<td><strong>~15 further images 404</strong>, referenced from inside CSS: <code>assets/images/patterns/overlay1-10.png</code>, <code>blank.gif</code>, <code>camera-loader.gif</code>, <code>images/call-sec.jpg</code>, <code>images/arrorw-select.png</code>.</td>
+<td>Slider overlays and loading states never render. The slider has no loading indicator.</td>
+</tr>
+<tr>
+<td>1.4</td>
+<td><strong>The contact-page Google Map does not show the business.</strong> The embed is centred on <code>-21.19, 95.47</code> — open ocean west of Australia — at country-level zoom, with the place name literally set to "Australia". (Locale params <code>1sen!2snp</code> suggest it was never localised past the offshore build.)</td>
+<td>A visitor on the Contact page trying to confirm the business is local sees a map of the entire continent. Actively erodes trust.</td>
+</tr>
+<tr>
+<td>1.5</td>
+<td><strong>The Facebook icon links to <code>https://www.facebook.com/</code></strong> — Facebook's own homepage, not a business page.</td>
+<td>Every social click is a dead-end and a lost visitor.</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Performance<span class="sev sev--high">High</span></h2>
+<p>Server config is fine; the payload is not.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Finding</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.1</td>
+<td><strong>No cache policy on static assets.</strong></td>
+<td><code>Cache-Control</code>, <code>Expires</code> and <code>ETag</code> are all absent. Only <code>Last-Modified</code> is sent. Every repeat visitor re-validates every asset instead of serving from cache — on a 6.5 MB site that is the difference between an instant second visit and another full round-trip set. Lowest-effort, highest-return fix on the list.</td>
+</tr>
+<tr>
+<td>2.2</td>
+<td><strong>5.56 MB of raster images across 41 files.</strong></td>
+<td>Largest single image 563 KB. The four slider JPGs alone total ~1.8 MB and load on the homepage.</td>
+</tr>
+<tr>
+<td>2.3</td>
+<td><strong>No modern image formats, no responsive sizing, no lazy loading.</strong></td>
+<td>All JPEG/PNG. No WebP/AVIF, no <code>srcset</code>, no <code>loading="lazy"</code>. Mobile visitors download desktop-resolution images over mobile data — the exact audience a <em>mobile</em> detailing service is chasing.</td>
+</tr>
+<tr>
+<td>2.4</td>
+<td><strong>~448 KB of CSS + JS</strong> across 16 files (250 KB CSS, 198 KB JS).</td>
+<td>Includes a full Bootstrap 3 build, Modernizr, Camera slider, WOW.js, Animate.css and SimpleLightbox for what is a six-page brochure site.</td>
+</tr>
+<tr>
+<td>2.5</td>
+<td><strong>TTFB ~675 ms</strong> on the homepage.</td>
+<td>Slow for a static-content response. Suggests shared hosting with no caching layer.</td>
+</tr>
+</tbody>
+</table>
+<h2>3. Security<span class="sev sev--high">High</span></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Finding</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3.1</td>
+<td><strong>No security headers at all.</strong></td>
+<td><code>Strict-Transport-Security</code>, <code>Content-Security-Policy</code>, <code>X-Content-Type-Options</code>, <code>X-Frame-Options</code>, <code>Referrer-Policy</code> and <code>Permissions-Policy</code> are all absent. The site can be framed for clickjacking and offers no transport-security guarantee.</td>
+</tr>
+<tr>
+<td>3.2</td>
+<td><strong>The <code>www</code> redirect drops to plaintext mid-chain.</strong></td>
+<td><code>https://www...</code> → <strong><code>http://</code></strong> (unencrypted) → <code>https://</code>. Every <code>www</code> visitor makes one cleartext hop, exposed to interception on hostile networks. Compounded by 3.1 — with no HSTS there is nothing to stop the downgrade. One-line Apache fix.</td>
+</tr>
+<tr>
+<td>3.3</td>
+<td><strong>jQuery 1.12.4 (2016) and 3.2.1 (2017).</strong></td>
+<td>Both predate 3.5.0, which fixed the <code>jQuery.htmlPrefilter</code> XSS flaws (CVE-2020-11022 / CVE-2020-11023).</td>
+</tr>
+<tr>
+<td>3.4</td>
+<td><strong>Bootstrap 3.3.7 — end-of-life since July 2019.</strong></td>
+<td>Carries known XSS issues in <code>data-*</code> attribute handling (CVE-2018-14041 and related). No security patches will ever be issued.</td>
+</tr>
+</tbody>
+</table>
+<h2>4. SEO &amp; discoverability<span class="sev sev--high">High</span></h2>
+<p>This is where the largest commercial upside sits.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Finding</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.1</td>
+<td><strong>No structured data anywhere.</strong> No <code>LocalBusiness</code>, <code>Service</code>, <code>Review</code>, <code>AggregateRating</code> or <code>FAQ</code> schema.</td>
+<td>The business is ineligible for review stars, service listings and rich results in Google. For a local service business this is the most valuable schema on the web, and none of it is implemented.</td>
+</tr>
+<tr>
+<td>4.2</td>
+<td><strong>No suburb or service-area pages.</strong> The entire geographic footprint is the string "Metropolitan Melbourne".</td>
+<td>Every "car detailing [suburb]" search — the highest-intent, highest-converting query class for a mobile operator — has nothing to rank. The service is mobile; the site is not built to prove it.</td>
+</tr>
+<tr>
+<td>4.3</td>
+<td><strong>No canonical tags on any page.</strong></td>
+<td>Nothing consolidates duplicate URL variants (<code>www</code>/non-<code>www</code>, <code>/services</code> vs <code>/services?modal=ceramic</code>).</td>
+</tr>
+<tr>
+<td>4.4</td>
+<td><strong>The declared canonical contradicts the server.</strong> <code>og:url</code> and every <code>sitemap.xml</code> entry point at <code>www.</code>, but <code>www.</code> 301-redirects to non-<code>www</code>.</td>
+<td>The site tells Google its canonical home is a URL that redirects away. Split, self-contradicting signals.</td>
+</tr>
+<tr>
+<td>4.5</td>
+<td><strong>Homepage has four identical H1s</strong>, all reading <code>Let UsTake Care of your Car</code> — note the missing space.</td>
+<td>Four H1s dilute the signal, and the one heading Google weights most heavily contains neither "detailing" nor "Melbourne".</td>
+</tr>
+<tr>
+<td>4.6</td>
+<td><strong>Services page H1 is just "Our Services".</strong></td>
+<td>No keyword, no geography, on the most commercially important page.</td>
+</tr>
+<tr>
+<td>4.7</td>
+<td><strong>Sitemap is stale and thin.</strong> All <code>lastmod</code> dates are <code>2022-05-09</code>; generated by a free online generator.</td>
+<td>Signals an abandoned site.</td>
+</tr>
+<tr>
+<td>4.8</td>
+<td><strong>Six pages total, no blog or content layer.</strong> Nine images have empty <code>alt</code>; four <code>alt</code> texts read "detaling".</td>
+<td>Almost no surface area to rank for anything beyond the brand name.</td>
+</tr>
+</tbody>
+</table>
+<h2>5. Conversion &amp; content<span class="sev sev--high">High</span></h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Finding</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5.1</td>
+<td><strong>No pricing anywhere on the site.</strong></td>
+<td>High-intent visitors comparing detailers leave to find someone who publishes numbers.</td>
+</tr>
+<tr>
+<td>5.2</td>
+<td><strong>No online booking and no quote flow.</strong> The strings "Book Now", "Get a Quote" and "Request a Quote" appear nowhere.</td>
+<td>Every lead must phone or fill a generic form, during business hours, manually. No capture outside those hours.</td>
+</tr>
+<tr>
+<td>5.3</td>
+<td><strong>Contact form has no client-side validation.</strong> All fields are plain <code>type="text"</code> — no <code>required</code>, no <code>type="email"</code>, no <code>type="tel"</code>. Posts to <code>/response</code>.</td>
+<td>Malformed and incomplete submissions, no inline error feedback. <strong>Where these enquiries are delivered is unverified</strong> — this needs confirming before any migration, or leads will drop silently.</td>
+</tr>
+<tr>
+<td>5.4</td>
+<td><strong>Footer contradicts itself.</strong> "Our support available to help you 24 hours a day, seven days a week" sits directly above "Monday-friday: 6:30am to 6:30 pm / Saturday: 6:30am to 6:30 pm / <strong>Sunday: Closed</strong>".</td>
+<td>Visible, unresolved contradiction in the site furniture on every page.</td>
+</tr>
+<tr>
+<td>5.5</td>
+<td><strong>Copyright reads 2021.</strong></td>
+<td>Five years stale on every page. The clearest possible "this business may not still be trading" signal.</td>
+</tr>
+<tr>
+<td>5.6</td>
+<td><strong>Three static testimonials, no live reviews.</strong> No Google Reviews integration, no star ratings, no schema. One contains the typo "Highly Recomended".</td>
+<td>Social proof is unverifiable and frozen. Competitors surfacing live Google ratings win the comparison by default.</td>
+</tr>
+<tr>
+<td>5.7</td>
+<td><strong>Gallery is eight images with no before/after pairing.</strong></td>
+<td>Paint correction and overspray removal are inherently before/after services. The single most persuasive asset this business could show, and it isn't shown.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="whats-actually-fine">What's actually fine</h2>
+<p>Worth knowing so the pitch stays credible — these were tested and passed:</p>
+<ul>
+<li><strong>HTTP/2 and TLS 1.3</strong> both negotiate correctly via ALPN.</li>
+<li><strong>gzip compression is enabled</strong> on HTML and CSS (homepage 14.5 KB → 3.9 KB on the wire).</li>
+<li><strong>Valid Let's Encrypt certificate</strong>, current through 24 Sep 2026, auto-renewing.</li>
+<li><strong>All six pages are valid UTF-8</strong> — no encoding corruption.</li>
+<li><strong><code>viewport</code> meta is present</strong> and there are ~25 media queries, so a responsive foundation exists.</li>
+<li><strong>Google Analytics 4 is installed and current</strong> (<code>G-ZKYL0YQ0QZ</code>).</li>
+<li><strong>reCAPTCHA v2 is correctly wired</strong> on the contact form.</li>
+<li><strong>All 76 images carry an <code>alt</code> attribute</strong> (9 are empty, but the attribute is there).</li>
+<li><strong>Per-page meta titles and descriptions are unique</strong> and reasonably written.</li>
+<li><strong>The service content has real technical depth</strong> — Mini/Full/Interior/Exterior detail, overspray removal, Graphene Pro 10H N1, Quartz 9H Pro, glass and interior coatings, and 3/4/5/6-stage paint correction. This is strong raw material and should carry across to the rebuild.</li>
+<li><strong>A second business line already exists</strong> — the franchising page.</li>
+</ul>
+<hr>
+<h2 id="scope-implied-by-the-above">Scope implied by the above</h2>
+<p>Grouped by how the work would realistically be sold.</p>
+<p><strong>Stabilise</strong> — resolve the four 404s, fix the double-jQuery conflict, correct the map embed, fix the Facebook link, update the copyright, resolve the hours contradiction, fix the two typos.</p>
+<p><strong>Harden &amp; accelerate</strong> — add cache headers, add the security header set, fix the plaintext redirect hop, upgrade jQuery and move off end-of-life Bootstrap 3, compress and convert the 5.56 MB image library, add lazy loading and responsive sizing.</p>
+<p><strong>Make it findable</strong> — <code>LocalBusiness</code> / <code>Service</code> / <code>Review</code> / <code>FAQ</code> schema, canonical tags, reconcile the <code>www</code> canonical conflict, rewrite the heading hierarchy for keyword and geographic intent, build out suburb-level service-area pages, regenerate the sitemap.</p>
+<p><strong>Make it sell</strong> — publish pricing or price ranges, add an online booking or quote flow, validate the contact form and <em>confirm where it delivers</em>, integrate live Google Reviews, rebuild the gallery around before/after pairs.</p>
+<p><strong>Recover from the host first</strong> — <code>response.php</code>, the <code>.php</code> page sources and <code>.htaccess</code> are not reachable over HTTP and must come off the cPanel/FTP account before anything is migrated. See the README.</p>
+</div>
+
+</body>
+</html>
