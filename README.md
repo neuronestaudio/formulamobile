@@ -73,14 +73,16 @@ Our version generalises it to three slides (Full Detail / Paint Correction / Cer
 
 ## What the audit findings this fixes
 
-Directly addresses `docs/AUDIT.md`: `LocalBusiness`/`Service`/`Review`/`Breadcrumb` schema on every page (4.1), 44 suburb pages (4.2), canonical tags (4.3–4.4), one keyword+geo H1 per page (4.5–4.6), regenerated sitemap (4.7), security and cache headers via `vercel.json` (2.1, 3.1), a validated contact form with `required`/`type="email"`/`type="tel"` (5.3), self-updating copyright year (5.5), and correct hours with the 24/7 contradiction removed (5.4).
+Directly addresses `docs/AUDIT.md`: `LocalBusiness`/`Service`/`Review`/`Breadcrumb` schema on every page (4.1), 44 suburb pages (4.2), canonical tags (4.3–4.4), one keyword+geo H1 per page (4.5–4.6), regenerated sitemap (4.7), security and cache headers via `vercel.json` (2.1, 3.1), self-updating copyright year (5.8), and correct hours with the 24/7 contradiction removed (5.7).
+
+On the lead flow specifically (5.2–5.6): the form is now framed as **"Get a quote"** rather than an invitation for feedback, carries **service** and **vehicle** fields so enquiries arrive quotable, asks for a suburb instead of a full street address at first touch, and uses real `<label>` elements with `required`, `type="email"` and `type="tel"`. Every page also carries a persistent quote CTA and a sticky call bar on mobile, so capture no longer depends on reaching `/contact`.
 
 ## Still needed before launch
 
 - **Pricing.** The old site published none, so none was invented. Needs to come from the client.
 - **A form handler.** `/contact/` posts to `/thank-you/`; wire it to a real endpoint (Vercel function, Formspree, etc.) and **confirm the destination inbox**.
 - **Privacy policy** copy — `/privacy/` is a placeholder.
-- **Real before/after gallery pairs** — the single most persuasive asset this business isn't showing (audit 5.7).
+- **Real before/after gallery pairs** — the single most persuasive asset this business isn't showing (audit 5.10).
 - **Registered hero renders** for the splash, per the note above.
 
 ## Viewing the snapshot

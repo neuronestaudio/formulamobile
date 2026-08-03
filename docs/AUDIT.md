@@ -14,7 +14,7 @@ Three things matter commercially:
 
 1. **The site is quietly broken.** Four CSS/JS files referenced on every page return 404, jQuery is loaded twice on the homepage in a way that breaks Bootstrap's JavaScript, and the contact-page map points at the middle of the Indian Ocean instead of Melbourne.
 2. **It is close to invisible to local search.** No structured data, no canonical tags, no suburb pages, and an H1 that never once says "car detailing" or "Melbourne". For a *mobile* detailer whose entire market is geographic, this is the single largest missed opportunity.
-3. **There is no way to buy.** No pricing, no online booking, no quote flow. Every enquiry has to funnel through one phone number or one unvalidated contact form whose delivery destination is unconfirmed.
+3. **There is a lead flow — but it is working against itself.** A real enquiry form exists on `/contact`, with reCAPTCHA correctly wired and firing. The problem is how it's positioned: it sits on one page only, the copy above it invites *feedback* rather than a booking, and it captures no service and no vehicle, so nothing that arrives can be quoted without a call back. Add no pricing and no booking option, and a customer who is ready to buy is given no obvious way to do it.
 
 The underlying content is genuinely good — the service descriptions have real technical depth. This is a presentation, findability and conversion problem, not a "start from nothing" problem.
 
@@ -71,12 +71,15 @@ This is where the largest commercial upside sits.
 | # | Finding | Impact |
 |---|---|---|
 | 5.1 | **No pricing anywhere on the site.** | High-intent visitors comparing detailers leave to find someone who publishes numbers. |
-| 5.2 | **No online booking and no quote flow.** The strings "Book Now", "Get a Quote" and "Request a Quote" appear nowhere. | Every lead must phone or fill a generic form, during business hours, manually. No capture outside those hours. |
-| 5.3 | **Contact form has no client-side validation.** All fields are plain `type="text"` — no `required`, no `type="email"`, no `type="tel"`. Posts to `/response`. | Malformed and incomplete submissions, no inline error feedback. **Where these enquiries are delivered is unverified** — this needs confirming before any migration, or leads will drop silently. |
-| 5.4 | **Footer contradicts itself.** "Our support available to help you 24 hours a day, seven days a week" sits directly above "Monday-friday: 6:30am to 6:30 pm / Saturday: 6:30am to 6:30 pm / **Sunday: Closed**". | Visible, unresolved contradiction in the site furniture on every page. |
-| 5.5 | **Copyright reads 2021.** | Five years stale on every page. The clearest possible "this business may not still be trading" signal. |
-| 5.6 | **Three static testimonials, no live reviews.** No Google Reviews integration, no star ratings, no schema. One contains the typo "Highly Recomended". | Social proof is unverifiable and frozen. Competitors surfacing live Google ratings win the comparison by default. |
-| 5.7 | **Gallery is eight images with no before/after pairing.** | Paint correction and overspray removal are inherently before/after services. The single most persuasive asset this business could show, and it isn't shown. |
+| 5.2 | **The site's only lead form is introduced as a feedback form.** The copy directly above it reads, verbatim: *"If you have some feedback please fill the form."* | This is the entire lead-capture mechanism on the site, and it is labelled as the one thing that isn't a sale. A visitor ready to book has no signal that this is where to ask. The highest-intent visitors are the ones most likely to skip it. |
+| 5.3 | **One form, on one page.** `/contact` is the only page on the site with a form. The homepage, all six service descriptions, the gallery and the franchising page have none. | Every enquiry has to survive a navigation step to convert. The services page — where intent peaks — offers "Read More" eight times and "Contact Us" twice. |
+| 5.4 | **The form captures no service and no vehicle.** Fields are First Name, Last Name, Address, Phone, E-mail, Comments. Nothing identifies what the customer wants or what they drive. | Nothing that arrives can be quoted or scheduled without a call back, so every lead costs an extra round trip. Meanwhile a full street address is demanded at first touch, before any value has been exchanged. |
+| 5.5 | **No client-side validation, and no labels at all.** All fields are plain `type="text"` — no `required`, no `type="email"`, no `type="tel"`. There are **zero `<label>` elements**; all six fields rely on placeholders alone. Posts to `/response`. | Malformed and incomplete submissions with no inline feedback. Placeholders vanish the moment someone types, so anyone who pauses loses the prompt, and screen readers handle them poorly. **Where these enquiries are delivered is unverified** — confirm before any migration, or leads will drop silently. |
+| 5.6 | **No online booking and no quote flow.** The strings "Book Now", "Get a Quote" and "Request a Quote" appear nowhere on the site. | No capture outside business hours, and no self-service path for customers who would rather not phone. |
+| 5.7 | **Footer contradicts itself.** "Our support available to help you 24 hours a day, seven days a week" sits directly above "Monday-friday: 6:30am to 6:30 pm / Saturday: 6:30am to 6:30 pm / **Sunday: Closed**". | Visible, unresolved contradiction in the site furniture on every page. |
+| 5.8 | **Copyright reads 2021.** | Five years stale on every page. The clearest possible "this business may not still be trading" signal. |
+| 5.9 | **Three static testimonials, no live reviews.** No Google Reviews integration, no star ratings, no schema. One contains the typo "Highly Recomended". | Social proof is unverifiable and frozen. Competitors surfacing live Google ratings win the comparison by default. |
+| 5.10 | **Gallery is eight images with no before/after pairing.** | Paint correction and overspray removal are inherently before/after services. The single most persuasive asset this business could show, and it isn't shown. |
 
 ---
 
@@ -90,7 +93,7 @@ Worth knowing so the pitch stays credible — these were tested and passed:
 - **All six pages are valid UTF-8** — no encoding corruption.
 - **`viewport` meta is present** and there are ~25 media queries, so a responsive foundation exists.
 - **Google Analytics 4 is installed and current** (`G-ZKYL0YQ0QZ`).
-- **reCAPTCHA v2 is correctly wired** on the contact form.
+- **The contact form is live and functional.** It renders, reCAPTCHA v2 is correctly wired and firing, and it posts to a real server-side handler. The lead path exists — section 5 is about how it's positioned and what it captures, not about building one from scratch.
 - **All 76 images carry an `alt` attribute** (9 are empty, but the attribute is there).
 - **Per-page meta titles and descriptions are unique** and reasonably written.
 - **The service content has real technical depth** — Mini/Full/Interior/Exterior detail, overspray removal, Graphene Pro 10H N1, Quartz 9H Pro, glass and interior coatings, and 3/4/5/6-stage paint correction. This is strong raw material and should carry across to the rebuild.
@@ -108,6 +111,6 @@ Grouped by how the work would realistically be sold.
 
 **Make it findable** — `LocalBusiness` / `Service` / `Review` / `FAQ` schema, canonical tags, reconcile the `www` canonical conflict, rewrite the heading hierarchy for keyword and geographic intent, build out suburb-level service-area pages, regenerate the sitemap.
 
-**Make it sell** — publish pricing or price ranges, add an online booking or quote flow, validate the contact form and *confirm where it delivers*, integrate live Google Reviews, rebuild the gallery around before/after pairs.
+**Make it sell** — the biggest wins here are cheap. Reframe the existing form from "feedback" to a quote request, add service and vehicle fields so enquiries arrive quotable, put a capture point on the service pages instead of only on `/contact`, and add real labels and validation. Then: publish pricing or price ranges, add an online booking option, *confirm where the form delivers*, integrate live Google Reviews, and rebuild the gallery around before/after pairs.
 
 **Recover from the host first** — `response.php`, the `.php` page sources and `.htaccess` are not reachable over HTTP and must come off the cPanel/FTP account before anything is migrated. See the README.

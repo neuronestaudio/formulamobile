@@ -183,7 +183,7 @@ table th:first-child { width: 13mm; }
 <ol>
 <li><strong>The site is quietly broken.</strong> Four CSS/JS files referenced on every page return 404, jQuery is loaded twice on the homepage in a way that breaks Bootstrap's JavaScript, and the contact-page map points at the middle of the Indian Ocean instead of Melbourne.</li>
 <li><strong>It is close to invisible to local search.</strong> No structured data, no canonical tags, no suburb pages, and an H1 that never once says "car detailing" or "Melbourne". For a <em>mobile</em> detailer whose entire market is geographic, this is the single largest missed opportunity.</li>
-<li><strong>There is no way to buy.</strong> No pricing, no online booking, no quote flow. Every enquiry has to funnel through one phone number or one unvalidated contact form whose delivery destination is unconfirmed.</li>
+<li><strong>There is a lead flow — but it is working against itself.</strong> A real enquiry form exists on <code>/contact</code>, with reCAPTCHA correctly wired and firing. The problem is how it's positioned: it sits on one page only, the copy above it invites <em>feedback</em> rather than a booking, and it captures no service and no vehicle, so nothing that arrives can be quoted without a call back. Add no pricing and no booking option, and a customer who is ready to buy is given no obvious way to do it.</li>
 </ol>
 <p>The underlying content is genuinely good — the service descriptions have real technical depth. This is a presentation, findability and conversion problem, not a "start from nothing" problem.</p>
 <hr>
@@ -364,31 +364,46 @@ table th:first-child { width: 13mm; }
 </tr>
 <tr>
 <td>5.2</td>
-<td><strong>No online booking and no quote flow.</strong> The strings "Book Now", "Get a Quote" and "Request a Quote" appear nowhere.</td>
-<td>Every lead must phone or fill a generic form, during business hours, manually. No capture outside those hours.</td>
+<td><strong>The site's only lead form is introduced as a feedback form.</strong> The copy directly above it reads, verbatim: <em>"If you have some feedback please fill the form."</em></td>
+<td>This is the entire lead-capture mechanism on the site, and it is labelled as the one thing that isn't a sale. A visitor ready to book has no signal that this is where to ask. The highest-intent visitors are the ones most likely to skip it.</td>
 </tr>
 <tr>
 <td>5.3</td>
-<td><strong>Contact form has no client-side validation.</strong> All fields are plain <code>type="text"</code> — no <code>required</code>, no <code>type="email"</code>, no <code>type="tel"</code>. Posts to <code>/response</code>.</td>
-<td>Malformed and incomplete submissions, no inline error feedback. <strong>Where these enquiries are delivered is unverified</strong> — this needs confirming before any migration, or leads will drop silently.</td>
+<td><strong>One form, on one page.</strong> <code>/contact</code> is the only page on the site with a form. The homepage, all six service descriptions, the gallery and the franchising page have none.</td>
+<td>Every enquiry has to survive a navigation step to convert. The services page — where intent peaks — offers "Read More" eight times and "Contact Us" twice.</td>
 </tr>
 <tr>
 <td>5.4</td>
+<td><strong>The form captures no service and no vehicle.</strong> Fields are First Name, Last Name, Address, Phone, E-mail, Comments. Nothing identifies what the customer wants or what they drive.</td>
+<td>Nothing that arrives can be quoted or scheduled without a call back, so every lead costs an extra round trip. Meanwhile a full street address is demanded at first touch, before any value has been exchanged.</td>
+</tr>
+<tr>
+<td>5.5</td>
+<td><strong>No client-side validation, and no labels at all.</strong> All fields are plain <code>type="text"</code> — no <code>required</code>, no <code>type="email"</code>, no <code>type="tel"</code>. There are <strong>zero <code>&lt;label&gt;</code> elements</strong>; all six fields rely on placeholders alone. Posts to <code>/response</code>.</td>
+<td>Malformed and incomplete submissions with no inline feedback. Placeholders vanish the moment someone types, so anyone who pauses loses the prompt, and screen readers handle them poorly. <strong>Where these enquiries are delivered is unverified</strong> — confirm before any migration, or leads will drop silently.</td>
+</tr>
+<tr>
+<td>5.6</td>
+<td><strong>No online booking and no quote flow.</strong> The strings "Book Now", "Get a Quote" and "Request a Quote" appear nowhere on the site.</td>
+<td>No capture outside business hours, and no self-service path for customers who would rather not phone.</td>
+</tr>
+<tr>
+<td>5.7</td>
 <td><strong>Footer contradicts itself.</strong> "Our support available to help you 24 hours a day, seven days a week" sits directly above "Monday-friday: 6:30am to 6:30 pm / Saturday: 6:30am to 6:30 pm / <strong>Sunday: Closed</strong>".</td>
 <td>Visible, unresolved contradiction in the site furniture on every page.</td>
 </tr>
 <tr>
-<td>5.5</td>
+<td>5.8</td>
 <td><strong>Copyright reads 2021.</strong></td>
 <td>Five years stale on every page. The clearest possible "this business may not still be trading" signal.</td>
 </tr>
 <tr>
-<td>5.6</td>
+<td>5.9</td>
 <td><strong>Three static testimonials, no live reviews.</strong> No Google Reviews integration, no star ratings, no schema. One contains the typo "Highly Recomended".</td>
 <td>Social proof is unverifiable and frozen. Competitors surfacing live Google ratings win the comparison by default.</td>
 </tr>
 <tr>
-<td>5.7</td>
+<td>5.10</td>
 <td><strong>Gallery is eight images with no before/after pairing.</strong></td>
 <td>Paint correction and overspray removal are inherently before/after services. The single most persuasive asset this business could show, and it isn't shown.</td>
 </tr>
@@ -404,7 +419,7 @@ table th:first-child { width: 13mm; }
 <li><strong>All six pages are valid UTF-8</strong> — no encoding corruption.</li>
 <li><strong><code>viewport</code> meta is present</strong> and there are ~25 media queries, so a responsive foundation exists.</li>
 <li><strong>Google Analytics 4 is installed and current</strong> (<code>G-ZKYL0YQ0QZ</code>).</li>
-<li><strong>reCAPTCHA v2 is correctly wired</strong> on the contact form.</li>
+<li><strong>The contact form is live and functional.</strong> It renders, reCAPTCHA v2 is correctly wired and firing, and it posts to a real server-side handler. The lead path exists — section 5 is about how it's positioned and what it captures, not about building one from scratch.</li>
 <li><strong>All 76 images carry an <code>alt</code> attribute</strong> (9 are empty, but the attribute is there).</li>
 <li><strong>Per-page meta titles and descriptions are unique</strong> and reasonably written.</li>
 <li><strong>The service content has real technical depth</strong> — Mini/Full/Interior/Exterior detail, overspray removal, Graphene Pro 10H N1, Quartz 9H Pro, glass and interior coatings, and 3/4/5/6-stage paint correction. This is strong raw material and should carry across to the rebuild.</li>
@@ -416,7 +431,7 @@ table th:first-child { width: 13mm; }
 <p><strong>Stabilise</strong> — resolve the four 404s, fix the double-jQuery conflict, correct the map embed, fix the Facebook link, update the copyright, resolve the hours contradiction, fix the two typos.</p>
 <p><strong>Harden &amp; accelerate</strong> — add cache headers, add the security header set, fix the plaintext redirect hop, upgrade jQuery and move off end-of-life Bootstrap 3, compress and convert the 5.56 MB image library, add lazy loading and responsive sizing.</p>
 <p><strong>Make it findable</strong> — <code>LocalBusiness</code> / <code>Service</code> / <code>Review</code> / <code>FAQ</code> schema, canonical tags, reconcile the <code>www</code> canonical conflict, rewrite the heading hierarchy for keyword and geographic intent, build out suburb-level service-area pages, regenerate the sitemap.</p>
-<p><strong>Make it sell</strong> — publish pricing or price ranges, add an online booking or quote flow, validate the contact form and <em>confirm where it delivers</em>, integrate live Google Reviews, rebuild the gallery around before/after pairs.</p>
+<p><strong>Make it sell</strong> — the biggest wins here are cheap. Reframe the existing form from "feedback" to a quote request, add service and vehicle fields so enquiries arrive quotable, put a capture point on the service pages instead of only on <code>/contact</code>, and add real labels and validation. Then: publish pricing or price ranges, add an online booking option, <em>confirm where the form delivers</em>, integrate live Google Reviews, and rebuild the gallery around before/after pairs.</p>
 <p><strong>Recover from the host first</strong> — <code>response.php</code>, the <code>.php</code> page sources and <code>.htaccess</code> are not reachable over HTTP and must come off the cPanel/FTP account before anything is migrated. See the README.</p>
 </div>
 
