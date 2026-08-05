@@ -369,7 +369,7 @@ def footer():
     svc = "\n".join(
         f'        <li><a href="/services/{s["slug"]}/">{esc(s["name"])}</a></li>'
         for s in SERVICES
-    )
+    ) + '\n        <li><a href="/services/select/">Browse all seven &rarr;</a></li>'
     areas = "\n".join(
         f'        <li><a href="/mobile-car-detailing/{slugify(s)}/">{esc(s)}</a></li>'
         for s in SUBURBS[:7]
@@ -618,6 +618,23 @@ def build_home():
     </div>
     <div class="grid grid--3">
 {cards}
+    </div>
+
+    <div class="pitch" data-reveal>
+      <div class="pitch__art" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div>
+        <span class="eyebrow">Interactive</span>
+        <h3>Browse all seven, <span class="slant hl">side by side</span></h3>
+        <p class="muted">Flick through every service full-screen and pick the one that fits.</p>
+      </div>
+      <a class="btn btn--lg" href="/services/select/">
+        Open the selector
+        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
+          <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+      </a>
     </div>
   </div>
 </section>
