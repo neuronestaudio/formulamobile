@@ -854,3 +854,14 @@ section { position: relative; }
   .pitch { flex-direction: column; align-items: flex-start; text-align: left; }
   .pitch .btn { margin-left: 0; width: 100%; }
 }
+
+/* ---------- form error (lead-form.js) ---------- */
+.formerr {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.88rem;
+  color: #ffd9d7;
+  background: rgba(var(--brand-rgb), 0.12);
+  border: 1px solid rgba(var(--brand-rgb), 0.45);
+  border-radius: var(--radius);
+}

@@ -21,6 +21,15 @@
 <script>document.documentElement.classList.add('js');</script>
 <link rel="stylesheet" href="/assets/css/site.css">
 
+<script>
+  window.FORMULA_CFG = {
+    ghlWebhook: "",
+    gadsConversion: "",
+    phoneDisplay: "1300 132 750"
+  };
+</script>
+<script src="/assets/js/attribution.js"></script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZKYL0YQ0QZ"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -28,6 +37,7 @@
   gtag('js', new Date());
   gtag('config', 'G-ZKYL0YQ0QZ');
 </script>
+<!-- GTM: no container configured (see GTM_ID in tools/build_site.py) -->
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://formulamobilecardetailing.com.au/"},{"@type":"ListItem","position":2,"name":"Contact","item":"https://formulamobilecardetailing.com.au/contact/"}]}
 </script>
@@ -78,7 +88,7 @@
 <section class="band band--tight">
   <div class="shell">
     <div class="grid grid--2" style="gap:3rem;align-items:start">
-      <form class="card" method="post" action="/thank-you/" novalidate>
+      <form class="card" method="post" action="/thank-you/" data-lead-form>
         <div class="field--split">
           <div class="field">
             <label for="fname">First name</label>
@@ -96,8 +106,12 @@
           </div>
           <div class="field">
             <label for="phone">Phone</label>
+            <!-- Parens and the hyphen MUST be escaped: browsers compile the
+                 pattern with the regex `v` flag, where ( ) - are reserved
+                 inside a character class. An invalid pattern throws on submit
+                 and blocks the form outright. -->
             <input id="phone" name="phone" type="tel" autocomplete="tel"
-                   inputmode="tel" pattern="[0-9 ()+-]{6,}" required>
+                   inputmode="tel" pattern="[0-9 \(\)+\-]{6,}" required>
           </div>
         </div>
         <div class="field">
@@ -120,11 +134,13 @@
           <label for="comments">Anything else?</label>
           <textarea id="comments" name="comments"></textarea>
         </div>
+        <p class="formerr" data-form-error role="alert" hidden></p>
         <button class="btn btn--block btn--lg" type="submit">Send enquiry</button>
         <p class="muted" style="font-size:.8rem;margin-top:1rem;margin-bottom:0">
-          This form needs a server-side handler wired up before launch &mdash; see the README.
+          No CRM webhook is configured yet &mdash; set <code>GHL_WEBHOOK</code> in <code>tools/build_site.py</code> before launch. See the README.
         </p>
       </form>
+      <script src="/assets/js/lead-form.js" defer></script>
 
       <div>
         <div class="card" style="margin-bottom:1.4rem">
@@ -213,6 +229,7 @@
   <a href="/contact/">Get a quote</a>
 </div>
 
+<script src="/assets/js/tracking.js" defer></script>
 <script src="/assets/js/enhance.js" defer></script>
 </body>
 </html>

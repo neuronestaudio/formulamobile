@@ -14,6 +14,7 @@ it needs to come from the client before it goes on the page.
 """
 
 import html
+import json
 import os
 import re
 import shutil
@@ -26,6 +27,23 @@ PHONE_DISPLAY = "1300 132 750"
 PHONE_LINK = "1300132750"
 EMAIL = "info@formulamobilecardetailing.com.au"
 GA_ID = "G-ZKYL0YQ0QZ"
+
+# --------------------------------------------------------------------------
+# Lead-gen infrastructure — mirrors github.com/neuronestaudio/Glossedout
+#
+# All three are empty until the client's own accounts are wired up. Empty is a
+# safe state, not a broken one:
+#   - no GTM_ID       -> no container injected, dataLayer still populated
+#   - no GHL_WEBHOOK  -> the form falls back to its native post rather than
+#                        firing a fetch into nowhere and swallowing the lead
+#   - no GADS_...     -> the gtag conversion is skipped, GTM can still fire it
+#
+# GHL_WEBHOOK MUST be Formula's own inbound webhook. Reusing the Glossed Out
+# URL would deliver Formula's leads into a different business's CRM.
+# --------------------------------------------------------------------------
+GTM_ID = ""            # e.g. "GTM-XXXXXXX"
+GHL_WEBHOOK = ""       # e.g. "https://services.leadconnectorhq.com/hooks/<id>/webhook-trigger/<id>"
+GADS_CONVERSION = ""   # e.g. "AW-XXXXXXXXX/AbCdEfGhIjKlMnOp"
 
 # --------------------------------------------------------------------------
 # content
@@ -291,6 +309,24 @@ def esc(s):
     return html.escape(s, quote=True)
 
 
+def gtm_snippet():
+    """GTM container, or nothing at all if no container ID is configured.
+
+    The dataLayer is populated either way, so tracking.js and the form handler
+    behave identically before and after GTM is switched on — the events just
+    queue up with no consumer until a container exists.
+    """
+    if not GTM_ID:
+        return "<!-- GTM: no container configured (see GTM_ID in tools/build_site.py) -->"
+    return (
+        "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':"
+        "new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],"
+        "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src="
+        "'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);"
+        "})(window,document,'script','dataLayer','" + GTM_ID + "');</script>"
+    )
+
+
 def head(title, desc, path, og_img="/assets/images/slider01.jpg", schema=""):
     canonical = SITE + path
     links = "\n".join(
@@ -320,6 +356,15 @@ def head(title, desc, path, og_img="/assets/images/slider01.jpg", schema=""):
 <script>document.documentElement.classList.add('js');</script>
 <link rel="stylesheet" href="/assets/css/site.css">
 
+<script>
+  window.FORMULA_CFG = {{
+    ghlWebhook: {json.dumps(GHL_WEBHOOK)},
+    gadsConversion: {json.dumps(GADS_CONVERSION)},
+    phoneDisplay: {json.dumps(PHONE_DISPLAY)}
+  }};
+</script>
+<script src="/assets/js/attribution.js"></script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -327,6 +372,7 @@ def head(title, desc, path, og_img="/assets/images/slider01.jpg", schema=""):
   gtag('js', new Date());
   gtag('config', '{GA_ID}');
 </script>
+{gtm_snippet()}
 {schema}
 </head>
 <body>
@@ -426,6 +472,7 @@ def footer():
   <a href="/contact/">Get a quote</a>
 </div>
 
+<script src="/assets/js/tracking.js" defer></script>
 <script src="/assets/js/enhance.js" defer></script>
 </body>
 </html>
@@ -1032,7 +1079,7 @@ def build_contact():
 <section class="band band--tight">
   <div class="shell">
     <div class="grid grid--2" style="gap:3rem;align-items:start">
-      <form class="card" method="post" action="/thank-you/" novalidate>
+      <form class="card" method="post" action="/thank-you/" data-lead-form>
         <div class="field--split">
           <div class="field">
             <label for="fname">First name</label>
@@ -1050,8 +1097,12 @@ def build_contact():
           </div>
           <div class="field">
             <label for="phone">Phone</label>
+            <!-- Parens and the hyphen MUST be escaped: browsers compile the
+                 pattern with the regex `v` flag, where ( ) - are reserved
+                 inside a character class. An invalid pattern throws on submit
+                 and blocks the form outright. -->
             <input id="phone" name="phone" type="tel" autocomplete="tel"
-                   inputmode="tel" pattern="[0-9 ()+-]{{6,}}" required>
+                   inputmode="tel" pattern="[0-9 \\(\\)+\\-]{{6,}}" required>
           </div>
         </div>
         <div class="field">
@@ -1074,11 +1125,15 @@ def build_contact():
           <label for="comments">Anything else?</label>
           <textarea id="comments" name="comments"></textarea>
         </div>
+        <p class="formerr" data-form-error role="alert" hidden></p>
         <button class="btn btn--block btn--lg" type="submit">Send enquiry</button>
         <p class="muted" style="font-size:.8rem;margin-top:1rem;margin-bottom:0">
-          This form needs a server-side handler wired up before launch &mdash; see the README.
+          {"Submissions post straight to the CRM." if GHL_WEBHOOK
+           else "No CRM webhook is configured yet &mdash; set <code>GHL_WEBHOOK</code> in "
+                "<code>tools/build_site.py</code> before launch. See the README."}
         </p>
       </form>
+      <script src="/assets/js/lead-form.js" defer></script>
 
       <div>
         <div class="card" style="margin-bottom:1.4rem">

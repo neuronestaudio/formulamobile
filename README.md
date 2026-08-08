@@ -77,10 +77,55 @@ Directly addresses `docs/AUDIT.md`: `LocalBusiness`/`Service`/`Review`/`Breadcru
 
 On the lead flow specifically (5.2–5.6): the form is now framed as **"Get a quote"** rather than an invitation for feedback, carries **service** and **vehicle** fields so enquiries arrive quotable, asks for a suburb instead of a full street address at first touch, and uses real `<label>` elements with `required`, `type="email"` and `type="tel"`. Every page also carries a persistent quote CTA and a sticky call bar on mobile, so capture no longer depends on reaching `/contact`.
 
+## Lead-gen infrastructure
+
+Ported from [Glossedout](https://github.com/neuronestaudio/Glossedout) — same architecture, vanilla JS instead of React/TS so it needs no build step.
+
+| File | Ported from | Does |
+|---|---|---|
+| `assets/js/attribution.js` | `src/lib/attribution.ts` | First-touch capture of 10 ad params + landing page + referrer |
+| `assets/js/tracking.js` | `src/lib/gtm.ts` | `dataLayer` pushes: phone/email CTAs, scroll depth, dwell, key-page views |
+| `assets/js/lead-form.js` | submit path in `QuoteForm.tsx` | Posts the lead to the GHL webhook, then fires the conversion |
+
+**First-touch, gap-fill only.** The record is written on the first visit and afterwards only *filled in* — a field holding a value is never overwritten, and `first_landing_page` is never replaced. A later untagged visit therefore can't erase what a tagged visit recorded, which is the usual way naive implementations lose attribution. Verified: landing tagged `utm_source=google&gclid=…`, then revisiting untagged, then arriving with `fbclid` + `utm_source=facebook` → `fbclid` fills in, `utm_source` stays `google`.
+
+**The conversion is gated on the CRM.** `generate_lead` fires only after the webhook returns 2xx, so a conversion reported to Google Ads or Meta always corresponds to a lead the CRM actually holds. Verified both ways:
+
+| Webhook | Events fired | Result |
+|---|---|---|
+| `200` | `quote_form_submit`, `generate_lead` | → `/thank-you/` |
+| `500` | *none* | stays on `/contact/`, retry message, input preserved |
+
+### Configure before launch
+
+Three constants at the top of [tools/build_site.py](tools/build_site.py). Empty is a safe state, not a broken one — no GTM container is injected, and the form falls back to its native post rather than firing a fetch into nowhere.
+
+```python
+GTM_ID          = ""   # GTM-XXXXXXX
+GHL_WEBHOOK     = ""   # Formula's OWN inbound webhook
+GADS_CONVERSION = ""   # AW-XXXXXXXXX/AbCdEfGhIj
+```
+
+> **`GHL_WEBHOOK` must be Formula's own webhook.** Copying the URL out of the Glossedout source would deliver Formula's leads into a different business's CRM.
+
+Two things that bite after the URL is set:
+
+- **GHL needs a custom field per attribution param**, or the webhook accepts the payload and silently drops anything unmapped. The payload sends 12: `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `gbraid`, `wbraid`, `fbclid`, `msclkid`, `first_landing_page`, `referrer` — plus `submission_id`.
+- **The endpoint must answer the CORS preflight.** A cross-origin JSON POST sends `OPTIONS` first; without `Access-Control-Allow-Origin` the browser blocks the send and every lead fails.
+
+### Two deliberate divergences from Glossedout
+
+- **`referrer` is captured here.** Your architecture diagram lists it, but `attribution.ts` doesn't implement it. Without it, an untagged organic or referral visit is indistinguishable from direct. Only *external* referrers are stored — internal navigation would otherwise overwrite the real source on the second pageview.
+- **Key-page events are derived from the URL shape** (`/services/*`, `/mobile-car-detailing/*`) rather than Glossedout's hardcoded path list, so all 44 suburb pages and 7 service pages are covered without maintaining an array.
+
+### Still to build (offline layer)
+
+The CRM → ad-platform feedback loop in the diagram is configuration in GHL and the ad accounts, not site code: pipeline stages (Qualified / Booked / Completed / Revenue) feeding Google Ads **Enhanced Conversions / Offline Conversion Import** via `gclid`/`gbraid`/`wbraid`, and Meta **CAPI/CRM events**. The site's job is capturing and passing the click IDs, which it now does.
+
 ## Still needed before launch
 
 - **Pricing.** The old site published none, so none was invented. Needs to come from the client.
-- **A form handler.** `/contact/` posts to `/thank-you/`; wire it to a real endpoint (Vercel function, Formspree, etc.) and **confirm the destination inbox**.
+- **CRM webhook + GTM container.** Set `GHL_WEBHOOK`, `GTM_ID` and `GADS_CONVERSION` in `tools/build_site.py`, create the GHL custom fields, and **confirm the destination inbox**. See "Lead-gen infrastructure" above.
 - **Privacy policy** copy — `/privacy/` is a placeholder.
 - **Real before/after gallery pairs** — the single most persuasive asset this business isn't showing (audit 5.10).
 - **Registered hero renders** for the splash, per the note above.
