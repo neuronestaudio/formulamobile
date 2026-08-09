@@ -53,6 +53,16 @@ Premier's dark premium architecture, Formula's own brand colour.
 
 Carbon-fibre hex mesh on raised bands, button sheen sweep, cursor-tracking card spotlights, scroll reveal and stat count-up — the Premier interaction layer, rebuilt in `assets/js/enhance.js`.
 
+### Glassmorphism
+
+Every surface — cards, nav, form fields, quotes, FAQ, footer, suburb chips, the mobile call bar — is frosted glass, calibrated against Glossedout's heaviest treatment (`blur(24px) saturate(185%)`).
+
+The part that actually matters is **the ambient light field**. Glass is a refraction effect: over flat black, `backdrop-filter` renders as a marginally lighter rectangle and nothing more. So `body::before` lays down five large, heavily-blurred colour pools — brand red, a cool blue, a violet, a teal — fixed to the viewport and drifting on a 34s cycle. Panels then shift against that light as the page scrolls, which is what makes the blur read as glass rather than as opacity.
+
+Two supporting details: `saturate(180%)` pulls the ambient colour *through* the panel instead of greying it out, and each card carries a top-down `::after` sheen that reads as pane thickness. Tokens live in `:root` as `--glass-bg`, `--glass-brd`, `--glass-blur`, `--glass-inset`, `--glass-drop`.
+
+The drift respects `prefers-reduced-motion`.
+
 ## The hero: Tesla's `dx-splash`, rebuilt
 
 The scroll animation from [tesla.com/en_au/model3-choose](https://www.tesla.com/en_au/model3-choose), identified by instrumenting the live page in headless Chrome on 2 Aug 2026. See `assets/js/splash.js` for the full write-up.
@@ -86,6 +96,7 @@ Ported from [Glossedout](https://github.com/neuronestaudio/Glossedout) — same 
 | `assets/js/attribution.js` | `src/lib/attribution.ts` | First-touch capture of 10 ad params + landing page + referrer |
 | `assets/js/tracking.js` | `src/lib/gtm.ts` | `dataLayer` pushes: phone/email CTAs, scroll depth, dwell, key-page views |
 | `assets/js/lead-form.js` | submit path in `QuoteForm.tsx` | Posts the lead to the GHL webhook, then fires the conversion |
+| FAQ accordion (in `build_site.py`) | `src/components/FAQAccordion.tsx` | Native `<details>` accordion on the home and services pages |
 
 **First-touch, gap-fill only.** The record is written on the first visit and afterwards only *filled in* — a field holding a value is never overwritten, and `first_landing_page` is never replaced. A later untagged visit therefore can't erase what a tagged visit recorded, which is the usual way naive implementations lose attribution. Verified: landing tagged `utm_source=google&gclid=…`, then revisiting untagged, then arriving with `fbclid` + `utm_source=facebook` → `fbclid` fills in, `utm_source` stays `google`.
 
@@ -113,9 +124,10 @@ Two things that bite after the URL is set:
 - **GHL needs a custom field per attribution param**, or the webhook accepts the payload and silently drops anything unmapped. The payload sends 12: `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term`, `gclid`, `gbraid`, `wbraid`, `fbclid`, `msclkid`, `first_landing_page`, `referrer` — plus `submission_id`.
 - **The endpoint must answer the CORS preflight.** A cross-origin JSON POST sends `OPTIONS` first; without `Access-Control-Allow-Origin` the browser blocks the send and every lead fails.
 
-### Two deliberate divergences from Glossedout
+### Three deliberate divergences from Glossedout
 
 - **`referrer` is captured here.** Your architecture diagram lists it, but `attribution.ts` doesn't implement it. Without it, an untagged organic or referral visit is indistinguishable from direct. Only *external* referrers are stored — internal navigation would otherwise overwrite the real source on the second pageview.
+- **The FAQ ships with `FAQPage` schema.** Glossedout's accordion has none, so its Q&As can never surface as rich results. It's also built on native `<details>`/`<summary>` rather than div-and-onclick, so it is keyboard-operable and works with JS disabled.
 - **Key-page events are derived from the URL shape** (`/services/*`, `/mobile-car-detailing/*`) rather than Glossedout's hardcoded path list, so all 44 suburb pages and 7 service pages are covered without maintaining an array.
 
 ### Still to build (offline layer)

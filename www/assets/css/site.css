@@ -51,6 +51,53 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --shell: 1240px;
   --nav-h: 76px;
+
+  /* ---- glass ----
+     Tuned against Glossedout's heaviest treatment (blur 24 / saturate 185).
+     The saturation boost is what stops a dark backdrop reading as flat grey
+     behind the blur — it pulls the ambient colour through the panel. */
+  --glass-bg: rgba(255, 255, 255, 0.075);
+  --glass-bg-hi: rgba(255, 255, 255, 0.115);
+  --glass-brd: rgba(255, 255, 255, 0.17);
+  --glass-brd-hi: rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(22px) saturate(180%);
+  --glass-blur-lite: blur(12px) saturate(150%);
+  /* top-edge catch-light + a faint bottom bounce: what reads as "thickness" */
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.17),
+                 inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  --glass-drop: 0 26px 60px -24px rgba(0, 0, 0, 0.88);
+}
+
+/* ==========================================================================
+   Ambient light field.
+   Glass is a refraction effect — over flat black it renders as a slightly
+   lighter rectangle and nothing more. These fixed, heavily-blurred pools give
+   every panel something to bend, and are why the blur reads as glass rather
+   than as opacity. Fixed rather than scrolling, so panels shift against the
+   light as the page moves.
+   ========================================================================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(46% 38% at 80% 6%, rgba(var(--brand-rgb), 0.42), transparent 68%),
+    radial-gradient(42% 34% at 8% 28%, rgba(64, 116, 214, 0.34), transparent 70%),
+    radial-gradient(50% 42% at 66% 70%, rgba(var(--brand-rgb), 0.24), transparent 72%),
+    radial-gradient(38% 32% at 16% 92%, rgba(104, 88, 200, 0.30), transparent 70%),
+    radial-gradient(34% 28% at 94% 52%, rgba(0, 168, 176, 0.16), transparent 70%);
+  filter: blur(36px);
+  animation: aurora 34s ease-in-out infinite alternate;
+}
+
+@keyframes aurora {
+  from { transform: translate3d(-1.5%, -1%, 0) scale(1); }
+  to   { transform: translate3d(1.5%, 1%, 0) scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
 }
 
 *,
@@ -124,7 +171,13 @@ p  { margin: 0 0 1.1em; }
 section { position: relative; }
 .band { padding: clamp(4rem, 9vw, 7.5rem) 0; }
 .band--tight { padding: clamp(3rem, 6vw, 5rem) 0; }
-.band--raise { background: var(--bg-raise); }
+.band--raise {
+  background: rgba(255, 255, 255, 0.022);
+  backdrop-filter: var(--glass-blur-lite);
+  -webkit-backdrop-filter: var(--glass-blur-lite);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
 
 /* carbon-fibre hex mesh, Premier's texture treatment */
 .mesh::before {
@@ -190,12 +243,15 @@ section { position: relative; }
 .btn:hover::after { left: 140%; }
 
 .btn--ghost {
-  --btn-bg: transparent;
-  border: 1px solid var(--border);
+  --btn-bg: var(--glass-bg);
+  border: 1px solid var(--glass-brd);
   color: var(--fg);
+  backdrop-filter: var(--glass-blur-lite);
+  -webkit-backdrop-filter: var(--glass-blur-lite);
+  box-shadow: var(--glass-inset);
 }
 .btn--ghost:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--glass-bg-hi);
   border-color: rgba(var(--brand-rgb), 0.6);
   box-shadow: none;
 }
@@ -215,10 +271,11 @@ section { position: relative; }
   border-bottom: 1px solid transparent;
 }
 .nav.is-stuck {
-  background: rgba(10, 10, 13, 0.86);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom-color: var(--border-soft);
+  background: rgba(10, 10, 13, 0.55);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom-color: var(--glass-brd);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px -30px rgba(0, 0, 0, 0.9);
 }
 .nav__in {
   width: min(100% - 2.5rem, var(--shell));
@@ -451,14 +508,22 @@ section { position: relative; }
 
 .card {
   position: relative;
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-brd);
   border-radius: var(--radius-lg);
   padding: 1.9rem;
   overflow: hidden;
-  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease);
+  box-shadow: var(--glass-inset), var(--glass-drop);
+  transition: transform 0.4s var(--ease), border-color 0.4s var(--ease),
+    background 0.4s var(--ease);
 }
-.card:hover { transform: translateY(-4px); border-color: var(--border); }
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--glass-brd-hi);
+  background: var(--glass-bg-hi);
+}
 
 /* cursor-tracking spotlight, Premier's card treatment */
 .card::before {
@@ -475,7 +540,23 @@ section { position: relative; }
   pointer-events: none;
 }
 .card:hover::before { opacity: 1; }
-.card > * { position: relative; }
+.card > * { position: relative; z-index: 1; }
+
+/* Vertical falloff across the pane. A flat fill reads as a translucent box;
+   the gradient is what makes it read as a sheet of glass catching light. */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.02) 28%,
+    transparent 60%
+  );
+}
 
 .card__num {
   font-family: var(--font-display);
@@ -534,9 +615,10 @@ section { position: relative; }
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--glass-brd);
   aspect-ratio: 4 / 3;
-  background: var(--surface);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-inset), var(--glass-drop);
 }
 .tile img {
   width: 100%;
@@ -558,11 +640,14 @@ section { position: relative; }
 
 /* ---------- quotes ---------- */
 .quote {
-  background: var(--surface);
-  border: 1px solid var(--border-soft);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-brd);
   border-left: 3px solid var(--brand);
   border-radius: var(--radius);
   padding: 1.9rem;
+  box-shadow: var(--glass-inset), var(--glass-drop);
 }
 .quote p { font-size: 1.02rem; color: #e6e8ec; }
 .quote cite {
@@ -589,8 +674,10 @@ section { position: relative; }
 .field select,
 .field textarea {
   width: 100%;
-  background: var(--bg-raise);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: var(--glass-blur-lite);
+  -webkit-backdrop-filter: var(--glass-blur-lite);
+  border: 1px solid var(--glass-brd);
   border-radius: var(--radius);
   padding: 0.85rem 1rem;
   color: var(--fg);
@@ -610,8 +697,11 @@ section { position: relative; }
 
 /* ---------- footer ---------- */
 .foot {
-  background: #07070a;
-  border-top: 1px solid var(--border-soft);
+  background: rgba(7, 7, 10, 0.55);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--glass-brd);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   padding: 4rem 0 2rem;
 }
 .foot__grid {
@@ -651,14 +741,16 @@ section { position: relative; }
   z-index: 80;
   display: none;
   gap: 1px;
-  background: var(--border);
-  border-top: 1px solid var(--border);
+  background: var(--glass-brd);
+  border-top: 1px solid var(--glass-brd);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 .callbar a {
   flex: 1;
   padding: 0.95rem;
   text-align: center;
-  background: var(--bg-raise);
+  background: rgba(16, 16, 21, 0.72);
   font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -782,9 +874,12 @@ section { position: relative; }
 .arealinks a {
   display: inline-block;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--glass-brd);
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur-lite);
+  -webkit-backdrop-filter: var(--glass-blur-lite);
+  box-shadow: var(--glass-inset);
   font-size: 0.84rem;
   color: var(--fg-muted);
   transition: color 0.25s var(--ease), border-color 0.25s var(--ease),
@@ -805,9 +900,12 @@ section { position: relative; }
   align-items: center;
   gap: 1.8rem;
   flex-wrap: wrap;
-  background: linear-gradient(100deg, var(--surface), var(--bg-raise));
-  border: 1px solid var(--border-soft);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-brd);
   border-radius: var(--radius-lg);
+  box-shadow: var(--glass-inset), var(--glass-drop);
   position: relative;
   overflow: hidden;
 }
@@ -864,4 +962,71 @@ section { position: relative; }
   background: rgba(var(--brand-rgb), 0.12);
   border: 1px solid rgba(var(--brand-rgb), 0.45);
   border-radius: var(--radius);
+}
+
+/* ==========================================================================
+   FAQ accordion — ports the FAQAccordion pattern from Glossedout.
+   Built on native <details>/<summary>: keyboard-operable and fully usable
+   with JS disabled, which a div-plus-onclick implementation is not.
+   ========================================================================== */
+.faq { display: grid; gap: 0.7rem; }
+
+.faq__item {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-brd);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-inset), var(--glass-drop);
+  overflow: hidden;
+  transition: border-color 0.35s var(--ease), background 0.35s var(--ease);
+}
+.faq__item[open] {
+  border-color: rgba(var(--brand-rgb), 0.42);
+  background: var(--glass-bg-hi);
+}
+
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 1.15rem 1.5rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.15;
+  transition: color 0.25s var(--ease);
+}
+.faq__q::-webkit-details-marker { display: none; }
+.faq__q:hover { color: #fff; }
+.faq__item[open] .faq__q { color: #fff; }
+
+.faq__ic {
+  flex-shrink: 0;
+  color: var(--brand);
+  transition: transform 0.4s var(--ease);
+}
+.faq__item[open] .faq__ic { transform: rotate(135deg); }
+
+.faq__a {
+  padding: 0 1.5rem 1.35rem;
+  color: var(--fg-muted);
+  font-size: 0.96rem;
+  max-width: 78ch;
+}
+.faq__a p { margin: 0; }
+
+/* details has no transitionable height; animate the content instead */
+.faq__item[open] .faq__a { animation: faqIn 0.4s var(--ease); }
+@keyframes faqIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq__item[open] .faq__a { animation: none; }
+  .faq__ic { transition: none; }
 }

@@ -279,6 +279,53 @@ TESTIMONIALS = [
      "Preston Automatics and Differentials"),
 ]
 
+# FAQ — ports the FAQAccordion pattern from Glossedout, with FAQPage schema
+# added (theirs ships without it, so the Q&As never surface as rich results).
+# Every answer is drawn from the client's own service copy in the snapshot;
+# nothing about price or turnaround is invented, because the old site stated
+# neither.
+FAQS = [
+    ("Do you come to me?",
+     "Yes — we're fully mobile across metropolitan Melbourne. We bring our own "
+     "water and power, so we can work at your home or your office and you don't "
+     "need to go anywhere. Because everything is done onsite the process is "
+     "completely transparent: you can watch the work happen."),
+    ("What's the difference between a mini detail and a full detail?",
+     "A mini detail is the maintenance service — pressure wash, shampoo and rinse, "
+     "wheels and under-guards degreased, chamois dry, interior vacuumed, dash "
+     "blown with compressed air, windows in and out, tyres glossed. A full detail "
+     "adds the engine bay, door jams, a clay bar decontamination, a hand polish, "
+     "and a full interior extraction through the seats, carpets, mats and cargo "
+     "area with the leather cleaned and conditioned."),
+    ("What is paint correction, and how many stages do I need?",
+     "Paint correction removes swirl marks from a poor cut and polish, "
+     "environmental damage from being left out in the elements, and the marks, "
+     "scuffs and scratches of day-to-day use. We run 3, 4, 5 and 6 stage "
+     "processes — which one your car needs depends on the severity and depth of "
+     "the damage, the colour, and the type of duco the manufacturer applied. It's "
+     "conducted in our specialty studio built for these applications."),
+    ("How long does a ceramic coating last?",
+     "It depends on the coating. Graphene Pro 10H N1 is our hardest — 10H, up to "
+     "1000nm thick, and it lasts a lifetime. Quartz 9H Pro is 9H, up to 800nm, "
+     "and lasts up to 5 years. Quartz Ceramic Coating is 9H, up to 800nm, around "
+     "3 years. Our interior coating works on both leather and fabric and protects "
+     "for up to 12 months."),
+    ("Can you remove overspray or industrial fallout?",
+     "Yes — it's one of our specialities. Airborne paint, steel, dust, concrete, "
+     "chemical and acid rain and tree sap are all very damaging to your duco, "
+     "whether they came from negligent work processes nearby, accidental "
+     "overspray or vandalism. We have a process to lift them off the paint."),
+    ("My paint looks dull and swirled. Can it be brought back?",
+     "Usually, yes. We specialise in surface damage through our 4 stage exterior "
+     "process — brush marks, spider webbing, oxidised dull or plain neglected "
+     "paint work. The vehicle is pressure washed, hand washed and rinsed, clay "
+     "barred, machine cut to remove the scratches and dullness, machine glazed to "
+     "de-swirl and restore gloss, then hand polished to seal and protect."),
+    ("Which suburbs do you service?",
+     "Metropolitan Melbourne. If you're in the metro area we'll come to you — "
+     "call 1300 132 750 and our operators will confirm."),
+]
+
 SUBURBS = [
     "Brighton", "Toorak", "South Yarra", "Hawthorn", "Kew", "Camberwell",
     "Malvern", "Armadale", "Prahran", "St Kilda", "Elwood", "Port Melbourne",
@@ -546,6 +593,47 @@ def breadcrumb_schema(trail):
 </script>"""
 
 
+def faq_schema():
+    """FAQPage markup — the piece Glossedout's accordion is missing."""
+    items = ",".join(
+        f"""{{"@type":"Question","name":"{esc(q)}",
+        "acceptedAnswer":{{"@type":"Answer","text":"{esc(a)}"}}}}"""
+        for q, a in FAQS
+    )
+    return f"""<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{items}]}}
+</script>"""
+
+
+def faq_block(heading="Common questions"):
+    """Native <details> accordion: keyboard-accessible and fully functional
+    with JS disabled, which a div-and-onclick implementation is not."""
+    rows = "\n".join(f"""
+        <details class="faq__item" data-reveal="{i * 0.04:.2f}">
+          <summary class="faq__q">
+            {esc(q)}
+            <svg class="faq__ic" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+              <path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.7"/>
+            </svg>
+          </summary>
+          <div class="faq__a"><p>{esc(a)}</p></div>
+        </details>""" for i, (q, a) in enumerate(FAQS))
+
+    return f"""
+<section class="band band--tight">
+  <div class="shell">
+    <div style="max-width:52ch;margin-bottom:2.2rem" data-reveal>
+      <span class="eyebrow">FAQ</span>
+      <h2>{heading.split(' ')[0]} <span class="slant hl">{' '.join(heading.split(' ')[1:])}</span></h2>
+    </div>
+    <div class="faq">
+{rows}
+    </div>
+  </div>
+</section>
+"""
+
+
 def crumbs(trail):
     parts = []
     for i, (h, n) in enumerate(trail):
@@ -628,7 +716,7 @@ def build_home():
              "Mobile car detailing across metropolitan Melbourne. Full detailing, paint "
              "correction and ceramic coatings at your home or office. Over 20 years. "
              f"Call {PHONE_DISPLAY}.",
-             "/", schema=local_business_schema())
+             "/", schema=local_business_schema() + faq_schema())
         + nav()
         + f"""
 <section class="splash" data-splash data-active="1" tabindex="-1" aria-roledescription="carousel"
@@ -723,6 +811,8 @@ def build_home():
   </div>
 </section>
 
+{faq_block()}
+
 <section class="band">
   <div class="shell" style="text-align:center">
     <h2 data-reveal>Ready to book <span class="slant hl">your detail?</span></h2>
@@ -763,7 +853,7 @@ def build_services_index():
         head("Car Detailing Services Melbourne | Formula Mobile Car Detailing",
              "Mini and full detailing, interior and exterior detailing, overspray removal, "
              "ceramic coatings and paint correction — mobile across Melbourne.",
-             "/services/", schema=breadcrumb_schema(trail))
+             "/services/", schema=breadcrumb_schema(trail) + faq_schema())
         + nav("/services/")
         + crumbs(trail)
         + f"""
@@ -791,6 +881,8 @@ def build_services_index():
     </div>
   </div>
 </section>
+{faq_block()}
+
 <section class="band band--raise mesh">
   <div class="shell" style="text-align:center">
     <h2>Not sure what it needs?</h2>
