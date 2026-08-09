@@ -698,6 +698,13 @@ def build_home():
     </div>
   </div>
 
+  <div class="hero__say">
+    <span class="eyebrow">Mobile &middot; Metropolitan Melbourne</span>
+    <h1 class="hero__h1">Melbourne&rsquo;s <span class="slant hl">finish</span></h1>
+    <p class="hero__sub">Over 20 years of detailing, paint correction and ceramic coatings
+      &mdash; at your home or office. Pick a service to start.</p>
+  </div>
+
   <div class="hero__cue" aria-hidden="true">
     Scroll
     <svg width="10" height="13" viewBox="0 0 10 13" fill="none">
@@ -706,7 +713,6 @@ def build_home():
   </div>
 </section>
 
-<h1 class="visually-hidden">Mobile car detailing across Melbourne</h1>
 
 <section class="band mesh band--raise">
   <div class="shell">
