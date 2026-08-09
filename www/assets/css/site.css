@@ -121,6 +121,11 @@ body {
 }
 
 img { max-width: 100%; display: block; }
+
+/* The UA rule for [hidden] is display:none, but any author rule that sets
+   display — .btn is inline-flex — beats it on specificity, so hidden elements
+   keep showing. This is the fix for the whole document, not just buttons. */
+[hidden] { display: none !important; }
 a { color: inherit; text-decoration: none; }
 
 ::selection { background: var(--brand); color: #fff; }
@@ -1041,4 +1046,135 @@ section { position: relative; }
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+/* ==========================================================================
+   BOOKING WIZARD — adopts the 4-step flow from
+   premiermobiledetailing.com.au/booking, in Formula's glass language.
+   ========================================================================== */
+.bk { max-width: 860px; }
+
+.bk__rail {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0 0 1.6rem;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.bk__dot {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 1 1 auto;
+  min-width: 130px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid var(--border-soft);
+  transition: color 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+.bk__dot span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 0.66rem;
+  flex-shrink: 0;
+}
+.bk__dot[data-state='now']  { color: var(--brand); border-bottom-color: var(--brand); }
+.bk__dot[data-state='done'] { color: #fff; border-bottom-color: rgba(var(--brand-rgb), 0.5); }
+.bk__dot[data-state='done'] span { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+.bk__form { padding: 2rem; }
+.bk__step { border: 0; margin: 0; padding: 0; }
+.bk__legend {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 0;
+  margin-bottom: 0.35rem;
+}
+.bk__hint { color: var(--fg-muted); font-size: 0.92rem; margin-bottom: 1.4rem; }
+.bk__sublabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 1.6rem 0 0.7rem;
+}
+
+.bk__tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.7rem; }
+.bk__tiles--2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.bk__tiles--4 { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+.bk__tile {
+  position: relative;
+  display: block;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--glass-brd);
+  cursor: pointer;
+  transition: border-color 0.28s var(--ease), background 0.28s var(--ease),
+    transform 0.28s var(--ease);
+}
+.bk__tile:hover { background: var(--glass-bg-hi); transform: translateY(-2px); }
+.bk__tile input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+
+/* :has drives the selected state where supported; .is-on is the JS fallback */
+.bk__tile:has(input:checked),
+.bk__tile.is-on {
+  border-color: var(--brand);
+  background: rgba(var(--brand-rgb), 0.13);
+  box-shadow: 0 0 0 1px rgba(var(--brand-rgb), 0.35), 0 0 30px -10px rgba(var(--brand-rgb), 0.5);
+}
+.bk__tile:focus-within { outline: 2px solid var(--brand); outline-offset: 3px; }
+
+.bk__tiletitle {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 0.25rem;
+}
+.bk__tilesub { display: block; font-size: 0.8rem; color: var(--fg-muted); line-height: 1.45; }
+
+.bk__nav {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  margin-top: 1.9rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--glass-brd);
+}
+.bk__nav [data-next-step],
+.bk__nav [data-submit] { margin-left: auto; }
+
+.bk__alt { margin-top: 1.4rem; font-size: 0.9rem; text-align: center; }
+.bk__alt a { color: var(--brand); }
+
+/* Without JS every step stays visible and the form posts natively — a wizard
+   that hides four fifths of itself and then fails to run is worse than a long
+   form. The step buttons are meaningless in that state, so they go. */
+.bk__form:not(.is-wizard) .bk__step + .bk__step { margin-top: 2.6rem; }
+.bk__form:not(.is-wizard) .bk__nav [data-back],
+.bk__form:not(.is-wizard) .bk__nav [data-next-step] { display: none; }
+.bk__form:not(.is-wizard) [data-submit] { display: inline-flex !important; }
+
+@media (max-width: 560px) {
+  .bk__form { padding: 1.4rem; }
+  .bk__dot { min-width: 0; font-size: 0; gap: 0; justify-content: center; }
+  .bk__dot span { font-size: 0.66rem; }
+  .bk__nav { flex-wrap: wrap; }
+  .bk__nav .btn { flex: 1 1 auto; }
 }

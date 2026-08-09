@@ -340,6 +340,7 @@ SUBURBS = [
 GALLERY = [f"/assets/images/gallery/0{i}.jpg" for i in range(1, 9)]
 
 NAV = [
+    ("/booking/", "Book"),
     ("/services/", "Services"),
     ("/gallery/", "Gallery"),
     ("/testimonials/", "Reviews"),
@@ -516,7 +517,7 @@ def footer():
 
 <div class="callbar">
   <a href="tel:{PHONE_LINK}" class="is-brand">Call {PHONE_DISPLAY}</a>
-  <a href="/contact/">Get a quote</a>
+  <a href="/booking/">Book now</a>
 </div>
 
 <script src="/assets/js/tracking.js" defer></script>
@@ -799,7 +800,7 @@ def build_home():
     </p>
     <div style="display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap" data-reveal="0.12">
       <a class="btn btn--lg" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
-      <a class="btn btn--ghost btn--lg" href="/contact/">Request a quote</a>
+      <a class="btn btn--ghost btn--lg" href="/booking/">Book a detail</a>
     </div>
   </div>
 </section>
@@ -935,7 +936,7 @@ def build_service(s):
         <h1><span class="slant">{esc(s['name'])}</span></h1>
         <p class="lede">{esc(s['intro'])}</p>
         <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.6rem">
-          <a class="btn" href="/contact/">Request a quote</a>
+          <a class="btn" href="/booking/">Book this service</a>
           <a class="btn btn--ghost" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
         </div>
       </div>
@@ -1084,6 +1085,178 @@ def build_select():
 </body>
 </html>
 """
+
+
+def build_booking():
+    """4-step booking wizard, adopting the flow from
+    premiermobiledetailing.com.au/booking: Service -> Location -> Vehicle ->
+    Details, with a progress rail, back/continue, and a phone fallback on
+    failure. Options are Formula's own services and their own language.
+    """
+
+    def tiles(name, options):
+        """`required` is deliberately NOT emitted on these radios.
+
+        The inputs are visually hidden inside their tile, and Chrome refuses to
+        submit a form containing an invalid control it cannot focus — it logs
+        "not focusable" and stops dead, with nothing shown to the visitor. The
+        choice is enforced by booking.js via data-requires-choice instead,
+        which can point at the tile group and say something useful.
+        """
+        out = []
+        for val, title, sub in options:
+            out.append(f"""
+          <label class="bk__tile">
+            <input type="radio" name="{name}" value="{esc(val)}">
+            <span class="bk__tiletitle">{esc(title)}</span>
+            <span class="bk__tilesub">{esc(sub)}</span>
+          </label>""")
+        return "".join(out)
+
+    def first_sentences(text, minimum=40):
+        """One sentence, or two when the first is too short to say anything.
+        "The complete service." alone tells a visitor nothing."""
+        parts = [p.strip() for p in text.split(".") if p.strip()]
+        out = parts[0]
+        if len(out) < minimum and len(parts) > 1:
+            out += ". " + parts[1]
+        return out + "."
+
+    services = [(s["name"], s["name"], first_sentences(s["blurb"])) for s in SERVICES]
+    services.append(("Not sure yet", "Not sure yet", "Help me pick the right service."))
+
+    # Formula is mobile; paint correction is the exception — their own copy says
+    # it is "conducted in our specialty studio created for these applications".
+    where = [
+        ("Mobile — at your door", "Mobile — at your door",
+         "We bring our own water and power to your home or office."),
+        ("Studio — paint correction", "Studio — paint correction",
+         "Correction work is done in our specialty studio."),
+    ]
+
+    paint = [
+        ("New / Excellent", "New / Excellent", "Near-new, minimal marks."),
+        ("Good", "Good", "Light swirls and minor marks."),
+        ("Fair", "Fair", "Noticeable swirls, scratches or wash marks."),
+        ("Poor", "Poor", "Heavy scratches, spider webbing or oxidised and dull."),
+    ]
+
+    interior = [
+        ("Clean / Tidy", "Clean / Tidy", "Well kept, just needs a refresh."),
+        ("Lightly messy", "Lightly messy", "Everyday use, crumbs and dust."),
+        ("Dirty", "Dirty", "Stains, spills and built-up grime."),
+        ("Full reset", "Full reset", "Heavily soiled — needs a deep clean."),
+    ]
+
+    trail = [("/", "Home"), ("/booking/", "Book")]
+    rail = "".join(
+        f'<li class="bk__dot" data-dot data-state="{"now" if i == 0 else "todo"}">'
+        f'<span>{i + 1}</span>{esc(lbl)}</li>'
+        for i, lbl in enumerate(["Service", "Where", "Vehicle", "Details"])
+    )
+
+    return (
+        head("Book a Detail | Formula Mobile Car Detailing",
+             "Book mobile car detailing across Melbourne — takes under a minute, and "
+             "we'll call or text back to confirm a time.",
+             "/booking/", SERVICES[1]["img"], breadcrumb_schema(trail))
+        + nav()
+        + crumbs(trail)
+        + f"""
+<section class="band band--tight">
+  <div class="shell">
+    <span class="eyebrow">Booking</span>
+    <h1>Book your <span class="slant hl">detail</span></h1>
+    <p class="lede">Takes under a minute. We'll call or text back to confirm a time
+      &mdash; no obligation, and no payment up front.</p>
+  </div>
+</section>
+
+<section class="band band--tight">
+  <div class="shell bk">
+    <ol class="bk__rail">{rail}</ol>
+    <p class="visually-hidden" data-live aria-live="polite"></p>
+
+    <form class="bk__form card" method="post" action="/thank-you/" data-booking>
+
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Choose your service</legend>
+        <p class="bk__hint">Pick what you're after &mdash; not sure? Choose &ldquo;Not sure yet&rdquo;.</p>
+        <div class="bk__tiles" data-requires-choice>{tiles("service", services)}</div>
+      </fieldset>
+
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Where are we working?</legend>
+        <p class="bk__hint">We service metropolitan Melbourne.</p>
+        <div class="bk__tiles bk__tiles--2" data-requires-choice>{tiles("location_type", where)}</div>
+        <div class="field--split" style="margin-top:1.4rem">
+          <div class="field">
+            <label for="bk-suburb">Suburb</label>
+            <input id="bk-suburb" name="suburb" type="text" autocomplete="address-level2" required>
+          </div>
+          <div class="field">
+            <label for="bk-postcode">Postcode</label>
+            <input id="bk-postcode" name="postcode" type="text" inputmode="numeric"
+                   autocomplete="postal-code" pattern="[0-9]{{4}}" maxlength="4">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Tell us about the car</legend>
+        <div class="field">
+          <label for="bk-vehicle">Make, model and year</label>
+          <input id="bk-vehicle" name="vehicle" type="text" placeholder="e.g. BMW M3, 2021" required>
+        </div>
+        <p class="bk__sublabel">Paint condition</p>
+        <div class="bk__tiles bk__tiles--4" data-requires-choice>{tiles("paint_condition", paint)}</div>
+        <p class="bk__sublabel">Interior condition</p>
+        <div class="bk__tiles bk__tiles--4" data-requires-choice>{tiles("interior_condition", interior)}</div>
+      </fieldset>
+
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">How do we reach you?</legend>
+        <div class="field">
+          <label for="bk-name">Name</label>
+          <input id="bk-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field--split">
+          <div class="field">
+            <label for="bk-phone">Mobile</label>
+            <input id="bk-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"
+                   pattern="[0-9 \\(\\)+\\-]{{6,}}" required>
+          </div>
+          <div class="field">
+            <label for="bk-email">Email <span class="muted">(optional)</span></label>
+            <input id="bk-email" name="email" type="email" autocomplete="email">
+          </div>
+        </div>
+        <div class="field">
+          <label for="bk-comments">Anything else? <span class="muted">(optional)</span></label>
+          <textarea id="bk-comments" name="comments" rows="4"></textarea>
+        </div>
+      </fieldset>
+
+      <p class="formerr" data-form-error role="alert" hidden></p>
+
+      <div class="bk__nav">
+        <button class="btn btn--ghost" type="button" data-back hidden>&larr; Back</button>
+        <button class="btn" type="button" data-next-step>Continue &rarr;</button>
+        <button class="btn btn--lg" type="submit" data-submit hidden>Request my booking</button>
+      </div>
+    </form>
+
+    <p class="bk__alt muted">
+      Prefer to talk? Call <a href="tel:{PHONE_LINK}">{PHONE_DISPLAY}</a>
+      or email <a href="mailto:{EMAIL}">{EMAIL}</a>.
+    </p>
+  </div>
+</section>
+
+<script src="/assets/js/booking.js" defer></script>
+"""
+        + footer()
+    )
 
 
 def build_gallery():
@@ -1344,7 +1517,7 @@ def build_suburb(name):
       power, so you don't need to go anywhere. Book us at home or at the office and watch the
       work happen.</p>
     <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.6rem">
-      <a class="btn btn--lg" href="/contact/">Get a quote in {esc(name)}</a>
+      <a class="btn btn--lg" href="/booking/">Book in {esc(name)}</a>
       <a class="btn btn--ghost btn--lg" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
     </div>
   </div>
@@ -1482,6 +1655,7 @@ def main():
     routes = []
 
     write("/", build_home());                       routes.append(("/", "1.0"))
+    write("/booking/", build_booking());            routes.append(("/booking/", "1.0"))
     write("/services/", build_services_index());    routes.append(("/services/", "0.9"))
     write("/services/select/", build_select());     routes.append(("/services/select/", "0.7"))
     for s in SERVICES:
