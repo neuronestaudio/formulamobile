@@ -63,7 +63,24 @@ Two supporting details: `saturate(180%)` pulls the ambient colour *through* the 
 
 The drift respects `prefers-reduced-motion`.
 
-## The hero: Tesla's `dx-splash`, rebuilt
+## The hero: carbon-fibre splash → the service carousel
+
+The homepage opens on a woven carbon-fibre splash carrying the logo, which dissolves into the **same coverflow carousel** as `/services/select/` — that carousel *is* the hero.
+
+Two rules govern it:
+
+- **It is not a scroll trap.** The splash resolves on a 2.1s timer, and scroll / click / key / touch all skip it instantly. The carousel itself runs without `data-select-lock`, so the wheel belongs to the page and the visitor can scroll straight past into the rest of it. (`.sel` is `overflow:hidden` + `overscroll-behavior:none`; the inline variant has to undo both, or the page silently refuses to scroll.)
+- **The splash plays once per session** (`sessionStorage`). A logo animation is charming the first time and an obstacle the fourth, so return views land straight on the carousel.
+
+Because the wheel isn't captured, the hero carousel autoplays (`data-select-auto="4600"`) and stops permanently on the first real interaction — routed through `touched()`, which every input path already calls. It pauses while off-screen or backgrounded.
+
+The markup comes from one `carousel_html(inline=…)` function shared with the standalone page, so the coverflow maths, glass and background crossfade can't drift apart.
+
+`prefers-reduced-motion` skips the splash animation and the autoplay entirely.
+
+> **Note:** this replaced the Tesla `dx-splash` hero. `assets/js/splash.js` is still in the repo, unreferenced, with its full write-up — the mechanic is a good fit for the planned 3-part coating parallax section.
+
+## The previous hero: Tesla's `dx-splash`, rebuilt
 
 The scroll animation from [tesla.com/en_au/model3-choose](https://www.tesla.com/en_au/model3-choose), identified by instrumenting the live page in headless Chrome on 2 Aug 2026. See `assets/js/splash.js` for the full write-up.
 

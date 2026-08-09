@@ -1030,3 +1030,15 @@ section { position: relative; }
   .faq__item[open] .faq__a { animation: none; }
   .faq__ic { transition: none; }
 }
+
+/* the hero is a logo splash and a carousel; the page still needs one H1 */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

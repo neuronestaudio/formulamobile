@@ -77,30 +77,63 @@
     render();
   }
 
-  function touched() { root.classList.add('is-touched'); }
+  var stopAuto = function () {};
+  function touched() {
+    root.classList.add('is-touched');
+    stopAuto();
+  }
 
-  /* ---- wheel / trackpad: accumulate then step, with a cooldown ---- */
-  var acc = 0;
-  var cooling = false;
-  root.addEventListener(
-    'wheel',
-    function (e) {
-      e.preventDefault();
-      touched();
-      if (cooling) return;
+  /* ---- wheel / trackpad ----
+     Opt-in via data-select-lock. The standalone /services/select/ page wants
+     the wheel, because browsing IS the page. The homepage hero must NOT take
+     it — the visitor has to be able to scroll past into the rest of the page,
+     and hijacking that is how a hero turns into a trap. */
+  if (root.hasAttribute('data-select-lock')) {
+    var acc = 0;
+    var cooling = false;
+    root.addEventListener(
+      'wheel',
+      function (e) {
+        e.preventDefault();
+        touched();
+        if (cooling) return;
 
-      // trackpads fire many small deltas; mice fire few large ones
-      acc += Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+        // trackpads fire many small deltas; mice fire few large ones
+        acc += Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
 
-      if (Math.abs(acc) > 42) {
-        go(acc > 0 ? 1 : -1);
-        acc = 0;
-        cooling = true;
-        setTimeout(function () { cooling = false; }, reduced() ? 40 : 340);
-      }
-    },
-    { passive: false }
-  );
+        if (Math.abs(acc) > 42) {
+          go(acc > 0 ? 1 : -1);
+          acc = 0;
+          cooling = true;
+          setTimeout(function () { cooling = false; }, reduced() ? 40 : 340);
+        }
+      },
+      { passive: false }
+    );
+  }
+
+  /* ---- autoplay ----
+     Only where the wheel isn't captured: without it the hero carousel would
+     sit dead until someone happens to try dragging it. Stops permanently on
+     the first real interaction, and pauses while off-screen or backgrounded. */
+  var auto = null;
+  if (root.hasAttribute('data-select-auto') && !reduced()) {
+    var every = parseInt(root.getAttribute('data-select-auto'), 10) || 4200;
+    var onScreen = true;
+
+    var tick = function () { if (onScreen && !document.hidden) go(1); };
+    auto = setInterval(tick, every);
+
+    stopAuto = function () {
+      if (auto) { clearInterval(auto); auto = null; }
+    };
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        onScreen = entries[0].isIntersecting;
+      }, { threshold: 0.25 }).observe(root);
+    }
+  }
 
   /* ---- drag / swipe ---- */
   var startX = null;

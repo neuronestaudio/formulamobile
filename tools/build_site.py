@@ -649,42 +649,6 @@ def crumbs(trail):
 # --------------------------------------------------------------------------
 
 def build_home():
-    slides = []
-    for i, s in enumerate(SPLASH, start=1):
-        slides.append(f"""
-      <div class="splash__slide" data-slide="{i}">
-        <div class="splash__media">
-          <img src="{s['img']}" alt="{esc(s['tier'])} by Formula Mobile Car Detailing Melbourne"
-               {'fetchpriority="high"' if i == 1 else 'loading="lazy"'} width="1600" height="824">
-        </div>
-        <div class="splash__scrim"></div>
-        <div class="splash__body">
-          <div class="splash__inner">
-            <span class="eyebrow">Mobile &middot; Metropolitan Melbourne</span>
-            <h1 class="splash__title"><span class="slant">{esc(s['title'])}</span></h1>
-            <span class="splash__tier">{esc(s['tier'])}</span>
-            <p class="splash__copy">{esc(s['copy'])}</p>
-            <div class="splash__cta">
-              <a class="btn btn--lg" href="/contact/">Get a quote</a>
-              <a class="btn btn--ghost btn--lg" href="{s['href']}">Learn more</a>
-            </div>
-            <button class="splash__switch" data-splash-switch type="button">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                <path d="M6 1v10M1.5 6.5L6 11l4.5-4.5" stroke="currentColor" stroke-width="1.5"/>
-              </svg>
-              Switch to {esc(SPLASH[i % len(SPLASH)]['tier'])}
-            </button>
-          </div>
-        </div>
-      </div>""")
-
-    pips = "\n".join(
-        f'      <button class="splash__pip" data-splash-pip="{i}" role="tab" '
-        f'aria-selected="{"true" if i == 1 else "false"}" '
-        f'aria-label="Show {esc(s["tier"])}"></button>'
-        for i, s in enumerate(SPLASH, start=1)
-    )
-
     cards = "\n".join(f"""
         <a class="card card--media" href="/services/{s['slug']}/" data-reveal="{i*0.05:.2f}">
           <img src="{s['img']}" alt="{esc(s['name'])}" loading="lazy" width="600" height="450">
@@ -716,18 +680,32 @@ def build_home():
              "Mobile car detailing across metropolitan Melbourne. Full detailing, paint "
              "correction and ceramic coatings at your home or office. Over 20 years. "
              f"Call {PHONE_DISPLAY}.",
-             "/", schema=local_business_schema() + faq_schema())
+             "/", schema=local_business_schema() + faq_schema()
+             + '<link rel="stylesheet" href="/assets/css/select.css">')
         + nav()
         + f"""
-<section class="splash" data-splash data-active="1" tabindex="-1" aria-roledescription="carousel"
-         aria-label="Featured services">
-  <div class="splash__wrap">
-{''.join(slides)}
-    <div class="splash__pips" role="tablist" aria-label="Choose a service">
-{pips}
+<section class="hero" data-hero>
+{carousel_html(inline=True)}
+
+  <div class="hero__splash" data-hero-splash>
+    <div class="hero__fiber" aria-hidden="true"></div>
+    <div class="hero__splashin">
+      <img class="hero__mark" src="/assets/images/logo.png"
+           alt="Formula Mobile Car Detailing" width="501" height="189" fetchpriority="high">
+      <div class="hero__rule" aria-hidden="true"></div>
+      <p class="hero__tag">Mobile Detailing &middot; Melbourne</p>
     </div>
   </div>
+
+  <div class="hero__cue" aria-hidden="true">
+    Scroll
+    <svg width="10" height="13" viewBox="0 0 10 13" fill="none">
+      <path d="M5 0v11M1 7.5L5 11.5 9 7.5" stroke="currentColor" stroke-width="1.4"/>
+    </svg>
+  </div>
 </section>
+
+<h1 class="visually-hidden">Mobile car detailing across Melbourne</h1>
 
 <section class="band mesh band--raise">
   <div class="shell">
@@ -828,7 +806,8 @@ def build_home():
 """
         + footer().replace(
             '<script src="/assets/js/enhance.js" defer></script>',
-            '<script src="/assets/js/splash.js" defer></script>\n'
+            '<script src="/assets/js/select.js" defer></script>\n'
+            '<script src="/assets/js/hero.js" defer></script>\n'
             '<script src="/assets/js/enhance.js" defer></script>')
     )
 
@@ -990,8 +969,13 @@ def build_service(s):
 # remaining pages
 # --------------------------------------------------------------------------
 
-def build_select():
-    """Standalone game-style service selector — full viewport, no page scroll."""
+def carousel_html(inline=False):
+    """The coverflow markup, shared by /services/select/ and the homepage hero.
+
+    inline=True drops the scroll lock and the page-chrome header, and turns on
+    autoplay. As a hero it must not eat the wheel — the visitor has to be able
+    to scroll past into the rest of the page.
+    """
     bgs, cards, pips = [], [], []
 
     for i, s in enumerate(SERVICES):
@@ -1026,17 +1010,11 @@ def build_select():
             f'aria-label="{esc(s["name"])}"></button>'
         )
 
-    trail = [("/", "Home"), ("/services/", "Services"), ("/services/select/", "Choose a service")]
+    cls = "sel sel--inline" if inline else "sel"
+    flags = ' data-select-auto="4600"' if inline else " data-select-lock"
 
-    # full-bleed experience: the standard nav/footer would fight it
-    return f"""{head(
-        "Choose a Service | Formula Mobile Car Detailing",
-        "Browse all seven Formula Mobile Car Detailing services — mini and full detailing, "
-        "interior, exterior, overspray removal, ceramic coatings and paint correction.",
-        "/services/select/", SERVICES[0]["img"], breadcrumb_schema(trail))}
-<link rel="stylesheet" href="/assets/css/select.css">
-
-<div class="sel" data-select>
+    return f"""
+<div class="{cls}" data-select{flags}>
   <div class="sel__bgs" aria-hidden="true">{''.join(bgs)}
   </div>
   <div class="sel__veil" aria-hidden="true"></div>
@@ -1047,7 +1025,7 @@ def build_select():
   </div>
 
   <div class="sel__hud">
-    <div class="sel__top">
+    <div class="sel__top"{'' if not inline else ' hidden'}>
       <a class="sel__back" href="/services/">
         <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
           <path d="M13 4.5H2M5.5 1L2 4.5 5.5 8" stroke="currentColor" stroke-width="1.6"/>
@@ -1072,7 +1050,7 @@ def build_select():
           <rect x=".75" y=".75" width="9.5" height="11.5" rx="4.75" stroke="currentColor" stroke-width="1.2"/>
           <path d="M5.5 3.5v2.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
         </svg>
-        Scroll or drag<span class="sel__kbd"> &middot; or use &larr; &rarr;</span>
+        {'Drag' if inline else 'Scroll or drag'}<span class="sel__kbd"> &middot; or use &larr; &rarr;</span>
       </span>
     </div>
   </div>
@@ -1088,7 +1066,20 @@ def build_select():
     </svg>
   </button>
 </div>
+"""
 
+
+def build_select():
+    """Standalone selector — full viewport, wheel-driven, no page scroll."""
+    trail = [("/", "Home"), ("/services/", "Services"),
+             ("/services/select/", "Choose a service")]
+    return f"""{head(
+        "Choose a Service | Formula Mobile Car Detailing",
+        "Browse all seven Formula Mobile Car Detailing services — mini and full detailing, "
+        "interior, exterior, overspray removal, ceramic coatings and paint correction.",
+        "/services/select/", SERVICES[0]["img"], breadcrumb_schema(trail))}
+<link rel="stylesheet" href="/assets/css/select.css">
+{carousel_html(inline=False)}
 <script src="/assets/js/select.js" defer></script>
 </body>
 </html>

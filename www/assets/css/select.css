@@ -370,3 +370,177 @@
   .sel__bg,
   .sel__go { transition-duration: 0.001ms !important; }
 }
+
+/* ==========================================================================
+   INLINE MODE — the same carousel as a homepage hero section.
+
+   The standalone page is position:fixed and owns the viewport. As a hero it
+   has to sit in normal document flow so the visitor can scroll past it into
+   the rest of the page. Everything else — the coverflow maths, the glass, the
+   background crossfade — is shared, unchanged.
+   ========================================================================== */
+.sel--inline {
+  position: absolute;
+  inset: 0;
+  /* The base .sel is overflow:hidden + overscroll-behavior:none, which makes it
+     a scroll container that refuses to chain the wheel up to the document — so
+     the page silently refuses to scroll past the hero. Both have to be undone
+     here, along with touch-action, or the hero becomes a trap. */
+  overscroll-behavior: auto;
+  touch-action: pan-y; /* vertical scroll passes through; we only claim drag-X */
+}
+.sel--inline .sel__stage { padding-top: var(--nav-h); }
+.sel--inline .sel__bottom { padding-bottom: 3.4rem; }
+
+/* The page's own nav sits right there, so the carousel's header row goes.
+   The HUD grid has to lose that row too: display:none removes the element from
+   the grid entirely, so without this the bottom row slides up into the 1fr
+   track and the counter ends up pinned to the top of the screen. */
+.sel--inline .sel__top { display: none; }
+.sel--inline .sel__hud { grid-template-rows: 1fr auto; }
+
+/* ==========================================================================
+   HERO — carbon-fibre splash that dissolves into the carousel.
+   ========================================================================== */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 620px;
+  overflow: hidden;
+  background: #06060a;
+}
+
+/* ---- woven carbon fibre, drawn in CSS ----
+   Two diagonal gradient sets at opposing angles produce the twill weave, and
+   the offsets are what make the tows read as over-under rather than a flat
+   crosshatch. No image asset, so it stays crisp at any density. */
+.hero__fiber {
+  position: absolute;
+  inset: 0;
+  background-color: #101014;
+  background-image:
+    linear-gradient(27deg, #15151b 5px, transparent 5px),
+    linear-gradient(207deg, #15151b 5px, transparent 5px),
+    linear-gradient(27deg, #0b0b0f 5px, transparent 5px),
+    linear-gradient(207deg, #0b0b0f 5px, transparent 5px),
+    linear-gradient(90deg, #121218 10px, transparent 10px),
+    linear-gradient(#16161c 25%, #101015 25%, #101015 50%, transparent 50%, transparent 75%, #16161c 75%);
+  background-size: 20px 20px;
+  background-position: 0 5px, 10px 15px, 10px 15px, 0 5px, 0 0, 0 0;
+}
+/* a broad specular sweep so the weave catches light instead of sitting flat */
+.hero__fiber::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(58% 44% at 50% 30%, rgba(255, 255, 255, 0.1), transparent 70%),
+    radial-gradient(46% 40% at 82% 88%, rgba(var(--brand-rgb), 0.16), transparent 72%),
+    linear-gradient(to bottom, transparent 55%, rgba(6, 6, 10, 0.92) 100%);
+}
+
+.hero__splash {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 2rem;
+  background: #06060a;
+  transition: opacity 1s var(--ease), visibility 1s;
+}
+.hero__splashin { position: relative; z-index: 1; }
+/* the weave sits under the mark and fades out with it */
+.hero__splash .hero__fiber { z-index: 0; }
+
+.hero__mark {
+  width: min(46vw, 430px);
+  margin: 0 auto 1.5rem;
+  filter: drop-shadow(0 18px 44px rgba(0, 0, 0, 0.9));
+}
+.hero__tag {
+  font-family: var(--font-body);
+  font-size: clamp(0.6rem, 1.5vw, 0.76rem);
+  font-weight: 700;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+  margin: 0;
+}
+
+/* entrance: the mark settles, the rule draws, the tagline arrives */
+.hero.is-playing .hero__mark {
+  animation: heroMark 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero.is-playing .hero__rule {
+  animation: heroRule 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+}
+.hero.is-playing .hero__tag {
+  animation: heroTag 1s cubic-bezier(0.22, 1, 0.36, 1) 0.75s both;
+}
+@keyframes heroMark {
+  from { opacity: 0; transform: scale(1.14); filter: blur(14px); }
+  to   { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes heroRule { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+@keyframes heroTag  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+.hero__rule {
+  width: min(30vw, 240px);
+  height: 2px;
+  margin: 0 auto 1.3rem;
+  background: linear-gradient(90deg, transparent, var(--brand), transparent);
+  transform-origin: center;
+}
+
+/* the dissolve */
+.hero.is-resolved .hero__splash { opacity: 0; visibility: hidden; pointer-events: none; }
+.hero.is-instant .hero__splash { transition: none; }
+
+/* the carousel is held back until the splash clears, then eases in */
+.hero .sel--inline {
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 1.1s var(--ease), transform 1.4s var(--ease);
+}
+.hero.is-resolved .sel--inline { opacity: 1; transform: none; }
+.hero.is-instant .sel--inline { transition: none; }
+
+/* scroll cue — the explicit signal that the page continues past the hero */
+.hero__cue {
+  position: absolute;
+  left: 50%;
+  bottom: 1.1rem;
+  transform: translateX(-50%);
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  opacity: 0;
+  transition: opacity 0.8s var(--ease) 0.5s;
+  pointer-events: none;
+}
+.hero.is-resolved .hero__cue { opacity: 1; }
+.hero__cue svg { animation: heroCue 2s ease-in-out infinite; }
+@keyframes heroCue {
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  50%      { transform: translateY(4px); opacity: 1; }
+}
+
+@media (max-width: 820px) {
+  .hero { height: 100svh; }
+  .sel--inline .sel__bottom { padding-bottom: 4.2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__cue svg { animation: none; }
+  .hero.is-playing .hero__mark,
+  .hero.is-playing .hero__rule,
+  .hero.is-playing .hero__tag { animation: none; }
+}
