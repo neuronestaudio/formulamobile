@@ -326,6 +326,34 @@ FAQS = [
      "call 1300 132 750 and our operators will confirm."),
 ]
 
+
+# Four stages of the ceramic coating process. Sourced from the client's own
+# copy: the 4-stage exterior process (wash / clay / machine cut / machine
+# glaze) and the ceramic coating page (industrial-grade liquid polymer sealer,
+# chemical bond, semi-permanent hydro barrier). Nothing here is invented.
+COATING_STAGES = [
+    ("Decontaminate",
+     "The vehicle is pressure washed to lift loose dirt and grime, hand washed "
+     "with car shampoo, then pressure rinsed. Clay bar follows, deep cleaning "
+     "grime and foreign matter out of the paint. A coating bonds to the surface "
+     "it is laid on, so the surface has to be genuinely clean first."),
+    ("Correct",
+     "Machine cut removes scratches, spider webbing and dullness, then machine "
+     "glaze de-swirls the surface and puts a deep gloss back. Whatever the paint "
+     "looks like at this point is what the coating locks in — correction is not "
+     "optional, it is the step that decides the result."),
+    ("Coat",
+     "An advanced industrial-grade liquid polymer sealer chemically bonds to the "
+     "duco. Graphene Pro 10H N1 lays up to 1000nm and 10H hardness; Quartz 9H Pro "
+     "up to 800nm with grade 3 chemical resistance. Glass, wheels and interior "
+     "surfaces have their own coatings."),
+    ("Protect",
+     "The semi-permanent layer becomes a hydro barrier between your paint and the "
+     "elements. The vehicle stays cleaner for longer, washes and dries more "
+     "easily, holds a deep gloss, and resists wash marks, swirls, bird droppings "
+     "and UV. Minimal maintenance from there."),
+]
+
 SUBURBS = [
     "Brighton", "Toorak", "South Yarra", "Hawthorn", "Kew", "Camberwell",
     "Malvern", "Armadale", "Prahran", "St Kilda", "Elwood", "Port Melbourne",
@@ -635,6 +663,54 @@ def faq_block(heading="Common questions"):
 """
 
 
+def coating_html():
+    """Scroll film: a sticky vehicle canvas the visitor orbits while the four
+    coating stages scroll past. Poster-first — the still render carries the
+    section on its own, and three.js plus the 5 MB model only load on approach.
+    """
+    panels = "".join(f"""
+      <article class="coat__panel" data-stage>
+        <div class="coat__copy">
+          <span class="coat__num">Stage {i:02d} &mdash; 04</span>
+          <h3 class="coat__h"><span class="slant">{esc(title)}</span></h3>
+          <p>{esc(body)}</p>
+        </div>
+      </article>""" for i, (title, body) in enumerate(COATING_STAGES, start=1))
+
+    pips = "".join(
+        f'<button class="coat__pip" data-stage-pip role="tab" '
+        f'aria-selected="{"true" if i == 0 else "false"}" '
+        f'aria-label="{esc(t)}"></button>'
+        for i, (t, _) in enumerate(COATING_STAGES)
+    )
+
+    return f"""
+<section class="band band--tight">
+  <div class="shell">
+    <span class="eyebrow">Ceramic coating</span>
+    <h2>Four stages, <span class="slant hl">one finish</span></h2>
+    <p class="lede">A coating is only as good as what goes under it. This is the
+      process, start to finish.</p>
+  </div>
+</section>
+
+<section class="coat" data-coating data-mode="poster" aria-label="The ceramic coating process">
+  <div class="coat__stage">
+    <img class="coat__poster" src="/assets/models/vehicle-poster.jpg" alt="" aria-hidden="true"
+         loading="lazy" width="1400" height="950">
+    <canvas class="coat__canvas" data-coating-canvas
+            data-model="/assets/models/vehicle.glb" aria-hidden="true"></canvas>
+    <div class="coat__scrim" aria-hidden="true"></div>
+    <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>
+    <p class="coat__load">Loading the model&hellip;</p>
+  </div>
+
+  <div class="coat__panels">{panels}
+  </div>
+</section>
+"""
+
+
 def crumbs(trail):
     parts = []
     for i, (h, n) in enumerate(trail):
@@ -738,39 +814,7 @@ def build_home():
   </div>
 </section>
 
-<section class="band">
-  <div class="shell">
-    <div style="max-width:56ch;margin-bottom:3rem" data-reveal>
-      <span class="eyebrow">What we do</span>
-      <h2>Protect and enhance <span class="slant hl">your investment</span></h2>
-      <p class="lede">
-        Whether it's your daily ride, your exotic prestige or your own custom build, let us
-        make sure it gets the best protective care. Everything is done onsite, so the process
-        is completely transparent &mdash; you watch the work happen.
-      </p>
-    </div>
-    <div class="grid grid--3">
-{cards}
-    </div>
-
-    <div class="pitch" data-reveal>
-      <div class="pitch__art" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-      <div>
-        <span class="eyebrow">Interactive</span>
-        <h3>Browse all seven, <span class="slant hl">side by side</span></h3>
-        <p class="muted">Flick through every service full-screen and pick the one that fits.</p>
-      </div>
-      <a class="btn btn--lg" href="/services/select/">
-        Open the selector
-        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
-          <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
-        </svg>
-      </a>
-    </div>
-  </div>
-</section>
+{coating_html()}
 
 <section class="band band--raise mesh">
   <div class="shell">
@@ -836,6 +880,8 @@ def build_home():
 """
         + footer().replace(
             '<script src="/assets/js/enhance.js" defer></script>',
+            '<script type="importmap">{"imports":{"three":"/assets/js/vendor/three.module.js"}}</script>\n'
+            '<script src="/assets/js/coating.js" type="module"></script>\n'
             '<script src="/assets/js/select.js" defer></script>\n'
             '<script src="/assets/js/hero.js" defer></script>\n'
             '<script src="/assets/js/enhance.js" defer></script>')

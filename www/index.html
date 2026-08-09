@@ -362,101 +362,59 @@
   </div>
 </section>
 
-<section class="band">
+
+<section class="band band--tight">
   <div class="shell">
-    <div style="max-width:56ch;margin-bottom:3rem" data-reveal>
-      <span class="eyebrow">What we do</span>
-      <h2>Protect and enhance <span class="slant hl">your investment</span></h2>
-      <p class="lede">
-        Whether it's your daily ride, your exotic prestige or your own custom build, let us
-        make sure it gets the best protective care. Everything is done onsite, so the process
-        is completely transparent &mdash; you watch the work happen.
-      </p>
-    </div>
-    <div class="grid grid--3">
-
-        <a class="card card--media" href="/services/mini-detail/" data-reveal="0.05">
-          <img src="/assets/images/services/img01.jpg" alt="Mini Detail" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">01</span>
-            <h3 class="card__title">Mini Detail</h3>
-            <p>A pressure wash, shampoo and rinse, wheels and under-guards degreased, chamois dried, interior vacuumed and windows cleaned inside and out.</p>
-          </div>
-        </a>
-
-        <a class="card card--media" href="/services/full-detail/" data-reveal="0.10">
-          <img src="/assets/images/services/img11.jpg" alt="Full Detail" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">02</span>
-            <h3 class="card__title">Full Detail</h3>
-            <p>The complete service. Engine bay degreased, clay bar, hand polish, full interior extraction and leather conditioned.</p>
-          </div>
-        </a>
-
-        <a class="card card--media" href="/services/interior-detail/" data-reveal="0.15">
-          <img src="/assets/images/services/img03.jpg" alt="Interior Detail" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">03</span>
-            <h3 class="card__title">Interior Detail</h3>
-            <p>Specialised products and equipment across every interior surface — carpet, mats, seats, wheel, dash, console, tints and mirrors.</p>
-          </div>
-        </a>
-
-        <a class="card card--media" href="/services/exterior-detail/" data-reveal="0.20">
-          <img src="/assets/images/services/img05.jpg" alt="Exterior Detail" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">04</span>
-            <h3 class="card__title">Exterior Detail</h3>
-            <p>A four stage process for brush marks, spider webbing, oxidised, dull or plain neglected paint work.</p>
-          </div>
-        </a>
-
-        <a class="card card--media" href="/services/overspray-removal/" data-reveal="0.25">
-          <img src="/assets/images/services/img06.jpg" alt="Overspray Removal" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">05</span>
-            <h3 class="card__title">Overspray Removal</h3>
-            <p>Industrial fallout, paint overspray, concrete, acid rain and tree sap lifted off your duco.</p>
-          </div>
-        </a>
-
-        <a class="card card--media" href="/services/ceramic-coating/" data-reveal="0.30">
-          <img src="/assets/images/services/img07.jpg" alt="Ceramic Coatings" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">06</span>
-            <h3 class="card__title">Ceramic Coatings</h3>
-            <p>Graphene Pro 10H N1, Quartz 9H Pro and Quartz 9H — industrial-grade polymer sealers that chemically bond to your paint.</p>
-          </div>
-        </a>
-
-        <a class="card card--media" href="/services/paint-correction/" data-reveal="0.35">
-          <img src="/assets/images/services/img02.jpg" alt="Paint Correction" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">07</span>
-            <h3 class="card__title">Paint Correction</h3>
-            <p>Three to six stage correction in our specialty studio, matched to the depth of the damage and the type of duco.</p>
-          </div>
-        </a>
-    </div>
-
-    <div class="pitch" data-reveal>
-      <div class="pitch__art" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-      <div>
-        <span class="eyebrow">Interactive</span>
-        <h3>Browse all seven, <span class="slant hl">side by side</span></h3>
-        <p class="muted">Flick through every service full-screen and pick the one that fits.</p>
-      </div>
-      <a class="btn btn--lg" href="/services/select/">
-        Open the selector
-        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
-          <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
-        </svg>
-      </a>
-    </div>
+    <span class="eyebrow">Ceramic coating</span>
+    <h2>Four stages, <span class="slant hl">one finish</span></h2>
+    <p class="lede">A coating is only as good as what goes under it. This is the
+      process, start to finish.</p>
   </div>
 </section>
+
+<section class="coat" data-coating data-mode="poster" aria-label="The ceramic coating process">
+  <div class="coat__stage">
+    <img class="coat__poster" src="/assets/models/vehicle-poster.jpg" alt="" aria-hidden="true"
+         loading="lazy" width="1400" height="950">
+    <canvas class="coat__canvas" data-coating-canvas
+            data-model="/assets/models/vehicle.glb" aria-hidden="true"></canvas>
+    <div class="coat__scrim" aria-hidden="true"></div>
+    <div class="coat__pips" role="tablist" aria-label="Coating stages"><button class="coat__pip" data-stage-pip role="tab" aria-selected="true" aria-label="Decontaminate"></button><button class="coat__pip" data-stage-pip role="tab" aria-selected="false" aria-label="Correct"></button><button class="coat__pip" data-stage-pip role="tab" aria-selected="false" aria-label="Coat"></button><button class="coat__pip" data-stage-pip role="tab" aria-selected="false" aria-label="Protect"></button></div>
+    <p class="coat__load">Loading the model&hellip;</p>
+  </div>
+
+  <div class="coat__panels">
+      <article class="coat__panel" data-stage>
+        <div class="coat__copy">
+          <span class="coat__num">Stage 01 &mdash; 04</span>
+          <h3 class="coat__h"><span class="slant">Decontaminate</span></h3>
+          <p>The vehicle is pressure washed to lift loose dirt and grime, hand washed with car shampoo, then pressure rinsed. Clay bar follows, deep cleaning grime and foreign matter out of the paint. A coating bonds to the surface it is laid on, so the surface has to be genuinely clean first.</p>
+        </div>
+      </article>
+      <article class="coat__panel" data-stage>
+        <div class="coat__copy">
+          <span class="coat__num">Stage 02 &mdash; 04</span>
+          <h3 class="coat__h"><span class="slant">Correct</span></h3>
+          <p>Machine cut removes scratches, spider webbing and dullness, then machine glaze de-swirls the surface and puts a deep gloss back. Whatever the paint looks like at this point is what the coating locks in — correction is not optional, it is the step that decides the result.</p>
+        </div>
+      </article>
+      <article class="coat__panel" data-stage>
+        <div class="coat__copy">
+          <span class="coat__num">Stage 03 &mdash; 04</span>
+          <h3 class="coat__h"><span class="slant">Coat</span></h3>
+          <p>An advanced industrial-grade liquid polymer sealer chemically bonds to the duco. Graphene Pro 10H N1 lays up to 1000nm and 10H hardness; Quartz 9H Pro up to 800nm with grade 3 chemical resistance. Glass, wheels and interior surfaces have their own coatings.</p>
+        </div>
+      </article>
+      <article class="coat__panel" data-stage>
+        <div class="coat__copy">
+          <span class="coat__num">Stage 04 &mdash; 04</span>
+          <h3 class="coat__h"><span class="slant">Protect</span></h3>
+          <p>The semi-permanent layer becomes a hydro barrier between your paint and the elements. The vehicle stays cleaner for longer, washes and dries more easily, holds a deep gloss, and resists wash marks, swirls, bird droppings and UV. Minimal maintenance from there.</p>
+        </div>
+      </article>
+  </div>
+</section>
+
 
 <section class="band band--raise mesh">
   <div class="shell">
@@ -760,6 +718,8 @@
 </div>
 
 <script src="/assets/js/tracking.js" defer></script>
+<script type="importmap">{"imports":{"three":"/assets/js/vendor/three.module.js"}}</script>
+<script src="/assets/js/coating.js" type="module"></script>
 <script src="/assets/js/select.js" defer></script>
 <script src="/assets/js/hero.js" defer></script>
 <script src="/assets/js/enhance.js" defer></script>
