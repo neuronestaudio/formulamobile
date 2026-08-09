@@ -127,7 +127,7 @@ The CRM → ad-platform feedback loop in the diagram is configuration in GHL and
 - **Pricing.** The old site published none, so none was invented. Needs to come from the client.
 - **CRM webhook + GTM container.** Set `GHL_WEBHOOK`, `GTM_ID` and `GADS_CONVERSION` in `tools/build_site.py`, create the GHL custom fields, and **confirm the destination inbox**. See "Lead-gen infrastructure" above.
 - **Privacy policy** copy — `/privacy/` is a placeholder.
-- **Real before/after gallery pairs** — the single most persuasive asset this business isn't showing (audit 5.10).
+- **Real photos of their own work.** Their Facebook page has them (branded van, AMG GT, Corvette, XC90) but only 160px thumbnails are reachable publicly — see [docs/FACEBOOK-PHOTOS.md](docs/FACEBOOK-PHOTOS.md) for the two routes that work. Before/after pairs remain the single most persuasive asset they are not showing (audit 5.10).
 - **Registered hero renders** for the splash, per the note above.
 
 ## Viewing the snapshot
