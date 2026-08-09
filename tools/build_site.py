@@ -660,17 +660,30 @@ def build_home():
           </div>
         </a>""" for i, s in enumerate(SERVICES, start=1))
 
-    tiles = "\n".join(f"""
-        <figure class="tile" data-lightbox data-reveal="{i*0.04:.2f}">
-          <img src="{g}" alt="Detailing work by Formula Mobile Car Detailing Melbourne"
-               loading="lazy" width="800" height="600">
-        </figure>""" for i, g in enumerate(GALLERY[:4], start=1))
+    def tile_row(images):
+        row = "".join(f"""
+            <figure class="mq__tile" data-lightbox>
+              <img src="{g}" alt="Detailing work by Formula Mobile Car Detailing Melbourne"
+                   loading="lazy" width="800" height="600">
+            </figure>""" for g in images)
+        return row + row   # doubled for the seamless loop
 
-    quotes = "\n".join(f"""
-        <blockquote class="quote" data-reveal="{i*0.06:.2f}">
-          <p>&ldquo;{esc(body)}&rdquo;</p>
-          <cite>{esc(who)}</cite>
-        </blockquote>""" for i, (body, who) in enumerate(TESTIMONIALS, start=1))
+    half = len(GALLERY) // 2
+    tiles_top = tile_row(GALLERY[:half])
+    tiles_bot = tile_row(GALLERY[half:])
+
+    # Marquee: the track holds every review TWICE and translates exactly -50%,
+    # so the loop is seamless. Duration scales with the count to hold speed.
+    def review_card(body, who):
+        return f"""
+          <blockquote class="quote">
+            <div class="rev__stars" aria-label="Rated 5 out of 5">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p>&ldquo;{esc(body)}&rdquo;</p>
+            <cite>{esc(who)}</cite>
+          </blockquote>"""
+
+    _revs = "".join(review_card(b, w) for b, w in TESTIMONIALS)
+    quotes = _revs + _revs   # the second pass is what makes the seam invisible
 
     area_links = " ".join(
         f'<a href="/mobile-car-detailing/{slugify(s)}/">{esc(s)}</a>' for s in SUBURBS
@@ -765,9 +778,18 @@ def build_home():
       <span class="eyebrow">Recent work</span>
       <h2>The finish <span class="slant hl">speaks</span></h2>
     </div>
-    <div class="tiles">
-{tiles}
+  </div>
+  <div class="mq__rows">
+    <div class="mq mq--tiles" style="--mq-dur:52s">
+      <div class="mq__track">{tiles_top}
+      </div>
     </div>
+    <div class="mq mq--tiles mq--rev" style="--mq-dur:58s">
+      <div class="mq__track">{tiles_bot}
+      </div>
+    </div>
+  </div>
+  <div class="shell">
     <p style="margin-top:2rem"><a class="btn btn--ghost" href="/gallery/">See the full gallery</a></p>
   </div>
 </section>
@@ -778,8 +800,9 @@ def build_home():
       <span class="eyebrow">What clients say</span>
       <h2>A cut above <span class="slant hl">everybody else</span></h2>
     </div>
-    <div class="grid grid--3">
-{quotes}
+  </div>
+  <div class="mq" style="--mq-dur:{max(38, len(TESTIMONIALS) * 16)}s">
+    <div class="mq__track">{quotes}
     </div>
   </div>
 </section>

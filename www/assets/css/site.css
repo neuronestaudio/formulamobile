@@ -1178,3 +1178,111 @@ section { position: relative; }
   .bk__nav { flex-wrap: wrap; }
   .bk__nav .btn { flex: 1 1 auto; }
 }
+
+/* ==========================================================================
+   FILM GRAIN
+   A fixed, very low-opacity noise plate over the whole page. Large flat dark
+   areas band badly on 8-bit displays and read as plastic; grain breaks the
+   gradient steps up and gives the surface something to hold. Colour scheme is
+   untouched — this is luminance only, at 3.5%.
+   ========================================================================== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* the hex mesh reads too faint now the grain carries the fine detail */
+.mesh::before { opacity: 0.75; }
+
+/* a woven micro-texture on plain bands, so no section is a flat void */
+.band:not(.band--raise)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    repeating-linear-gradient(38deg, rgba(255,255,255,.014) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(-38deg, rgba(255,255,255,.014) 0 1px, transparent 1px 7px);
+}
+.band > * { position: relative; z-index: 1; }
+
+/* ==========================================================================
+   MARQUEE — one seamless loop, no JS.
+   The track holds its children TWICE and translates exactly -50%, so the
+   second copy lands where the first began and the seam is invisible. Duration
+   is set per-instance from the item count so speed stays constant whatever
+   the content length.
+   ========================================================================== */
+.mq { overflow: hidden; position: relative; }
+.mq::before,
+.mq::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(40px, 8vw, 140px);
+  z-index: 2;
+  pointer-events: none;
+}
+.mq::before { left: 0;  background: linear-gradient(to right, var(--bg), transparent); }
+.mq::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
+.band--raise .mq::before { background: linear-gradient(to right, #0e0e13, transparent); }
+.band--raise .mq::after  { background: linear-gradient(to left,  #0e0e13, transparent); }
+
+.mq__track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: mqrun var(--mq-dur, 60s) linear infinite;
+  will-change: transform;
+}
+.mq--rev .mq__track { animation-direction: reverse; }
+@keyframes mqrun { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+
+/* hovering to read a review shouldn't be a chase */
+.mq:hover .mq__track,
+.mq:focus-within .mq__track { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mq__track { animation: none; }
+  .mq { overflow-x: auto; }   /* still reachable, just scrolled by hand */
+}
+
+/* ---- review cards in the marquee ---- */
+.mq .quote {
+  width: min(78vw, 420px);
+  flex: 0 0 auto;
+  margin: 0;
+  white-space: normal;
+}
+.mq .quote p {
+  font-size: 0.95rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.rev__stars { color: var(--brand); letter-spacing: 0.16em; font-size: 0.82rem; margin-bottom: 0.6rem; }
+
+/* ---- gallery marquee tiles ---- */
+.mq--tiles .mq__track { gap: 0.9rem; }
+.mq__tile {
+  flex: 0 0 auto;
+  width: clamp(220px, 26vw, 330px);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--glass-brd);
+  box-shadow: var(--glass-inset), var(--glass-drop);
+  position: relative;
+}
+.mq__tile img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease); }
+.mq__tile:hover img { transform: scale(1.06); }
+.mq__rows { display: grid; gap: 0.9rem; }
