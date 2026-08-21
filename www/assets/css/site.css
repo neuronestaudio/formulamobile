@@ -185,14 +185,7 @@ section { position: relative; }
 }
 
 /* carbon-fibre hex mesh, Premier's texture treatment */
-.mesh::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64'%3E%3Cpath d='M28 0l24 16v32L28 64 4 48V16z' fill='none' stroke='%23ffffff' stroke-opacity='.045' stroke-width='1'/%3E%3C/svg%3E");
-}
+.mesh::before{background-image:var(--hex);opacity:.6}
 .mesh > * { position: relative; z-index: 1; }
 
 .rule {
@@ -1195,7 +1188,7 @@ body::after {
   z-index: 999;
   pointer-events: none;
   opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: var(--hex);
 }
 
 /* the hex mesh reads too faint now the grain carries the fine detail */
@@ -1593,7 +1586,7 @@ body::after {
    there is one place to change it.
    ========================================================================== */
 :root{
-  --hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='64' viewBox='0 0 56 64'%3E%3Cpath d='M28 0l24 16v32L28 64 4 48V16z' fill='none' stroke='%23ffffff' stroke-opacity='.075' stroke-width='1'/%3E%3C/svg%3E");
+  --hex: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2256%22%20viewBox%3D%220%200%2032%2056%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.075%22%20stroke-width%3D%221%22%3E%3Cpath%20d%3D%22M16%2037L0%2028L0%209L16%200L32%209L32%2028L16%2037L16%2056%22%2F%3E%3Cpath%20d%3D%22M16%200L16%2019L0%2028L0%2047L16%2056L32%2047L32%2028L16%2019%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
 }
 .hexbg{position:relative;isolation:isolate}
 .hexbg::before{
@@ -1605,7 +1598,7 @@ body::after {
 .hexbg--deep::before{background-color:#07070b;opacity:.85}
 
 /* the same mesh, applied over an existing background rather than replacing it */
-.mesh::before{background-image:var(--hex);opacity:.55}
+.mesh::before{background-image:var(--hex);opacity:.6}
 
 /* header, footer, reviews and the reasons/sitemap bands all take the hex */
 .nav.is-stuck::before{
@@ -1647,4 +1640,41 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
   .nav__logo img{height:40px}
   .nav__burger{position:absolute;right:0;top:50%;transform:translateY(-50%);margin-left:0}
   .nav__call{position:absolute;left:0;top:50%;transform:translateY(-50%)}
+}
+
+/* ---------- centred logo, all viewports ----------
+   Three tracks with the outer two equal, so the logo lands on the true centre
+   of the bar regardless of how wide the links or the actions are. */
+.nav__in{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:1rem;
+}
+.nav__links{margin:0;justify-self:start}
+.nav__logo{justify-self:center}
+.nav__logo img{height:46px;width:auto;display:block}
+.nav__act{display:flex;align-items:center;gap:.7rem;justify-self:end}
+@media (max-width:820px){
+  .nav__in{grid-template-columns:1fr auto 1fr}
+  .nav__links{display:none}
+  .nav__logo img{height:40px}
+  .nav__burger{position:static;transform:none}
+  .nav__call{position:static;transform:none}
+}
+
+/* display:none removes an item from the grid entirely, so hiding the links on
+   mobile shifted the logo into column 1. Pin all three explicitly. */
+.nav__links{grid-column:1}
+.nav__logo{grid-column:2}
+.nav__act{grid-column:3}
+
+/* The actions column outgrows its 1fr share once the phone and burger are in
+   it, which pushes the auto track off true centre. Absolute centring is exact
+   regardless of what either side weighs. */
+.nav__in{position:relative}
+.nav__logo{
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  grid-column:auto;
 }
