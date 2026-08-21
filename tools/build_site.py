@@ -82,7 +82,7 @@ SERVICES = [
     {
         "slug": "mini-detail",
         "name": "Mini Detail",
-        "img": "/assets/images/services/img01.jpg",
+        "img": "/assets/images/services/mini-detail.jpg",
         "blurb": "A pressure wash, shampoo and rinse, wheels and under-guards degreased, "
                  "chamois dried, interior vacuumed and windows cleaned inside and out.",
         "intro": "A mini detail or valet is the maintenance service — the one that keeps a "
@@ -106,7 +106,7 @@ SERVICES = [
     {
         "slug": "full-detail",
         "name": "Full Detail",
-        "img": "/assets/images/services/img11.jpg",
+        "img": "/assets/images/services/full-detail.jpg",
         "blurb": "The complete service. Engine bay degreased, clay bar, hand polish, "
                  "full interior extraction and leather conditioned.",
         "intro": "Everything the mini detail covers, plus the engine bay, door jams, clay "
@@ -155,7 +155,7 @@ SERVICES = [
     {
         "slug": "exterior-detail",
         "name": "Exterior Detail",
-        "img": "/assets/images/services/img05.jpg",
+        "img": "/assets/images/services/exterior-detail.jpg",
         "blurb": "A four stage process for brush marks, spider webbing, oxidised, dull "
                  "or plain neglected paint work.",
         "intro": "We specialise in surface damage that may need our 4 stage process. Whether "
@@ -192,7 +192,7 @@ SERVICES = [
     {
         "slug": "ceramic-coating",
         "name": "Ceramic Coatings",
-        "img": "/assets/images/services/img07.jpg",
+        "img": "/assets/images/services/ceramic-coating.jpg",
         "blurb": "Graphene Pro 10H N1, Quartz 9H Pro and Quartz 9H — industrial-grade "
                  "polymer sealers that chemically bond to your paint.",
         "intro": "Automotive ceramic coatings are made from an advanced industrial grade "
@@ -228,7 +228,7 @@ SERVICES = [
     {
         "slug": "paint-correction",
         "name": "Paint Correction",
-        "img": "/assets/images/services/img02.jpg",
+        "img": "/assets/images/services/paint-correction.jpg",
         "blurb": "Three to six stage correction in our specialty studio, matched to the "
                  "depth of the damage and the type of duco.",
         "intro": "Conducted in our specialty studio created for these applications. Paint "
