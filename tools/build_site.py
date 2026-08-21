@@ -702,9 +702,10 @@ def coating_html():
 
 <section class="coat" data-coating aria-label="The ceramic coating process">
   <div class="coat__stage">
-    <video class="coat__vid" data-coating-vid
-           poster="/assets/video/coating-poster.jpg"
-           muted playsinline loop preload="none" aria-hidden="true"></video>
+    {"".join(
+      f'<video class="coat__vid" data-stage-vid="{i}" data-src="/assets/video/stage-{i}.mp4" '
+      f'poster="/assets/video/stage-{i}.jpg" muted playsinline loop preload="none" '
+      f'aria-hidden="true"></video>' for i in range(1, len(COATING_STAGES) + 1))}
     <div class="coat__scrim" aria-hidden="true"></div>
     <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>
   </div>

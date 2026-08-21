@@ -17,11 +17,10 @@
   var root = document.querySelector('[data-coating]');
   if (!root) return;
 
-  var vid = root.querySelector('[data-coating-vid]');
+  var vids = Array.prototype.slice.call(root.querySelectorAll('[data-stage-vid]'));
   var panels = Array.prototype.slice.call(root.querySelectorAll('[data-stage]'));
   if (!panels.length) return;
 
-  var SRC = '/assets/video/coating-loop.mp4';
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var saveData = navigator.connection && navigator.connection.saveData;
 
@@ -33,6 +32,14 @@
     panels.forEach(function (p, k) { p.classList.toggle('is-on', k === i); });
     root.querySelectorAll('[data-stage-pip]').forEach(function (d, k) {
       d.setAttribute('aria-selected', k === i ? 'true' : 'false');
+    });
+    // crossfade the films, and only ever decode the one on screen
+    vids.forEach(function (v, k) {
+      var on = k === i;
+      v.classList.toggle('is-on', on);
+      if (!v.src) return;
+      if (on) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      else if (!v.paused) { v.pause(); }
     });
   }
 
@@ -70,32 +77,35 @@
     parallax();
   }
 
-  if (!vid || reduced || saveData) return;   // poster frame is the fallback
+  if (!vids.length || reduced || saveData) return;   // posters are the fallback
 
-  /* ---- load on approach, and only play while on screen ---- */
+  /* ---- load on approach ----
+     All four attach at once: a crossfade into a layer that has not started
+     loading shows an empty box. They are small (0.3-1.5 MB each) and only the
+     active one is ever decoding. */
   var loaded = false;
   new IntersectionObserver(function (entries) {
     var near = entries[0].isIntersecting;
     if (near && !loaded) {
       loaded = true;
-      vid.src = SRC;
-      vid.load();
+      vids.forEach(function (v) { v.src = v.getAttribute('data-src'); v.load(); });
+      var act = vids[Math.max(current, 0)];
+      if (act) { var pr = act.play(); if (pr && pr.catch) pr.catch(function () {}); }
     }
     if (!loaded) return;
-    if (near) {
-      var pr = vid.play();
-      if (pr && pr.catch) pr.catch(function () {});  // autoplay refusal is fine
-    } else if (!vid.paused) {
-      vid.pause();                                   // no decoding off-screen
+    if (!near) { vids.forEach(function (v) { if (!v.paused) v.pause(); }); }
+    else {
+      var a = vids[Math.max(current, 0)];
+      if (a) { var p2 = a.play(); if (p2 && p2.catch) p2.catch(function () {}); }
     }
   }, { rootMargin: '60% 0px 60% 0px' }).observe(root);
 
-  vid.addEventListener('playing', function () { root.setAttribute('data-mode', 'live'); });
-  vid.addEventListener('error', function () { root.removeAttribute('data-mode'); });
-
   document.addEventListener('visibilitychange', function () {
     if (!loaded) return;
-    if (document.hidden) vid.pause();
-    else { var pr = vid.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    if (document.hidden) { vids.forEach(function (v) { v.pause(); }); }
+    else {
+      var a = vids[Math.max(current, 0)];
+      if (a) { var pr = a.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    }
   });
 })();
