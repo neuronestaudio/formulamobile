@@ -726,16 +726,6 @@ def crumbs(trail):
 # --------------------------------------------------------------------------
 
 def build_home():
-    cards = "\n".join(f"""
-        <a class="card card--media" href="/services/{s['slug']}/" data-reveal="{i*0.05:.2f}">
-          <img src="{s['img']}" alt="{esc(s['name'])}" loading="lazy" width="600" height="450">
-          <div class="card__pad">
-            <span class="card__num">0{i}</span>
-            <h3 class="card__title">{esc(s['name'])}</h3>
-            <p>{esc(s['blurb'])}</p>
-          </div>
-        </a>""" for i, s in enumerate(SERVICES, start=1))
-
     def tile_row(images):
         row = "".join(f"""
             <figure class="mq__tile" data-lightbox>
@@ -790,8 +780,7 @@ def build_home():
   <div class="hero__say">
     <span class="eyebrow">Mobile &middot; Metropolitan Melbourne</span>
     <h1 class="hero__h1">Melbourne&rsquo;s <span class="slant hl">finish</span></h1>
-    <p class="hero__sub">Over 20 years of detailing, paint correction and ceramic coatings
-      &mdash; at your home or office. Pick a service to start.</p>
+    <p class="hero__sub">20+ years servicing Melbourne wide</p>
   </div>
 
   <div class="hero__cue" aria-hidden="true">

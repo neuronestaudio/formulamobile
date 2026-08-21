@@ -1,44 +1,30 @@
 """
-Formula Mobile Car Detailing - Facebook photo sourcing.
+Bulk-download a Facebook Page's photos at the largest resolution Facebook serves.
 
-Scrolls the page's photo grid with an authenticated session, checkpoints the
-photo-id list to disk, then opens each photo's viewer page and downloads the
-largest (uncropped) render available. Resumable: re-running skips files that
-are already on disk.
+Needs a logged-in session first (see fb_login.py) -- logged out, Facebook only
+exposes ~9 photos per page.
 
-usage: python fb_grab.py <storage_state.json>
+usage:
+  python fb_photo_grab.py --page <slug-or-url> --out <folder> [--state <json>]
+
+examples:
+  python fb_photo_grab.py --page Formulamobilecardetailing --out D:\\photos\\formula
+  python fb_photo_grab.py --page https://www.facebook.com/SomeOtherPage --out D:\\photos\\other
+
+Resumable: re-run the same command and it skips anything already downloaded.
+Delete <out>\\_photo_ids.json to force a fresh re-scan of the photo grid.
 """
-import json, os, re, struct, sys, time, urllib.parse, urllib.request
+import argparse, json, os, re, struct, sys, time, urllib.parse, urllib.request
 from playwright.sync_api import sync_playwright
 
-PAGE = "Formulamobilecardetailing"
-PAGE_ID = "100064761783855"
-SET = f"pb.{PAGE_ID}.-2207520000"
-OUT = r"C:\Users\dlint\formulamobile\facebook-photos"
-SCRATCH = r"C:\Users\dlint\AppData\Local\Temp\claude\C--Users-dlint\5463c4d4-b7a5-46f4-9e8c-afd04b361a66\scratchpad"
-IDS_FILE = os.path.join(SCRATCH, "photo_ids.json")
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
-STATE = sys.argv[1] if len(sys.argv) > 1 and os.path.exists(sys.argv[1]) else None
+DEFAULT_STATE = os.path.join(os.path.expanduser("~"), ".fb-scrape", "state.json")
 
-ENTRIES = [
-    f"https://www.facebook.com/{PAGE}/photos_by",
-    f"https://www.facebook.com/{PAGE}/photos_of",
-    f"https://www.facebook.com/{PAGE}/",
-]
-
-# Extract ids inside the browser and return only the small id array -- never
-# ship the whole (very large) document over the wire.
-ANCHOR_IDS = """() => [...document.querySelectorAll('a')]
-    .map(a => (a.href.match(/fbid=(\\d+)/) || [])[1]).filter(Boolean)"""
-
-PAYLOAD_IDS = """() => {
-  const out = new Set();
-  const re = /"(?:photo_id|fbid|subject_id)"\\s*:\\s*"?(\\d{12,})"?/g;
-  let m; const h = document.documentElement.innerHTML;
-  while ((m = re.exec(h))) out.add(m[1]);
-  return [...out];
-}"""
+# Run extraction inside the browser and return only the small result -- never
+# ship the whole (very large) scrolled document over the wire.
+ANCHORS = """() => [...document.querySelectorAll('a')]
+    .map(a => a.href).filter(h => /fbid=\\d+/.test(h))"""
 
 BIG = """() => {
   const c = [...document.querySelectorAll('img')]
@@ -48,18 +34,12 @@ BIG = """() => {
   return c[0] || null;
 }"""
 
-META = """() => {
-  const d = [...document.querySelectorAll('[aria-label]')]
-    .map(e => e.getAttribute('aria-label'))
-    .find(x => /^\\d{1,2} [A-Z][a-z]+ \\d{4}$/.test(x || ''));
-  const og = document.querySelector('meta[property="og:description"]');
-  return {date: d || null, caption: og ? og.content : null};
-}"""
-
 
 def jpeg_dims(b):
+    if not b.startswith(b"\xff\xd8"):
+        return None, None
+    i = 2
     try:
-        i = 2
         while i < len(b):
             if b[i] != 0xFF:
                 i += 1; continue
@@ -93,74 +73,101 @@ def download(url, path):
     return len(b), jpeg_dims(b)
 
 
-def harvest(pg, url, ids, max_passes=500):
+def slug_of(page):
+    """Accept a bare slug, a profile.php?id=, or any facebook.com URL."""
+    page = page.strip().rstrip("/")
+    if "facebook.com" in page:
+        u = urllib.parse.urlsplit(page)
+        if "profile.php" in u.path:
+            pid = dict(urllib.parse.parse_qsl(u.query)).get("id", "")
+            return f"profile.php?id={pid}"
+        parts = [p for p in u.path.split("/") if p]
+        # drop a trailing tab like /photos_by
+        if parts and parts[-1] in ("photos", "photos_by", "photos_of", "posts"):
+            parts.pop()
+        return parts[-1] if parts else page
+    return page
+
+
+def harvest(pg, url, found, max_passes=600):
+    """Scroll the grid, collecting {fbid: viewer_url} until it stops yielding."""
     try:
         pg.goto(url, wait_until="domcontentloaded", timeout=60000)
     except Exception as e:
         print(f"   ! {url} -> {repr(e)[:80]}"); return
     pg.wait_for_timeout(5000)
-    before, stagnant = len(ids), 0
-    try:
-        ids.update(pg.evaluate(PAYLOAD_IDS))
-    except Exception:
-        pass
+    before, stagnant = len(found), 0
     for i in range(max_passes):
-        n0 = len(ids)
+        n0 = len(found)
         try:
-            ids.update(pg.evaluate(ANCHOR_IDS))
+            for h in pg.evaluate(ANCHORS):
+                m = re.search(r"fbid=(\d+)", h)
+                if m:
+                    found.setdefault(m.group(1), h)
             pg.evaluate("() => window.scrollTo(0, document.body.scrollHeight)")
         except Exception as e:
-            print(f"   ! scroll {repr(e)[:60]}"); break
+            print(f"   ! scroll: {repr(e)[:70]}"); break
         pg.wait_for_timeout(1800)
-        if len(ids) == n0:
+        if len(found) == n0:
             stagnant += 1
             if stagnant >= 10:
                 break
         else:
-            if len(ids) - before > 0 and i % 10 == 0:
-                print(f"      ...{len(ids)} ids", flush=True)
             stagnant = 0
-    try:
-        ids.update(pg.evaluate(ANCHOR_IDS))
-    except Exception:
-        pass
-    print(f"   {url.rstrip('/').split('/')[-1] or 'feed':12s} -> +{len(ids)-before:3d} (total {len(ids)})", flush=True)
+            if i % 10 == 0:
+                print(f"      ...{len(found)}", flush=True)
+    print(f"   {url.rstrip('/').split('/')[-1]:12s} -> +{len(found)-before} (total {len(found)})",
+          flush=True)
 
 
 def main():
-    os.makedirs(OUT, exist_ok=True)
+    ap = argparse.ArgumentParser(description="Download all photos from a Facebook Page.")
+    ap.add_argument("--page", required=True, help="page slug or facebook.com URL")
+    ap.add_argument("--out", required=True, help="output folder")
+    ap.add_argument("--state", default=DEFAULT_STATE, help=f"session json (default {DEFAULT_STATE})")
+    ap.add_argument("--rescan", action="store_true", help="re-scan the grid, ignoring the cached id list")
+    a = ap.parse_args()
+
+    slug = slug_of(a.page)
+    out = os.path.abspath(a.out)
+    os.makedirs(out, exist_ok=True)
+    ids_file = os.path.join(out, "_photo_ids.json")
+    mpath = os.path.join(out, "manifest.json")
+
+    if not os.path.exists(a.state):
+        sys.exit(f"No session at {a.state}\nRun:  python fb_login.py\n"
+                 "(logged out, Facebook only exposes ~9 photos)")
+
+    print(f"page : {slug}\nout  : {out}\n")
     with sync_playwright() as p:
         b = p.chromium.launch(headless=True, args=[
             "--disable-dev-shm-usage", "--disable-extensions",
-            "--disable-background-networking", "--renderer-process-limit=2",
-            "--js-flags=--max-old-space-size=1024"])
-        kw = dict(user_agent=UA, locale="en-US", viewport={"width": 1600, "height": 1000})
-        if STATE:
-            kw["storage_state"] = STATE
-            print(f"session: {os.path.basename(STATE)}")
-        ctx = b.new_context(**kw)
+            "--disable-background-networking", "--renderer-process-limit=2"])
+        ctx = b.new_context(user_agent=UA, locale="en-US",
+                            viewport={"width": 1600, "height": 1000},
+                            storage_state=a.state)
         pg = ctx.new_page()
         pg.set_default_timeout(45000)
 
-        # ---- harvest (checkpointed) ----
-        ids = set()
-        if os.path.exists(IDS_FILE):
-            ids = set(json.load(open(IDS_FILE)))
-            print(f"resuming with {len(ids)} known ids")
+        # ---- harvest (checkpointed; the expensive part to lose) ----
+        found = {}
+        if os.path.exists(ids_file) and not a.rescan:
+            found = json.load(open(ids_file))
+            print(f"resuming with {len(found)} known photo ids "
+                  f"(--rescan to re-scan the grid)\n")
         else:
             print("HARVEST")
-            for e in ENTRIES:
-                harvest(pg, e, ids)
-                json.dump(sorted(ids), open(IDS_FILE, "w"), indent=0)
-        ids = sorted(ids)
-        # the scrolled grid leaves a huge DOM behind -- drop it before downloading
-        pg.close()
+            for tab in ("photos_by", "photos_of", ""):
+                harvest(pg, f"https://www.facebook.com/{slug}/{tab}", found)
+                json.dump(found, open(ids_file, "w"), indent=0)
+
+        ids = sorted(found)
+        pg.close()                      # drop the huge scrolled DOM
         pg = ctx.new_page()
         pg.set_default_timeout(45000)
-        print(f"\n{len(ids)} unique photo ids\n\nDOWNLOAD", flush=True)
+        print(f"\n{len(ids)} photos\n\nDOWNLOAD", flush=True)
 
         # ---- download (resumable) ----
-        mpath = os.path.join(OUT, "manifest.json")
         manifest = {}
         if os.path.exists(mpath):
             for r in json.load(open(mpath, encoding="utf-8")).get("photos", []):
@@ -169,41 +176,35 @@ def main():
         ok = skip = fail = 0
         for i, fid in enumerate(ids, 1):
             name = f"{i:03d}_{fid}.jpg"
-            dest = os.path.join(OUT, name)
-            if fid in manifest and os.path.exists(os.path.join(OUT, manifest[fid]["file"])):
+            if fid in manifest and os.path.exists(os.path.join(out, manifest[fid]["file"])):
                 skip += 1; continue
-            url = f"https://www.facebook.com/photo.php?fbid={fid}&set={SET}&type=3"
+            url = found.get(fid) or f"https://www.facebook.com/photo/?fbid={fid}"
             try:
                 pg.goto(url, wait_until="domcontentloaded", timeout=60000)
                 pg.wait_for_timeout(3000)
-                big = pg.evaluate(BIG)
-                if not big:
-                    pg.wait_for_timeout(3000)
-                    big = pg.evaluate(BIG)
+                big = pg.evaluate(BIG) or (pg.wait_for_timeout(3000), pg.evaluate(BIG))[1]
                 if not big:
                     print(f"  {i:3d}/{len(ids)} {fid}  no image"); fail += 1; continue
-                meta = pg.evaluate(META)
-                sz, (w, h) = download(strip_ctp(big["s"]), dest)
-                if w and big["w"] and w < big["w"]:      # keep the larger render
-                    sz, (w, h) = download(big["s"], dest)
+                sz, (w, h) = download(strip_ctp(big["s"]), os.path.join(out, name))
+                if w and big["w"] and w < big["w"]:          # keep the larger render
+                    sz, (w, h) = download(big["s"], os.path.join(out, name))
                 print(f"  {i:3d}/{len(ids)} {name}  {w}x{h}  {sz//1024}KB", flush=True)
                 manifest[fid] = {"file": name, "fbid": fid, "width": w, "height": h,
-                                 "bytes": sz, "date": meta.get("date"),
-                                 "caption": meta.get("caption"), "source": url}
+                                 "bytes": sz, "source": url}
                 ok += 1
             except Exception as ex:
                 print(f"  {i:3d}/{len(ids)} {fid}  FAIL {repr(ex)[:80]}", flush=True); fail += 1
-            if ok % 20 == 0 and ok:
-                json.dump({"page": PAGE, "count": len(manifest),
+            if ok and ok % 20 == 0:
+                json.dump({"page": slug, "count": len(manifest),
                            "photos": list(manifest.values())},
                           open(mpath, "w", encoding="utf-8"), indent=2)
             time.sleep(0.4)
 
-        json.dump({"page": PAGE, "page_id": PAGE_ID,
-                   "source": f"https://www.facebook.com/{PAGE}/photos_by",
+        json.dump({"page": slug,
+                   "source": f"https://www.facebook.com/{slug}/photos_by",
                    "count": len(manifest), "photos": list(manifest.values())},
                   open(mpath, "w", encoding="utf-8"), indent=2)
-        print(f"\ndone: {ok} new, {skip} already had, {fail} failed -> {OUT}")
+        print(f"\ndone: {ok} new, {skip} already had, {fail} failed -> {out}")
         b.close()
 
 

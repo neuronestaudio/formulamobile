@@ -1,0 +1,6 @@
+# Deploy only the built site. Everything else is working material and would
+# otherwise be uploaded on every deploy.
+site/
+docs/
+tools/
+facebook-photos/

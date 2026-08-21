@@ -1,44 +1,54 @@
-"""Opens a browser window. User logs into Facebook themselves.
-Saves the resulting session so the scraper can reuse it. No access to
-any existing Chrome profile or credential store."""
-import os, time
+"""
+One-time Facebook login for fb_photo_grab.py.
+
+Opens a browser window; you log in yourself. Nothing reads your Chrome profile
+or credential store. The resulting session is saved and reused, so this is a
+one-time step per Facebook account.
+
+usage:
+  python fb_login.py [--state <json>]
+
+Run it again to switch to a different Facebook account, or point --state at a
+separate file to keep several accounts side by side:
+  python fb_login.py --state C:\\Users\\dlint\\.fb-scrape\\clientB.json
+"""
+import argparse, os, time
 from playwright.sync_api import sync_playwright
 
-BASE = r"C:\Users\dlint\AppData\Local\Temp\claude\C--Users-dlint\5463c4d4-b7a5-46f4-9e8c-afd04b361a66\scratchpad"
-UDD = os.path.join(BASE, "fb_session")
-STATE = os.path.join(BASE, "fb_state.json")
-os.makedirs(UDD, exist_ok=True)
+DEFAULT_STATE = os.path.join(os.path.expanduser("~"), ".fb-scrape", "state.json")
 
-CHECK = """() => {
-  const h = document.cookie || '';
-  const loggedOut = !!document.querySelector('input[name="pass"]') ||
-                    /(^|\\/)login/.test(location.pathname);
-  return {url: location.href, loggedOut};
-}"""
+ap = argparse.ArgumentParser()
+ap.add_argument("--state", default=DEFAULT_STATE)
+a = ap.parse_args()
+
+state = os.path.abspath(a.state)
+os.makedirs(os.path.dirname(state), exist_ok=True)
+# a persistent browser dir per session file, so the login sticks
+udd = os.path.splitext(state)[0] + "_profile"
+os.makedirs(udd, exist_ok=True)
 
 with sync_playwright() as p:
     try:
         ctx = p.chromium.launch_persistent_context(
-            UDD, channel="chrome", headless=False,
+            udd, channel="chrome", headless=False,
             args=["--no-first-run", "--no-default-browser-check"],
             viewport={"width": 1400, "height": 950}, locale="en-US")
     except Exception:
         ctx = p.chromium.launch_persistent_context(
-            UDD, headless=False, viewport={"width": 1400, "height": 950}, locale="en-US")
+            udd, headless=False, viewport={"width": 1400, "height": 950}, locale="en-US")
 
     pg = ctx.pages[0] if ctx.pages else ctx.new_page()
     pg.goto("https://www.facebook.com/", wait_until="domcontentloaded", timeout=60000)
-    pg.wait_for_timeout(4000)
+    pg.wait_for_timeout(3000)
 
-    print(">>> A Chrome window has opened. Log into Facebook in it.")
-    print(">>> Waiting up to 5 minutes; it continues automatically once you're in.\n", flush=True)
+    print(">>> Log into Facebook in the window that just opened.")
+    print(">>> This continues automatically once you're in (5 min limit).\n", flush=True)
 
     ok = False
     for i in range(100):
         try:
-            st = pg.evaluate(CHECK)
-            cookies = {c["name"] for c in ctx.cookies("https://www.facebook.com")}
-            if "c_user" in cookies and not st["loggedOut"]:
+            names = {c["name"] for c in ctx.cookies("https://www.facebook.com")}
+            if "c_user" in names and not pg.query_selector('input[name="pass"]'):
                 ok = True
                 break
             if i % 4 == 0:
@@ -48,9 +58,11 @@ with sync_playwright() as p:
         time.sleep(3)
 
     if ok:
-        ctx.storage_state(path=STATE)
-        who = [c["value"] for c in ctx.cookies("https://www.facebook.com") if c["name"] == "c_user"]
-        print(f"\nLOGGED IN (uid {who[0] if who else '?'}) -> session saved")
+        ctx.storage_state(path=state)
+        uid = next((c["value"] for c in ctx.cookies("https://www.facebook.com")
+                    if c["name"] == "c_user"), "?")
+        print(f"\nLogged in (uid {uid}). Session saved -> {state}")
+        print("You can close the window. Now run fb_photo_grab.py.")
     else:
-        print("\nTIMEOUT - no login detected.")
+        print("\nTimed out - no login detected. Nothing saved.")
     ctx.close()
