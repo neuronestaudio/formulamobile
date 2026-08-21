@@ -185,7 +185,7 @@ section { position: relative; }
 }
 
 /* carbon-fibre hex mesh, Premier's texture treatment */
-.mesh::before{background-image:var(--hex);opacity:.6}
+.mesh::before{background-image:var(--hex);opacity:.5}
 .mesh > * { position: relative; z-index: 1; }
 
 .rule {
@@ -1593,33 +1593,31 @@ body::after {
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
   background-color:#08080c;
   background-image:var(--hex);
+  opacity:.5;
 }
 /* denser, dimmer variant for large fills like the sitemap columns */
 .hexbg--deep::before{background-color:#07070b;opacity:.85}
 
 /* the same mesh, applied over an existing background rather than replacing it */
-.mesh::before{background-image:var(--hex);opacity:.6}
+.mesh::before{background-image:var(--hex);opacity:.5}
 
 /* header, footer, reviews and the reasons/sitemap bands all take the hex */
 .nav.is-stuck::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background-color:rgba(8,8,12,.72);background-image:var(--hex);
-}
+  background-color:rgba(8,8,12,.72);background-image:var(--hex);opacity:.5}
 .nav{isolation:isolate}
 .foot{background:transparent}
 .foot.hexbg::before{background-color:#07070b}
 .rev-band{position:relative;isolation:isolate}
 .rev-band::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background-color:#08080c;background-image:var(--hex);
-}
+  background-color:#08080c;background-image:var(--hex);opacity:.5}
 .rev-band .mq::before{background:linear-gradient(to right,#08080c,transparent)}
 .rev-band .mq::after{background:linear-gradient(to left,#08080c,transparent)}
 .rsn-band{position:relative;isolation:isolate}
 .rsn-band::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background-color:#08080c;background-image:var(--hex);
-}
+  background-color:#08080c;background-image:var(--hex);opacity:.5}
 
 /* ---------- spray overlay (spray.js) ----------
    Sits behind the glyphs, not over them, so the heading stays readable while
@@ -1689,24 +1687,22 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
 .coat--deck .coat__stage{
   position:relative;top:auto;height:min(86vh,760px);min-height:560px;overflow:hidden;
 }
-.coat--deck .coat__panels{
-  position:absolute;inset:0;display:flex;
-  transform:translate3d(calc(var(--at,0) * -100%),0,0);
-  transition:transform .75s cubic-bezier(.22,1,.36,1);
-  will-change:transform;
-}
+/* Slides are stacked and crossfaded rather than translated — the same
+   opacity-only swap the hero and the films use, so the whole site changes
+   state one way. */
+.coat--deck .coat__panels{position:absolute;inset:0;display:block}
 .coat--deck .coat__panel{
-  flex:0 0 100%;min-height:0;height:100%;opacity:1;
-  display:grid;align-content:center;
+  position:absolute;inset:0;min-height:0;height:100%;
+  display:grid;align-content:center;margin:0;
   width:100%;padding-inline:max(2.5rem,calc((100vw - var(--shell))/2 + 1.25rem));
-  margin:0;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .7s var(--ease),visibility .7s;
 }
+.coat--deck .coat__panel.is-on{opacity:1;visibility:visible;pointer-events:auto}
 /* in deck mode the parallax offset is meaningless — the track does the moving */
 .coat--deck .coat__word,.coat--deck .coat__card{transform:none}
-.coat--deck .coat__panel:not(.is-on) .coat__card{opacity:0;transform:translateY(14px)}
-.coat--deck .coat__panel .coat__card{transition:opacity .5s var(--ease) .12s,transform .5s var(--ease) .12s}
-.coat--deck .coat__panel:not(.is-on) .coat__word{opacity:.25}
-.coat--deck .coat__word{transition:opacity .5s var(--ease)}
+.coat--deck .coat__panel .coat__card{transition:transform .7s var(--ease) .1s}
+.coat--deck .coat__panel:not(.is-on) .coat__card{transform:translateY(16px)}
 
 .coat__arrow{
   position:absolute;top:50%;margin-top:-24px;z-index:6;
@@ -1754,3 +1750,50 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
   .mq__tile:hover::after,.tile:hover::after{animation:none;opacity:.7}
   .coat--deck .coat__panels{transition:none}
 }
+
+/* ---------- service buttons ----------
+   A row of destinations rather than a second card grid — the deck above
+   already carries the visual weight, so this just needs to be clickable. */
+.svcbtns{display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center}
+.svcbtn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.85rem 1.5rem;border-radius:999px;
+  background:var(--glass-bg);border:1px solid var(--glass-brd);
+  -webkit-backdrop-filter:var(--glass-blur-lite);backdrop-filter:var(--glass-blur-lite);
+  box-shadow:var(--glass-inset);
+  font-family:var(--font-display);font-size:1.02rem;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--fg);
+  transition:border-color .25s var(--ease),background .25s var(--ease),
+             transform .25s var(--ease),color .25s var(--ease);
+}
+.svcbtn:hover{
+  background:rgba(var(--brand-rgb),.14);border-color:rgba(var(--brand-rgb),.6);
+  transform:translateY(-3px);
+}
+.svcbtn svg{opacity:.55;transition:opacity .25s var(--ease),transform .25s var(--ease)}
+.svcbtn:hover svg{opacity:1;transform:translateX(3px)}
+
+/* ---------- service area: map + suburb marquee ----------
+   44 suburbs stacked as a wall of chips reads as filler. A map answers the
+   real question ("do you come to me?") and the marquee keeps every suburb
+   crawlable without owning half the page. */
+.area{display:grid;grid-template-columns:1.05fr .95fr;gap:2.4rem;align-items:center}
+.area__map{
+  position:relative;border-radius:var(--radius-lg);overflow:hidden;
+  border:1px solid var(--glass-brd);box-shadow:var(--glass-inset),var(--glass-drop);
+  aspect-ratio:16/11;background:var(--surface);
+}
+.area__map iframe{width:100%;height:100%;border:0;display:block;filter:grayscale(1) invert(.92) hue-rotate(180deg) contrast(.92)}
+@media (max-width:860px){ .area{grid-template-columns:1fr;gap:1.6rem} }
+
+/* suburb chips inside the marquee */
+.mq__chip{
+  flex:0 0 auto;display:inline-block;
+  padding:.55rem 1.15rem;border-radius:999px;
+  border:1px solid var(--glass-brd);background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur-lite);backdrop-filter:var(--glass-blur-lite);
+  font-size:.85rem;color:var(--fg-muted);white-space:nowrap;
+  transition:color .22s var(--ease),border-color .22s var(--ease),background .22s var(--ease);
+}
+.mq__chip:hover{color:#fff;border-color:rgba(var(--brand-rgb),.55);background:var(--surface-2)}
+.mq .mq__track{align-items:center}

@@ -826,10 +826,10 @@ def coating_html(scrolling=False):
     return f"""
 <section class="band band--tight">
   <div class="shell">
-    <span class="eyebrow">Ceramic coating</span>
-    <h2>Four stages, <span class="slant hl">one finish</span></h2>
-    <p class="lede">A coating is only as good as what goes under it. This is the
-      process, start to finish.</p>
+    <span class="eyebrow">The process</span>
+    <h2>Ceramic coating <span class="slant hl">specialists</span></h2>
+    <p class="lede">Four stages, one finish. A coating is only as good as what goes
+      under it &mdash; this is the process, start to finish.</p>
   </div>
 </section>
 
@@ -870,6 +870,18 @@ def build_home():
     half = len(GALLERY) // 2
     tiles_top = tile_row(GALLERY[:half])
     tiles_bot = tile_row(GALLERY[half:])
+
+    svcbtns = "".join(f"""
+      <a class="svcbtn" href="/services/{x['slug']}/">{esc(x['name'])}
+        <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
+          <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+      </a>""" for x in SERVICES)
+
+    _chips = "".join(
+        f'<a class="mq__chip" href="/mobile-car-detailing/{slugify(x)}/">{esc(x)}</a>'
+        for x in SUBURBS)
+    subchips = _chips + _chips   # doubled, so the marquee loop has no seam
 
     # Marquee: the track holds every review TWICE and translates exactly -50%,
     # so the loop is seamless. Duration scales with the count to hold speed.
@@ -928,11 +940,22 @@ def build_home():
   </div>
 </section>
 
+{coating_html()}
+
+<section class="band band--tight">
+  <div class="shell" style="text-align:center">
+    <span class="eyebrow">What we do</span>
+    <h2>Every service, <span class="slant hl">one place</span></h2>
+    <p class="lede" style="margin:0 auto 2rem">Pick the one you're after, or call and
+      our operators will tell you what the car actually needs.</p>
+    <div class="svcbtns">{svcbtns}</div>
+  </div>
+</section>
 
 <section class="band mesh band--raise">
   <div class="shell">
     <div class="grid grid--4">
-      <div class="stat" data-reveal><span class="stat__n" data-count="20" data-suffix="+">20+</span><span class="stat__l">Years detailing</span></div>
+      <div class="stat" data-reveal><span class="stat__n" data-count="30" data-suffix="+">30+</span><span class="stat__l">Years detailing</span></div>
       <div class="stat" data-reveal="0.08"><span class="stat__n" data-count="7">7</span><span class="stat__l">Services</span></div>
       <div class="stat" data-reveal="0.16"><span class="stat__n" data-count="10" data-suffix="H">10H</span><span class="stat__l">Graphene coating</span></div>
       <div class="stat" data-reveal="0.24"><span class="stat__n">100%</span><span class="stat__l">Mobile &mdash; we come to you</span></div>
@@ -940,7 +963,10 @@ def build_home():
   </div>
 </section>
 
-{coating_html()}
+
+
+
+
 
 <section class="band band--raise mesh">
   <div class="shell">
@@ -979,13 +1005,26 @@ def build_home():
 
 <section class="band band--raise mesh">
   <div class="shell">
-    <div style="max-width:56ch;margin-bottom:2rem" data-reveal>
-      <span class="eyebrow">Where we go</span>
-      <h2>Across <span class="slant hl">metropolitan Melbourne</span></h2>
-      <p class="lede">We're mobile. We come to your home or your office, with our own water
-        and power &mdash; you don't need to go anywhere.</p>
+    <div class="area">
+      <div>
+        <span class="eyebrow">Where we go</span>
+        <h2>Across <span class="slant hl">metropolitan Melbourne</span></h2>
+        <p class="lede">We're mobile. We come to your home or your office, and everything
+          is done onsite &mdash; you don't need to go anywhere.</p>
+        <p style="margin-top:1.6rem;display:flex;gap:.8rem;flex-wrap:wrap">
+          <a class="btn" href="/booking/">Book a detail</a>
+          <a class="btn btn--ghost" href="/service-areas/">All service areas</a>
+        </p>
+      </div>
+      <div class="area__map">
+        <iframe title="Formula Mobile Car Detailing service area — metropolitan Melbourne"
+          src="https://www.google.com/maps?q=Melbourne+VIC+Australia&z=9&output=embed"
+          loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
     </div>
-    <div class="arealinks" data-reveal>{area_links}</div>
+  </div>
+  <div class="mq" style="--mq-dur:{max(40, len(SUBURBS) * 2)}s;margin-top:2.4rem">
+    <div class="mq__track">{subchips}</div>
   </div>
 </section>
 
