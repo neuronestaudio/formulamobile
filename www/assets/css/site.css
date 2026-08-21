@@ -1586,7 +1586,7 @@ body::after {
    there is one place to change it.
    ========================================================================== */
 :root{
-  --hex: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2256%22%20viewBox%3D%220%200%2032%2056%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.075%22%20stroke-width%3D%221%22%3E%3Cpath%20d%3D%22M16%2037L0%2028L0%209L16%200L32%209L32%2028L16%2037L16%2056%22%2F%3E%3Cpath%20d%3D%22M16%200L16%2019L0%2028L0%2047L16%2056L32%2047L32%2028L16%2019%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --hex: url("/assets/images/carbon-mesh.png");
 }
 .hexbg{position:relative;isolation:isolate}
 .hexbg::before{
@@ -1677,4 +1677,80 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
   position:absolute;left:50%;top:50%;
   transform:translate(-50%,-50%);
   grid-column:auto;
+}
+
+/* ==========================================================================
+   COATING — DECK MODE (homepage)
+   One viewport, four slides side by side. Four full screens between the hero
+   and the work is too much to ask of someone still deciding, so the same
+   content runs horizontally here and vertically on the service page.
+   ========================================================================== */
+.coat--deck{height:auto}
+.coat--deck .coat__stage{
+  position:relative;top:auto;height:min(86vh,760px);min-height:560px;overflow:hidden;
+}
+.coat--deck .coat__panels{
+  position:absolute;inset:0;display:flex;
+  transform:translate3d(calc(var(--at,0) * -100%),0,0);
+  transition:transform .75s cubic-bezier(.22,1,.36,1);
+  will-change:transform;
+}
+.coat--deck .coat__panel{
+  flex:0 0 100%;min-height:0;height:100%;opacity:1;
+  display:grid;align-content:center;
+  width:100%;padding-inline:max(2.5rem,calc((100vw - var(--shell))/2 + 1.25rem));
+  margin:0;
+}
+/* in deck mode the parallax offset is meaningless — the track does the moving */
+.coat--deck .coat__word,.coat--deck .coat__card{transform:none}
+.coat--deck .coat__panel:not(.is-on) .coat__card{opacity:0;transform:translateY(14px)}
+.coat--deck .coat__panel .coat__card{transition:opacity .5s var(--ease) .12s,transform .5s var(--ease) .12s}
+.coat--deck .coat__panel:not(.is-on) .coat__word{opacity:.25}
+.coat--deck .coat__word{transition:opacity .5s var(--ease)}
+
+.coat__arrow{
+  position:absolute;top:50%;margin-top:-24px;z-index:6;
+  width:48px;height:48px;border-radius:50%;display:grid;place-items:center;
+  background:var(--glass-bg);border:1px solid var(--glass-brd);color:#fff;cursor:pointer;
+  -webkit-backdrop-filter:var(--glass-blur-lite);backdrop-filter:var(--glass-blur-lite);
+  transition:background .25s var(--ease),border-color .25s var(--ease),transform .25s var(--ease);
+}
+.coat__arrow:hover{background:rgba(var(--brand-rgb),.28);border-color:rgba(var(--brand-rgb),.6);transform:scale(1.07)}
+.coat__arrow--prev{left:clamp(.7rem,2.5vw,2rem)}
+.coat__arrow--next{right:clamp(.7rem,2.5vw,2rem)}
+.coat--deck .coat__pips{bottom:1.6rem}
+@media (max-width:820px){
+  .coat--deck .coat__stage{height:min(88vh,700px)}
+  .coat__arrow{display:none}          /* swipe instead */
+  .coat--deck .coat__panel{padding-inline:1.25rem}
+}
+
+/* ==========================================================================
+   BEAM OUTLINE — gallery tiles
+   A brand-coloured light travels the border on hover. The @property angle is
+   what makes it animatable; without registering it the conic gradient cannot
+   be transitioned at all.
+   ========================================================================== */
+@property --beam{syntax:'<angle>';initial-value:0deg;inherits:false}
+.mq__tile,.tile{position:relative}
+.mq__tile::after,.tile::after{
+  content:'';position:absolute;inset:-1px;border-radius:inherit;padding:1.5px;
+  background:conic-gradient(from var(--beam),
+    transparent 0turn,transparent .58turn,
+    rgba(var(--brand-rgb),.95) .74turn,
+    rgba(255,255,255,.85) .78turn,
+    rgba(var(--brand-rgb),.95) .82turn,
+    transparent .96turn,transparent 1turn);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .3s var(--ease);pointer-events:none;z-index:3;
+}
+.mq__tile:hover::after,.tile:hover::after{
+  opacity:1;animation:beamspin 2.4s linear infinite;
+}
+@keyframes beamspin{to{--beam:1turn}}
+@media (prefers-reduced-motion: reduce){
+  .mq__tile:hover::after,.tile:hover::after{animation:none;opacity:.7}
+  .coat--deck .coat__panels{transition:none}
 }

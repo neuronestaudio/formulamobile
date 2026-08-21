@@ -288,8 +288,7 @@ TESTIMONIALS = [
 # neither.
 FAQS = [
     ("Do you come to me?",
-     "Yes — we're fully mobile across metropolitan Melbourne. We bring our own "
-     "water and power, so we can work at your home or your office and you don't "
+     "Yes — we're fully mobile across metropolitan Melbourne. We work at your home or your office and you don't "
      "need to go anywhere. Because everything is done onsite the process is "
      "completely transparent: you can watch the work happen."),
     ("What's the difference between a mini detail and a full detail?",
@@ -775,13 +774,26 @@ def reasons_html():
 """
 
 
-def coating_html():
-    """Scroll film: a sticky vehicle canvas the visitor orbits while the four
-    coating stages scroll past. Poster-first — the still render carries the
-    section on its own, and three.js plus the 5 MB model only load on approach.
+def coating_html(scrolling=False):
+    """The four coating stages.
+
+    Two presentations from one dataset:
+      scrolling=True   four full-height panels the visitor scrolls through,
+                       for the ceramic coating page where the depth is wanted.
+      scrolling=False  a single-viewport horizontal carousel, for the homepage
+                       where four full screens between the hero and the work
+                       is too much to ask of someone still deciding.
+
+    The films, the copy and the card design are shared; only the layout and
+    what advances it differ.
     """
-    # Big clipped display word + a numbered glass card, after the reference
-    # carousel: the word carries the scale, the card carries the detail.
+    mode = "coat--scroll" if scrolling else "coat--deck"
+
+    vids = "".join(
+        f'<video class="coat__vid" data-stage-vid="{i}" data-src="/assets/video/stage-{i}.mp4" '
+        f'poster="/assets/video/stage-{i}.jpg" muted playsinline loop preload="none" '
+        f'aria-hidden="true"></video>' for i in range(1, len(COATING_STAGES) + 1))
+
     panels = "".join(f"""
       <article class="coat__panel" data-stage style="--i:{i}">
         <span class="coat__word" aria-hidden="true">{esc(title)}</span>
@@ -799,8 +811,17 @@ def coating_html():
         f'<button class="coat__pip" data-stage-pip role="tab" '
         f'aria-selected="{"true" if i == 0 else "false"}" '
         f'aria-label="{esc(t)}"></button>'
-        for i, (t, _h, _b) in enumerate(COATING_STAGES)
-    )
+        for i, (t, _h, _b) in enumerate(COATING_STAGES))
+
+    arrows = "" if scrolling else """
+    <button class="coat__arrow coat__arrow--prev" data-coat-prev type="button" aria-label="Previous stage">
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+        <path d="M15 5.5H2M6 1L2 5.5 6 10" stroke="currentColor" stroke-width="1.7"/></svg>
+    </button>
+    <button class="coat__arrow coat__arrow--next" data-coat-next type="button" aria-label="Next stage">
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+        <path d="M0 5.5h13M9 1l4 4.5L9 10" stroke="currentColor" stroke-width="1.7"/></svg>
+    </button>"""
 
     return f"""
 <section class="band band--tight">
@@ -812,17 +833,13 @@ def coating_html():
   </div>
 </section>
 
-<section class="coat" data-coating aria-label="The ceramic coating process">
+<section class="coat {mode}" data-coating aria-label="The ceramic coating process">
   <div class="coat__stage">
-    {"".join(
-      f'<video class="coat__vid" data-stage-vid="{i}" data-src="/assets/video/stage-{i}.mp4" '
-      f'poster="/assets/video/stage-{i}.jpg" muted playsinline loop preload="none" '
-      f'aria-hidden="true"></video>' for i in range(1, len(COATING_STAGES) + 1))}
+    {vids}
     <div class="coat__scrim" aria-hidden="true"></div>
-    <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>
-  </div>
-
-  <div class="coat__panels">{panels}
+    <div class="coat__panels">{panels}
+    </div>
+    <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>{arrows}
   </div>
 </section>
 """
@@ -1138,7 +1155,7 @@ def build_service(s):
   </div>
 </section>
 {products}
-{reasons_html() if s["slug"] == "ceramic-coating" else ""}
+{(coating_html(scrolling=True) + reasons_html()) if s["slug"] == "ceramic-coating" else ""}
 <section class="band">
   <div class="shell">
     <h2>Other services</h2>
@@ -1313,7 +1330,7 @@ def build_booking():
     # it is "conducted in our specialty studio created for these applications".
     where = [
         ("Mobile — at your door", "Mobile — at your door",
-         "We bring our own water and power to your home or office."),
+         "to your home or office."),
         ("Studio — paint correction", "Studio — paint correction",
          "Correction work is done in our specialty studio."),
     ]

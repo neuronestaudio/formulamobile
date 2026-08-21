@@ -43,11 +43,57 @@
     });
   }
 
+
+  /* ---- deck mode ----
+     On the homepage the four stages run horizontally in one viewport. The
+     stage index is driven by input rather than scroll position, and the panels
+     track translates instead of the page scrolling. */
+  var deck = root.classList.contains('coat--deck');
+  if (deck) {
+    var track = root.querySelector('.coat__panels');
+    var n = panels.length;
+
+    var show = function (i) {
+      i = Math.max(0, Math.min(n - 1, i));
+      track.style.setProperty('--at', i);
+      setStage(i);
+    };
+
+    root.querySelectorAll('[data-stage-pip]').forEach(function (d, k) {
+      d.addEventListener('click', function () { show(k); });
+    });
+    var pv = root.querySelector('[data-coat-prev]');
+    var nx = root.querySelector('[data-coat-next]');
+    if (pv) pv.addEventListener('click', function () { show(current - 1); });
+    if (nx) nx.addEventListener('click', function () { show(current + 1); });
+
+    // swipe: horizontal only, so vertical scrolling still passes through
+    var sx = null, sy = null;
+    root.addEventListener('pointerdown', function (e) {
+      if (e.target.closest('a,button')) return;
+      sx = e.clientX; sy = e.clientY;
+    });
+    root.addEventListener('pointerup', function (e) {
+      if (sx === null) return;
+      var dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) show(current + (dx < 0 ? 1 : -1));
+      sx = sy = null;
+    });
+    root.addEventListener('pointercancel', function () { sx = sy = null; });
+
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { show(current + 1); e.preventDefault(); }
+      if (e.key === 'ArrowLeft')  { show(current - 1); e.preventDefault(); }
+    });
+    root.tabIndex = 0;
+
+    show(0);
+  }
+
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) { if (e.isIntersecting) setStage(panels.indexOf(e.target)); });
   }, { rootMargin: '-35% 0px -35% 0px', threshold: 0 });
-  panels.forEach(function (p) { io.observe(p); });
-  setStage(0);
+  if (!deck) { panels.forEach(function (p) { io.observe(p); }); setStage(0); }
 
   /* ---- parallax ----
      Each panel gets --p: -1 when it is a viewport below centre, 0 dead centre,
@@ -71,7 +117,7 @@
     ticking = true;
     requestAnimationFrame(parallax);
   }
-  if (!reduced) {
+  if (!reduced && !deck) {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
     parallax();
