@@ -365,17 +365,32 @@ SUBURBS = [
     "Narre Warren", "Dandenong", "Werribee", "Point Cook", "Sunshine",
 ]
 
-GALLERY = [f"/assets/images/gallery/0{i}.jpg" for i in range(1, 9)]
+# Real work from the client's own Facebook album — their studio, their
+# customers' cars. Each carries its own alt text rather than one generic line.
+GALLERY = [
+    ("/assets/images/gallery/01.jpg", "Mercedes-AMG GT after a full detail"),
+    ("/assets/images/gallery/02.jpg", "Mercedes coupe under the studio lighting"),
+    ("/assets/images/gallery/03.jpg", "Custom Holden HQ, paint corrected"),
+    ("/assets/images/gallery/04.jpg", "Restored Ford F100 in the studio"),
+    ("/assets/images/gallery/05.jpg", "Volvo XC90 detailed inside and out"),
+    ("/assets/images/gallery/06.jpg", "Holden HQ, deep gloss finish"),
+    ("/assets/images/gallery/07.jpg", "Ford F100 after paint correction"),
+    ("/assets/images/gallery/08.jpg", "Volvo XC90, ceramic coated"),
+    ("/assets/images/gallery/09.jpg", "Corrected panel, close up"),
+    ("/assets/images/gallery/10.jpg", "Custom builds in the Formula studio"),
+    ("/assets/images/gallery/11.jpg", "Ford F100 detail work"),
+    ("/assets/images/gallery/12.jpg", "The Formula detailing studio"),
+]
 
+# Header stays to four links. Franchising is a different audience entirely and
+# lives in the footer; Areas is reachable from Services and the footer.
 NAV = [
-    ("/booking/", "Book"),
     ("/services/", "Services"),
     ("/gallery/", "Gallery"),
     ("/testimonials/", "Reviews"),
-    ("/service-areas/", "Areas"),
-    ("/franchising/", "Franchising"),
     ("/contact/", "Contact"),
 ]
+NAV_FOOTER_EXTRA = [("/service-areas/", "Service areas"), ("/franchising/", "Franchising")]
 
 # --------------------------------------------------------------------------
 # shell
@@ -460,7 +475,8 @@ def nav(active=""):
         f'        <li><a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{esc(l)}</a></li>'
         for h, l in NAV
     )
-    drawer_items = "\n".join(f'    <a href="{h}">{esc(l)}</a>' for h, l in NAV)
+    drawer_items = "\n".join(
+        f'    <a href="{h}">{esc(l)}</a>' for h, l in NAV + NAV_FOOTER_EXTRA)
     return f"""<a class="skip" href="#main" style="position:absolute;left:-9999px">Skip to content</a>
 <header class="nav">
   <div class="nav__in">
@@ -470,7 +486,13 @@ def nav(active=""):
     <ul class="nav__links">
 {items}
     </ul>
-    <a class="nav__call" href="tel:{PHONE_LINK}">{PHONE_DISPLAY}</a>
+    <a class="nav__call" href="tel:{PHONE_LINK}" aria-label="Call {PHONE_DISPLAY}" title="{PHONE_DISPLAY}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <a class="nav__cta btn" href="/booking/">Book</a>
     <button class="nav__burger" data-drawer-open aria-label="Open menu">
       <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
         <path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" stroke-width="1.6"/>
@@ -497,7 +519,7 @@ def footer():
         for s in SUBURBS[:7]
     )
     return f"""</main>
-<footer class="foot">
+<footer class="foot fibre">
   <div class="shell">
     <div class="foot__grid">
       <div>
@@ -520,6 +542,7 @@ def footer():
         <ul>
 {areas}
           <li><a href="/service-areas/">All areas &rarr;</a></li>
+          <li><a href="/franchising/">Franchising</a></li>
         </ul>
       </div>
       <div>
@@ -734,9 +757,8 @@ def build_home():
     def tile_row(images):
         row = "".join(f"""
             <figure class="mq__tile" data-lightbox>
-              <img src="{g}" alt="Detailing work by Formula Mobile Car Detailing Melbourne"
-                   loading="lazy" width="800" height="600">
-            </figure>""" for g in images)
+              <img src="{g}" alt="{esc(a)}" loading="lazy" width="800" height="600">
+            </figure>""" for g, a in images)
         return row + row   # doubled for the seamless loop
 
     half = len(GALLERY) // 2
@@ -832,7 +854,7 @@ def build_home():
   </div>
 </section>
 
-<section class="band">
+<section class="band rev-band">
   <div class="shell">
     <div style="max-width:52ch;margin-bottom:2.4rem" data-reveal>
       <span class="eyebrow">What clients say</span>
@@ -1330,15 +1352,14 @@ def build_booking():
 def build_gallery():
     tiles = "\n".join(f"""
         <figure class="tile" data-lightbox data-reveal="{i*0.04:.2f}">
-          <img src="{g}" alt="Car detailing work by Formula Mobile Car Detailing Melbourne"
-               loading="lazy" width="800" height="600">
-        </figure>""" for i, g in enumerate(GALLERY, start=1))
+          <img src="{g}" alt="{esc(a)}" loading="lazy" width="800" height="600">
+        </figure>""" for i, (g, a) in enumerate(GALLERY, start=1))
     trail = [("/", "Home"), ("/gallery/", "Gallery")]
     return (
         head("Gallery | Formula Mobile Car Detailing Melbourne",
              "Recent detailing, paint correction and ceramic coating work by Formula Mobile "
              "Car Detailing across Melbourne.",
-             "/gallery/", GALLERY[0], breadcrumb_schema(trail))
+             "/gallery/", GALLERY[0][0], breadcrumb_schema(trail))
         + nav("/gallery/") + crumbs(trail)
         + f"""
 <section class="band band--tight">

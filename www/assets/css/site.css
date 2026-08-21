@@ -615,7 +615,7 @@ section { position: relative; }
 }
 
 /* ---------- gallery ---------- */
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1rem; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.1rem; }
 .tile {
   position: relative;
   overflow: hidden;
@@ -1509,3 +1509,78 @@ body::after {
    sticky video frame above it. */
 .coat{overflow-x:clip}
 .coat__panel{overflow-x:clip}
+
+/* ==========================================================================
+   Carbon fibre — header, footer, reviews
+   The same woven twill as the hero splash: two opposing diagonal gradient
+   sets, offset so the tows read over-under rather than as a flat crosshatch.
+   ========================================================================== */
+.fibre{position:relative;isolation:isolate}
+.fibre::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-color:#0b0b0f;
+  background-image:
+    linear-gradient(27deg,#15151b 5px,transparent 5px),
+    linear-gradient(207deg,#15151b 5px,transparent 5px),
+    linear-gradient(27deg,#0b0b0f 5px,transparent 5px),
+    linear-gradient(207deg,#0b0b0f 5px,transparent 5px),
+    linear-gradient(90deg,#121218 10px,transparent 10px),
+    linear-gradient(#16161c 25%,#101015 25%,#101015 50%,transparent 50%,transparent 75%,#16161c 75%);
+  background-size:20px 20px;
+  background-position:0 5px,10px 15px,10px 15px,0 5px,0 0,0 0;
+  opacity:.9;
+}
+
+/* header: weave under the glass, so it reads as a surface not a panel */
+.nav.is-stuck::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-color:#0b0b0f;
+  background-image:
+    linear-gradient(27deg,#17171e 5px,transparent 5px),
+    linear-gradient(207deg,#17171e 5px,transparent 5px),
+    linear-gradient(90deg,#121218 10px,transparent 10px);
+  background-size:20px 20px;background-position:0 5px,10px 15px,0 0;
+  opacity:.55;
+}
+.nav{isolation:isolate}
+
+/* footer sits on the weave */
+.foot{background:transparent}
+.foot.fibre::before{opacity:1}
+
+/* reviews band: weave behind, glass cards on top */
+.rev-band{position:relative;isolation:isolate}
+.rev-band::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-color:#0a0a0e;
+  background-image:
+    linear-gradient(27deg,#16161d 5px,transparent 5px),
+    linear-gradient(207deg,#16161d 5px,transparent 5px),
+    linear-gradient(27deg,#0a0a0e 5px,transparent 5px),
+    linear-gradient(207deg,#0a0a0e 5px,transparent 5px),
+    linear-gradient(90deg,#111117 10px,transparent 10px);
+  background-size:20px 20px;background-position:0 5px,10px 15px,10px 15px,0 5px,0 0;
+}
+.rev-band .mq::before{background:linear-gradient(to right,#0a0a0e,transparent)}
+.rev-band .mq::after{background:linear-gradient(to left,#0a0a0e,transparent)}
+/* deeper glass on the review cards than the page default */
+.rev-band .quote{
+  background:rgba(255,255,255,.06);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.16);
+  border-left:3px solid var(--brand);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 26px 60px -26px rgba(0,0,0,.9);
+}
+
+/* header CTA */
+.nav__cta{padding:.62rem 1.15rem;font-size:.72rem;flex:0 0 auto}
+.nav__call{
+  width:38px;height:38px;border-radius:50%;justify-content:center;
+  border:1px solid var(--glass-brd);background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur-lite);backdrop-filter:var(--glass-blur-lite);
+  font-size:0;flex:0 0 auto;
+}
+.nav__call:hover{border-color:rgba(var(--brand-rgb),.6);color:var(--brand)}
+.nav__links{margin-left:auto}
+.nav__in{gap:1.2rem}
+@media (max-width:820px){ .nav__cta{display:none} }
