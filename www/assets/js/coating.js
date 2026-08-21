@@ -42,6 +42,34 @@
   panels.forEach(function (p) { io.observe(p); });
   setStage(0);
 
+  /* ---- parallax ----
+     Each panel gets --p: -1 when it is a viewport below centre, 0 dead centre,
+     +1 a viewport above. The word and the card read that same value but move
+     opposite ways, so they separate as the panel crosses — that separation is
+     what makes it read as depth rather than as one block sliding. */
+  var ticking = false;
+  function parallax() {
+    var vh = window.innerHeight;
+    for (var i = 0; i < panels.length; i++) {
+      var r = panels[i].getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) continue;   // far off-screen: skip
+      var mid = r.top + r.height / 2;
+      var p = (vh / 2 - mid) / vh;                      // -1 .. +1 through centre
+      panels[i].style.setProperty('--p', Math.max(-1.4, Math.min(1.4, p)).toFixed(3));
+    }
+    ticking = false;
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(parallax);
+  }
+  if (!reduced) {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    parallax();
+  }
+
   if (!vid || reduced || saveData) return;   // poster frame is the fallback
 
   /* ---- load on approach, and only play while on screen ---- */

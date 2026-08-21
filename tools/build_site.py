@@ -332,22 +332,22 @@ FAQS = [
 # glaze) and the ceramic coating page (industrial-grade liquid polymer sealer,
 # chemical bond, semi-permanent hydro barrier). Nothing here is invented.
 COATING_STAGES = [
-    ("Decontaminate",
+    ("Decontaminate", "The surface has to be clean first",
      "The vehicle is pressure washed to lift loose dirt and grime, hand washed "
      "with car shampoo, then pressure rinsed. Clay bar follows, deep cleaning "
      "grime and foreign matter out of the paint. A coating bonds to the surface "
      "it is laid on, so the surface has to be genuinely clean first."),
-    ("Correct",
+    ("Correct", "Swirls and scratches, gone",
      "Machine cut removes scratches, spider webbing and dullness, then machine "
      "glaze de-swirls the surface and puts a deep gloss back. Whatever the paint "
      "looks like at this point is what the coating locks in — correction is not "
      "optional, it is the step that decides the result."),
-    ("Coat",
+    ("Coat", "Bonded to the clear coat",
      "An advanced industrial-grade liquid polymer sealer chemically bonds to the "
      "duco. Graphene Pro 10H N1 lays up to 1000nm and 10H hardness; Quartz 9H Pro "
      "up to 800nm with grade 3 chemical resistance. Glass, wheels and interior "
      "surfaces have their own coatings."),
-    ("Protect",
+    ("Protect", "A barrier between paint and the elements",
      "The semi-permanent layer becomes a hydro barrier between your paint and the "
      "elements. The vehicle stays cleaner for longer, washes and dries more "
      "easily, holds a deep gloss, and resists wash marks, swirls, bird droppings "
@@ -524,16 +524,16 @@ def footer():
       </div>
       <div>
         <h4>Get in touch</h4>
+        <a class="foot__phone" href="tel:{PHONE_LINK}">{PHONE_DISPLAY}</a>
         <ul>
-          <li><a href="tel:{PHONE_LINK}">{PHONE_DISPLAY}</a></li>
-          <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
-          <li class="muted">Metropolitan Melbourne</li>
+          <li class="foot__line"><b>Email</b><a href="mailto:{EMAIL}">{EMAIL}</a></li>
+          <li class="foot__line"><b>Area</b><span>Metropolitan Melbourne</span></li>
+          <li class="foot__line"><b>Mon&ndash;Sat</b><span>6:30am &ndash; 6:30pm</span></li>
+          <li class="foot__line"><b>Sunday</b><span>Closed</span></li>
         </ul>
-        <h4 style="margin-top:1.6rem">Hours</h4>
-        <ul>
-          <li class="muted">Mon&ndash;Sat &nbsp;6:30am &ndash; 6:30pm</li>
-          <li class="muted">Sunday &nbsp;Closed</li>
-        </ul>
+        <p style="margin:1.4rem 0 0">
+          <a class="btn" href="/booking/">Book a detail</a>
+        </p>
       </div>
     </div>
     <div class="foot__base">
@@ -668,20 +668,26 @@ def coating_html():
     coating stages scroll past. Poster-first — the still render carries the
     section on its own, and three.js plus the 5 MB model only load on approach.
     """
+    # Big clipped display word + a numbered glass card, after the reference
+    # carousel: the word carries the scale, the card carries the detail.
     panels = "".join(f"""
-      <article class="coat__panel" data-stage>
-        <div class="coat__copy">
-          <span class="coat__num">Stage {i:02d} &mdash; 04</span>
-          <h3 class="coat__h"><span class="slant">{esc(title)}</span></h3>
-          <p>{esc(body)}</p>
+      <article class="coat__panel" data-stage style="--i:{i}">
+        <span class="coat__word" aria-hidden="true">{esc(title)}</span>
+        <div class="coat__card">
+          <span class="coat__n">{i:02d}</span>
+          <span class="coat__div" aria-hidden="true"></span>
+          <div class="coat__txt">
+            <h3 class="coat__h">{esc(head)}</h3>
+            <p>{esc(body)}</p>
+          </div>
         </div>
-      </article>""" for i, (title, body) in enumerate(COATING_STAGES, start=1))
+      </article>""" for i, (title, head, body) in enumerate(COATING_STAGES, start=1))
 
     pips = "".join(
         f'<button class="coat__pip" data-stage-pip role="tab" '
         f'aria-selected="{"true" if i == 0 else "false"}" '
         f'aria-label="{esc(t)}"></button>'
-        for i, (t, _) in enumerate(COATING_STAGES)
+        for i, (t, _h, _b) in enumerate(COATING_STAGES)
     )
 
     return f"""
