@@ -19,6 +19,8 @@ import os
 import re
 import shutil
 
+from keywords import CLUSTERS
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "www")
 
@@ -1758,25 +1760,159 @@ def build_thanks():
 
 
 def build_sitemap_page():
-    def ul(items):
-        return "<ul class='ticks'>" + "".join(
-            f'<li><a href="{h}">{esc(n)}</a></li>' for h, n in items) + "</ul>"
+    """Every page on the site, in one place.
+
+    The pattern the Premier and Next Lvl sitemaps use: the page is itself an
+    internal-link hub, so it needs density rather than whitespace — every
+    cluster, every service and every suburb reachable in one click.
+    """
+
+    def links(items):
+        return "".join(f'<li><a href="{h}">{esc(n)}</a></li>' for h, n in items)
+
+    clusters = "".join(f"""
+      <section class="sm__col">
+        <h3 class="sm__h">{esc(title)}</h3>
+        <ul class="sm__list">{links([(f"/{p[0]}/", p[1]) for p in pages])}</ul>
+      </section>""" for title, _key, pages in CLUSTERS)
+
+    kw = sum(len(p) for _t, _k, p in CLUSTERS)
+    total = kw + len(SERVICES) + len(SUBURBS) + 11
+
+    core = [("/", "Home"), ("/booking/", "Book a detail"), ("/services/", "Services"),
+            ("/services/select/", "Browse services"), ("/gallery/", "Gallery"),
+            ("/testimonials/", "Reviews"), ("/service-areas/", "Service areas"),
+            ("/franchising/", "Franchising"), ("/contact/", "Contact"),
+            ("/privacy/", "Privacy policy")]
+
     return (
-        head("Sitemap | Formula Mobile Car Detailing", "Every page on the site.", "/sitemap/")
+        head("Sitemap | Formula Mobile Car Detailing",
+             "Every page on formulamobilecardetailing.com.au \u2014 detailing, ceramic "
+             "coating, paint correction, overspray removal, and every Melbourne "
+             "suburb we cover.",
+             "/sitemap/")
         + nav()
+        + crumbs([("/", "Home"), ("/sitemap/", "Sitemap")])
         + f"""
 <section class="band band--tight">
   <div class="shell">
     <span class="eyebrow">Sitemap</span>
-    <h1>Every <span class="slant hl">page</span></h1>
-    <div class="grid grid--3" style="margin-top:2rem">
-      <div><h3>Main</h3>{ul([("/", "Home"), ("/services/", "Services"), ("/gallery/", "Gallery"), ("/testimonials/", "Reviews"), ("/service-areas/", "Service areas"), ("/franchising/", "Franchising"), ("/contact/", "Contact")])}</div>
-      <div><h3>Services</h3>{ul([(f"/services/{s['slug']}/", s['name']) for s in SERVICES])}</div>
-      <div><h3>Areas</h3>{ul([(f"/mobile-car-detailing/{slugify(s)}/", s) for s in SUBURBS])}</div>
+    <h1>Every page, <span class="slant hl">one place</span></h1>
+    <p class="lede">{total} pages covering detailing, ceramic coating, paint correction
+      and overspray removal across metropolitan Melbourne.</p>
+    <p style="margin-top:1.4rem">
+      <a class="btn btn--ghost" href="/sitemap.xml">View the XML sitemap</a>
+    </p>
+  </div>
+</section>
+
+<section class="band band--tight rsn-band">
+  <div class="shell">
+    <div class="sm__grid">
+      <section class="sm__col">
+        <h3 class="sm__h">Core pages</h3>
+        <ul class="sm__list">{links(core)}</ul>
+      </section>
+      <section class="sm__col">
+        <h3 class="sm__h">Our services</h3>
+        <ul class="sm__list">{links([(f"/services/{x['slug']}/", x["name"]) for x in SERVICES])}</ul>
+      </section>
+{clusters}
     </div>
   </div>
 </section>
-""" + footer())
+
+<section class="band band--tight">
+  <div class="shell">
+    <h2>Melbourne suburbs <span class="slant hl">we service</span></h2>
+    <p class="lede" style="margin-bottom:1.8rem">Mobile detailing across
+      {len(SUBURBS)} metropolitan suburbs. If yours is not listed, call
+      {PHONE_DISPLAY} &mdash; we most likely still cover it.</p>
+    <ul class="sm__subs">{links([(f"/mobile-car-detailing/{slugify(x)}/", x) for x in SUBURBS])}</ul>
+  </div>
+</section>
+"""
+        + footer())
+
+def build_keyword_page(cluster_title, cluster_key, entry, siblings):
+    """One long-tail landing page.
+
+    Each carries its own intro, three points and its own FAQ answer — the
+    content differs page to page rather than being a template with the keyword
+    swapped, because near-duplicates get treated as thin content.
+    """
+    slug, h1, desc, intro, points, faq = entry
+    q, a = faq
+
+    pts = "".join(f"""
+        <article class="rsn" data-reveal="{i * 0.05:.2f}">
+          <span class="rsn__n">{i:02d}</span>
+          <h3 class="rsn__t">{esc(pt)}</h3>
+          <p class="rsn__d">{esc(pb)}</p>
+        </article>""" for i, (pt, pb) in enumerate(points, start=1))
+
+    rel = "".join(
+        f'<li><a href="/{sl}/">{esc(t)}</a></li>'
+        for sl, t in siblings if sl != slug)
+
+    trail = [("/", "Home"), (f"/{slug}/", h1)]
+    schema = breadcrumb_schema(trail) + f"""<script type="application/ld+json">
+{{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{{"@type":"Question","name":"{esc(q)}",
+"acceptedAnswer":{{"@type":"Answer","text":"{esc(a)}"}}}}]}}
+</script>"""
+
+    return (
+        head(f"{h1} | Formula Mobile Car Detailing", desc, f"/{slug}/",
+             SERVICES[5]["img"], schema)
+        + nav()
+        + crumbs(trail)
+        + f"""
+<section class="band band--tight">
+  <div class="shell">
+    <span class="eyebrow">{esc(cluster_title)}</span>
+    <h1>{esc(h1)}</h1>
+    <p class="lede">{esc(intro)}</p>
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem">
+      <a class="btn btn--lg" href="/booking/">Book a detail</a>
+      <a class="btn btn--ghost btn--lg" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
+    </div>
+  </div>
+</section>
+
+<section class="band band--tight rsn-band">
+  <div class="shell">
+    <div class="rsn-grid">{pts}
+    </div>
+  </div>
+</section>
+
+<section class="band band--tight">
+  <div class="shell">
+    <div class="faq">
+      <details class="faq__item" open>
+        <summary class="faq__q">{esc(q)}
+          <svg class="faq__ic" width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+        </summary>
+        <div class="faq__a"><p>{esc(a)}</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="band band--raise mesh">
+  <div class="shell">
+    <h2>More on {esc(cluster_title.replace(" Melbourne", ""))}</h2>
+    <ul class="ticks" style="columns:2;margin-top:1.2rem">{rel}</ul>
+    <p style="margin-top:1.8rem">
+      <a class="btn btn--ghost" href="/services/{esc(cluster_key)}/">Service details</a>
+    </p>
+  </div>
+</section>
+"""
+        + footer())
 
 
 def build_privacy():
@@ -1843,6 +1979,13 @@ def main():
     for sub in SUBURBS:
         write(f"/mobile-car-detailing/{slugify(sub)}/", build_suburb(sub))
         routes.append((f"/mobile-car-detailing/{slugify(sub)}/", "0.6"))
+    # keyword clusters
+    for _title, _key, _pages in CLUSTERS:
+        sibs = [(x[0], x[1]) for x in _pages]
+        for _e in _pages:
+            write(f"/{_e[0]}/", build_keyword_page(_title, _key, _e, sibs))
+            routes.append((f"/{_e[0]}/", "0.7"))
+
     write("/thank-you/", build_thanks())
     write("/sitemap/", build_sitemap_page());       routes.append(("/sitemap/", "0.3"))
     write("/privacy/", build_privacy());            routes.append(("/privacy/", "0.3"))
