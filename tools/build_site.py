@@ -560,7 +560,7 @@ def footer():
         for s in SUBURBS[:7]
     )
     return f"""</main>
-<footer class="foot fibre">
+<footer class="foot hexbg">
   <div class="shell">
     <div class="foot__grid">
       <div>
@@ -612,6 +612,7 @@ def footer():
   <a href="/booking/">Book now</a>
 </div>
 
+<script src="/assets/js/spray.js" defer></script>
 <script src="/assets/js/tracking.js" defer></script>
 <script src="/assets/js/enhance.js" defer></script>
 </body>
@@ -883,8 +884,12 @@ def build_home():
   <div class="hero__splash" data-hero-splash>
     <div class="hero__fiber" aria-hidden="true"></div>
     <div class="hero__splashin">
-      <img class="hero__mark" src="/assets/images/logo.png"
-           alt="Formula Mobile Car Detailing" width="900" height="300" fetchpriority="high">
+      <div class="hero__lock" role="img" aria-label="Formula &mdash; Paint Correction and Coatings">
+        <img class="hero__lockblock" src="/assets/images/logo-block.png" alt=""
+             width="1100" height="367" fetchpriority="high">
+        <img class="hero__lockscript" src="/assets/images/logo-script.png" alt=""
+             width="1100" height="367" fetchpriority="high">
+      </div>
       <div class="hero__rule" aria-hidden="true"></div>
       <p class="hero__tag">Mobile Detailing &middot; Melbourne</p>
     </div>
@@ -892,7 +897,7 @@ def build_home():
 
   <div class="hero__say">
     <span class="eyebrow">Mobile &middot; Metropolitan Melbourne</span>
-    <h1 class="hero__h1">Melbourne&rsquo;s <span class="slant hl">finish</span></h1>
+    <h1 class="hero__h1">Servicing Melbourne<br>for <span class="slant hl">30+ years</span></h1>
     <p class="hero__sub">Paint Protection &amp; Ceramic Coating Specialists</p>
   </div>
 
