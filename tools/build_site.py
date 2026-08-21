@@ -354,6 +354,45 @@ COATING_STAGES = [
      "and UV. Minimal maintenance from there."),
 ]
 
+
+# Ten reasons, for the ceramic coating page. Industry-standard education
+# (paint hardness, UV, hydrophobics) combined with the client's own product
+# facts — the lifespans below are THEIR figures from the services copy, not
+# the generic "2-7 years" the reference deck uses.
+COATING_REASONS = [
+    ("drop", "Water beads and rolls off",
+     "A hydrophobic surface means water lifts dirt, dust and grime away with it as it "
+     "runs off, instead of drying onto the paint. The car stays cleaner between washes."),
+    ("sun", "UV and oxidation defence",
+     "The coating sits between your paint and the sun, slowing the fading, chalking and "
+     "oxidation that dulls a car left outdoors."),
+    ("flask", "Chemical and environmental resistance",
+     "Bird droppings, bug splatter, tree sap and road grime are acidic and etch clear "
+     "coat. A coated panel resists them long enough to be washed off safely."),
+    ("spark", "Deep, wet-look gloss",
+     "Coatings add depth and clarity to the paint, and hold that shine far longer than "
+     "a traditional wax or sealant, which is measured in weeks."),
+    ("dots", "Harder against micro scratches",
+     "Graphene Pro is 10H and Quartz 9H Pro is 9H. That hardness resists the swirl marks "
+     "and micro scratches that come from washing, dust and daily driving."),
+    ("cal", "Years, not weeks",
+     "Graphene Pro 10H N1 lasts a lifetime; Quartz 9H Pro up to five years; Quartz "
+     "Ceramic around three. Our interior coating protects fabric and leather for twelve "
+     "months."),
+    ("shield", "Modern paint is thinner than it used to be",
+     "Manufacturers now use thinner clear coats for efficiency and emissions. There is "
+     "less material between the world and your colour coat than there was twenty years ago."),
+    ("wash", "Easier to wash and dry",
+     "Contamination has less to grip. Washing takes less time, needs less product, and "
+     "carries far less risk of putting swirls in during the wash itself."),
+    ("layer", "Bonded, not sat on top",
+     "An advanced industrial-grade liquid polymer sealer chemically bonds to the duco, "
+     "laying up to 1000nm of protection. It is not a topping that washes away."),
+    ("calm", "Minimal maintenance",
+     "Once it is on, upkeep is straightforward. We will either show you the maintenance "
+     "routine or put you on a scheduled program."),
+]
+
 SUBURBS = [
     "Brighton", "Toorak", "South Yarra", "Hawthorn", "Kew", "Camberwell",
     "Malvern", "Armadale", "Prahran", "St Kilda", "Elwood", "Port Melbourne",
@@ -681,6 +720,51 @@ def faq_block(heading="Common questions"):
     <div class="faq">
 {rows}
     </div>
+  </div>
+</section>
+"""
+
+
+ICONS = {
+ "drop":  '<path d="M12 2.7S5.5 10 5.5 14.4a6.5 6.5 0 0 0 13 0C18.5 10 12 2.7 12 2.7Z"/>',
+ "sun":   '<circle cx="12" cy="12" r="4"/><path d="M12 1.6v3M12 19.4v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M1.6 12h3M19.4 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
+ "flask": '<path d="M9.5 2.5v6L4 19a2 2 0 0 0 1.8 3h12.4A2 2 0 0 0 20 19l-5.5-10.5v-6M8 2.5h8M7.5 14h9"/>',
+ "spark": '<path d="M12 2.5 14 9l6.5 2-6.5 2-2 6.5-2-6.5L3.5 11 10 9l2-6.5Z"/>',
+ "dots":  '<circle cx="8" cy="8" r="1.1"/><circle cx="12" cy="7" r="1.1"/><circle cx="16" cy="8.5" r="1.1"/><circle cx="7" cy="12.5" r="1.1"/><circle cx="12" cy="12" r="1.1"/><circle cx="16.5" cy="13" r="1.1"/><circle cx="8.5" cy="16.5" r="1.1"/><circle cx="13" cy="17" r="1.1"/>',
+ "cal":   '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ "shield":'<path d="M12 2.5 4 6v6c0 5 3.4 8.6 8 9.5 4.6-.9 8-4.5 8-9.5V6l-8-3.5Z"/>',
+ "wash":  '<path d="M4 13h16M6 13V8a6 6 0 0 1 12 0v5M8 17.5v2M12 17.5v3M16 17.5v2"/>',
+ "layer": '<path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5M3 17.5l9 5 9-5"/>',
+ "calm":  '<circle cx="12" cy="12" r="9"/><path d="M8.5 13.5s1.3 1.8 3.5 1.8 3.5-1.8 3.5-1.8M9 9.5h.01M15 9.5h.01"/>',
+}
+
+
+def reasons_html():
+    """Ten reasons, laid out as the reference deck does: numbered chip, icon,
+    title, body — in glass, on the ceramic coating page."""
+    cards = "".join(f"""
+        <article class="rsn" data-reveal="{i * 0.04:.2f}">
+          <span class="rsn__n">{i:02d}</span>
+          <svg class="rsn__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true">{ICONS.get(icon, "")}</svg>
+          <h3 class="rsn__t">{esc(title)}</h3>
+          <p class="rsn__d">{esc(body)}</p>
+        </article>""" for i, (icon, title, body) in enumerate(COATING_REASONS, start=1))
+
+    return f"""
+<section class="band rsn-band">
+  <div class="shell">
+    <div style="max-width:56ch;margin-bottom:2.6rem" data-reveal>
+      <span class="eyebrow">Why coat it</span>
+      <h2>Ten reasons to <span class="slant hl">ceramic coat</span></h2>
+      <p class="lede">What a coating actually does for the paint, and how long ours last.</p>
+    </div>
+    <div class="rsn-grid">{cards}
+    </div>
+    <p style="margin-top:2.4rem">
+      <a class="btn btn--lg" href="/booking/">Book a ceramic coating</a>
+    </p>
   </div>
 </section>
 """
@@ -1045,6 +1129,7 @@ def build_service(s):
   </div>
 </section>
 {products}
+{reasons_html() if s["slug"] == "ceramic-coating" else ""}
 <section class="band">
   <div class="shell">
     <h2>Other services</h2>
