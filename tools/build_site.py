@@ -1030,7 +1030,8 @@ def build_home():
 
 {faq_block()}
 
-<section class="band">
+<section class="band band--photo"
+  style="--band-img:url('/assets/images/cta-bg.jpg');--band-img-sm:url('/assets/images/cta-bg-sm.jpg')">
   <div class="shell" style="text-align:center">
     <h2 data-reveal>Ready to book <span class="slant hl">your detail?</span></h2>
     <p class="lede" style="margin:0 auto 2rem" data-reveal="0.06">

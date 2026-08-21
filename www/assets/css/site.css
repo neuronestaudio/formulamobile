@@ -1797,3 +1797,33 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
 }
 .mq__chip:hover{color:#fff;border-color:rgba(var(--brand-rgb),.55);background:var(--surface-2)}
 .mq .mq__track{align-items:center}
+
+/* ==========================================================================
+   PHOTO BAND — a real car out of Formula's own album behind a section.
+   The photo sits at the 50% the brief asked for; the house hex mesh and a
+   vignette ride over it so centred type keeps its contrast on a busy frame.
+   Set --band-img (and optionally --band-img-sm) per instance.
+   ========================================================================== */
+.band--photo{
+  position:relative;isolation:isolate;overflow:hidden;
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.band--photo::before{
+  content:'';position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:#08080c var(--band-img) center/cover no-repeat;
+  opacity:.5;
+}
+.band--photo::after{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:var(--hex),
+    radial-gradient(120% 88% at 50% 50%, rgba(8,8,12,.14) 0%, rgba(8,8,12,.76) 100%);
+  opacity:.62;
+}
+/* The phone gets its own crop — the wide one zooms straight into a wheel arch
+   on a narrow band. Swap the VARIABLE, not the background-image: a second
+   background-image declaration makes Chrome fetch both files on every viewport.
+   !important is what lets an author rule beat the inline custom property. */
+@media (max-width:720px){
+  .band--photo{--band-img:var(--band-img-sm) !important}
+}
