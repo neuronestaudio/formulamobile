@@ -465,7 +465,7 @@ def nav(active=""):
 <header class="nav">
   <div class="nav__in">
     <a class="nav__logo" href="/" aria-label="Formula Mobile Car Detailing — home">
-      <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="501" height="189">
+      <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="278">
     </a>
     <ul class="nav__links">
 {items}
@@ -502,7 +502,7 @@ def footer():
     <div class="foot__grid">
       <div>
         <div class="foot__logo">
-          <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="501" height="189">
+          <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="278">
         </div>
         <p class="muted" style="font-size:.92rem;max-width:32ch">
           Mobile car detailing across metropolitan Melbourne. Over 20 years bringing
@@ -771,7 +771,7 @@ def build_home():
     <div class="hero__fiber" aria-hidden="true"></div>
     <div class="hero__splashin">
       <img class="hero__mark" src="/assets/images/logo.png"
-           alt="Formula Mobile Car Detailing" width="501" height="189" fetchpriority="high">
+           alt="Formula Mobile Car Detailing" width="900" height="278" fetchpriority="high">
       <div class="hero__rule" aria-hidden="true"></div>
       <p class="hero__tag">Mobile Detailing &middot; Melbourne</p>
     </div>
@@ -780,7 +780,7 @@ def build_home():
   <div class="hero__say">
     <span class="eyebrow">Mobile &middot; Metropolitan Melbourne</span>
     <h1 class="hero__h1">Melbourne&rsquo;s <span class="slant hl">finish</span></h1>
-    <p class="hero__sub">20+ years servicing Melbourne wide</p>
+    <p class="hero__sub">Paint Protection &amp; Ceramic Coating Specialists</p>
   </div>
 
   <div class="hero__cue" aria-hidden="true">
@@ -1098,7 +1098,7 @@ def carousel_html(inline=False):
         All services
       </a>
       <a href="/" aria-label="Formula Mobile Car Detailing — home">
-        <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="501" height="189">
+        <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="278">
       </a>
       <a class="sel__back" href="tel:{PHONE_LINK}">{PHONE_DISPLAY}</a>
     </div>

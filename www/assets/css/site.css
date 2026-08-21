@@ -289,7 +289,7 @@ section { position: relative; }
   align-items: center;
   gap: 2rem;
 }
-.nav__logo img { height: 34px; width: auto; }
+.nav__logo img { height: 46px; width: auto; }
 .nav__links {
   display: flex;
   gap: 1.9rem;
@@ -726,7 +726,7 @@ section { position: relative; }
 .foot ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.55rem; }
 .foot a { color: var(--fg-muted); font-size: 0.92rem; transition: color 0.25s var(--ease); }
 .foot a:hover { color: var(--brand); }
-.foot__logo img { height: 40px; margin-bottom: 1.1rem; }
+.foot__logo img { height: 58px; margin-bottom: 1.1rem; }
 .foot__base {
   margin-top: 3rem;
   padding-top: 1.6rem;
@@ -1401,4 +1401,15 @@ body::after {
   }
   .coat__panel { min-height: 92vh; }
   .coat__copy { max-width: none; }
+}
+
+/* ---------- script face ----------
+   Yellowtail echoes the brush script in the logo's "Paint Correction and
+   Coatings" lockup, so the hero subheading reads as part of the same mark. */
+@font-face {
+  font-family: 'Yellowtail';
+  src: url('/assets/fonts/yellowtail-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
