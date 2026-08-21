@@ -77,6 +77,11 @@ def measure():
         return sum(1 for r, _dd, ff in os.walk(d) for f in ff
                    if not exts or f.lower().endswith(exts))
 
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    from keywords import CLUSTERS
+    m["keyword_pages"] = sum(len(pp) for _t, _k, pp in CLUSTERS)
+    m["clusters"] = len(CLUSTERS)
+
     m["images"] = count("www/assets/images")
     m["video"] = count("www/assets/video")
     m["suburbs"] = len([1 for r, dd, _f in os.walk(os.path.join(www, "mobile-car-detailing"))
@@ -89,7 +94,9 @@ def measure():
     return m
 
 
-DELIVERABLES = [
+def deliverables(m):
+  """Measured counts are interpolated so the prose cannot drift from the build."""
+  return [
     ("Discovery", [
         ("Byte-verified capture of the old site",
          "Every page and asset pulled and SHA-256 checked against the live server, kept as an untouched reference."),
@@ -97,9 +104,9 @@ DELIVERABLES = [
          "34 findings across five areas, each verified against the live server, delivered as a branded PDF."),
     ]),
     ("The new site", [
-        ("88 pages, statically generated",
+        (f"{m['pages']} pages, statically generated",
          "Every route real HTML — no client-side rendering, no hydration step, nothing that needs JavaScript to be readable."),
-        ("44 suburb pages and 25 keyword landing pages",
+        (f"{m['suburbs']} suburb pages and {m['keyword_pages']} keyword landing pages",
          "Four topic clusters — ceramic coating, paint correction, overspray removal, mobile detailing — each page with its own content and FAQ schema."),
         ("Structured data on every page",
          "LocalBusiness, Service, Review, Breadcrumb and FAQPage markup. The old site had none."),
@@ -111,18 +118,25 @@ DELIVERABLES = [
          "The block mark lands, then the cursive writes itself on left to right, cut from the supplied logo as two registered layers."),
         ("Service selector and coating deck",
          "An infinite coverflow of all seven services, and a four-stage coating sequence that runs as a deck on the homepage and as a scroll film on the service page."),
+        ("Real photography throughout",
+         "Every stock and placeholder image replaced with the client's own work, pulled from their Facebook archive — gallery, service cards and section backgrounds. Customer number plates are blurred before publication."),
         ("Four process films",
          "Cut, graded and looped from source footage, one per coating stage, crossfaded and lazy-loaded."),
     ]),
+    ("Findability", [
+        ("A sitemap page built as an internal-link hub",
+         "Every cluster, service and suburb reachable in one click, in the pattern the strongest competitors in this market use — alongside the machine-readable XML sitemap."),
+    ]),
     ("Lead capture and measurement", [
-        ("Four-step booking wizard",
-         "Service, location, vehicle and contact — capturing what the old form never did, so an enquiry arrives quotable."),
+        ("Five-step booking wizard that branches",
+         "Service, mobile-or-studio, address, vehicle, contact. The first two answers advance on their own, and the address step is asked only of mobile jobs — a studio booking never sees it. The old form asked for none of this, so an enquiry now arrives quotable."),
         ("First-touch attribution",
          "Twelve advertising parameters captured on the first visit and never overwritten, so a lead can be traced to the campaign that paid for it."),
         ("Conversion tracking gated on the CRM",
          "generate_lead fires only after the CRM confirms receipt, so reported conversions always match leads that actually exist."),
     ]),
 ]
+
 
 STILL_OPEN = [
     ("CRM webhook", "The booking and contact forms are built and tested but not yet connected. Each needs its own GoHighLevel inbound webhook, and a custom field per attribution parameter or those values silently drop."),
@@ -164,8 +178,8 @@ h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:upp
    font-size:13pt;margin:6mm 0 2mm;color:#0a0a0d;page-break-after:avoid}
 p{margin:0 0 3mm}
 
-.kpis{display:flex;flex-wrap:wrap;gap:3mm;margin:0 0 6mm}
-.kpi{flex:1 1 34mm;border:1px solid #e3e4e8;border-radius:3mm;padding:4mm;background:#fafafb}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:0 0 6mm}
+.kpi{border:1px solid #e3e4e8;border-radius:3mm;padding:4mm;background:#fafafb}
 .kpi b{display:block;font-family:"Bebas Neue",Impact,sans-serif;font-size:22pt;
        line-height:1;color:%BRAND%}
 .kpi span{font-size:7.6pt;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#6b7280}
@@ -181,6 +195,7 @@ th{text-align:left;background:#0a0a0d;color:#fff;font-size:7.4pt;font-weight:700
    letter-spacing:.12em;text-transform:uppercase;padding:2.2mm 3mm}
 td{padding:2.4mm 3mm;border-bottom:1px solid #e6e7eb;vertical-align:top}
 td:first-child{white-space:nowrap;font-weight:700;color:%BRAND%;width:20mm}
+tbody tr{page-break-inside:avoid}
 tbody tr:nth-child(even) td{background:#fafafb}
 
 .note{background:#fbf3f2;border-left:3px solid %BRAND%;padding:3.5mm 4mm;border-radius:0 2mm 2mm 0;
@@ -201,7 +216,7 @@ def build_html(m):
     kpi_html = "".join(f'<div class="kpi"><b>{v}</b><span>{k}</span></div>' for v, k in kpis)
 
     delivs = ""
-    for group, items in DELIVERABLES:
+    for group, items in deliverables(m):
         delivs += f"<h3>{group}</h3>"
         for title, body in items:
             delivs += f'<div class="d"><b>{title}</b><span>{body}</span></div>'
@@ -230,8 +245,8 @@ def build_html(m):
   <img class="cover__logo" src="file:///{logo}" alt="Formula Mobile Car Detailing">
   <div class="eyebrow">Website rebuild &middot; Build report</div>
   <h1>What was<br><em>built</em></h1>
-  <p class="cover__sub">A complete rebuild of formulamobilecardetailing.com.au — from a
-     {m['pages']}-page static site and {m['urls']} indexed URLs to lead capture,
+  <p class="cover__sub">A complete rebuild of formulamobilecardetailing.com.au: six pages
+     became {m['pages']}, with {m['urls']} indexed URLs, lead capture, first-touch
      attribution and conversion tracking.</p>
   <div class="cover__meta">
     <div>Prepared for<b>Formula Mobile Car Detailing</b></div>
@@ -255,11 +270,11 @@ def build_html(m):
   <tbody>
     <tr><td>Pages</td><td>6</td><td>{m['pages']}</td></tr>
     <tr><td>Indexed URLs</td><td>6</td><td>{m['urls']}</td></tr>
-    <tr><td>Suburb pages</td><td>0</td><td>44</td></tr>
-    <tr><td>Keyword pages</td><td>0</td><td>25</td></tr>
+    <tr><td>Suburb pages</td><td>0</td><td>{m['suburbs']}</td></tr>
+    <tr><td>Keyword pages</td><td>0</td><td>{m['keyword_pages']}</td></tr>
     <tr><td>Structured data</td><td>None</td><td>5 schema types, every page</td></tr>
     <tr><td>Canonical tags</td><td>None</td><td>Every page</td></tr>
-    <tr><td>Lead capture</td><td>1 form, labelled &ldquo;feedback&rdquo;</td><td>4-step wizard + contact form</td></tr>
+    <tr><td>Lead capture</td><td>1 form, labelled &ldquo;feedback&rdquo;</td><td>5-step branching wizard + contact form</td></tr>
     <tr><td>Attribution</td><td>None</td><td>12 first-touch parameters</td></tr>
     <tr><td>Broken files</td><td>4 on every page</td><td>0</td></tr>
   </tbody>
