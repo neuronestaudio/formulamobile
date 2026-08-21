@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en-AU"><head><meta charset="utf-8">
+<title>Formula Mobile Car Detailing — Build Report</title>
+<style>
+@font-face{font-family:'Bebas Neue';src:url('file:///D:/CLIENTS/FORMULA DETAILING/WEB - Formula Mobile Detailing/www/assets/fonts/bebas-neue-400.woff2') format('woff2')}
+@font-face{font-family:'DM Sans';src:url('file:///D:/CLIENTS/FORMULA DETAILING/WEB - Formula Mobile Detailing/www/assets/fonts/dm-sans-latin.woff2') format('woff2');font-weight:100 1000}
+
+@page { size: A4; margin: 17mm 15mm 18mm; }
+@page :first { margin: 0; }
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{margin:0;font-family:"DM Sans","Segoe UI",system-ui,sans-serif;
+     font-size:10pt;line-height:1.6;color:#1c1d22;background:#fff}
+
+.cover{position:relative;height:297mm;width:210mm;margin:0;background:#0a0a0d;color:#fff;
+       padding:28mm 20mm;display:flex;flex-direction:column;page-break-after:always;overflow:hidden}
+.cover::after{content:"";position:absolute;left:-30%;bottom:-55%;width:130%;height:90%;
+       background:radial-gradient(closest-side,rgba(245,52,45,.30),transparent 72%)}
+.cover>*{position:relative;z-index:1}
+.cover__logo{width:64mm;margin-bottom:auto}
+.eyebrow{font-size:8pt;font-weight:700;letter-spacing:.26em;text-transform:uppercase;
+         color:#f5342d;margin-bottom:6mm}
+.cover h1{font-family:"Bebas Neue",Impact,sans-serif;font-size:44pt;line-height:.93;
+          text-transform:uppercase;margin:0 0 6mm;font-weight:400;color:#fff}
+.cover h1 em{font-style:italic;color:#f5342d}
+.cover__sub{font-size:11.5pt;color:rgba(255,255,255,.72);max-width:110mm;margin:0 0 12mm}
+.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;display:flex;gap:12mm;
+             flex-wrap:wrap;font-size:8.5pt;color:rgba(255,255,255,.55)}
+.cover__meta b{display:block;color:#fff;font-weight:600;margin-top:1mm;font-size:10pt}
+
+h2{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
+   font-size:19pt;letter-spacing:.02em;margin:10mm 0 4mm;padding-bottom:2.5mm;
+   border-bottom:2px solid #0a0a0d;page-break-after:avoid;color:#0a0a0d}
+h2:first-of-type{margin-top:0}
+h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
+   font-size:13pt;margin:6mm 0 2mm;color:#0a0a0d;page-break-after:avoid}
+p{margin:0 0 3mm}
+
+.kpis{display:flex;flex-wrap:wrap;gap:3mm;margin:0 0 6mm}
+.kpi{flex:1 1 34mm;border:1px solid #e3e4e8;border-radius:3mm;padding:4mm;background:#fafafb}
+.kpi b{display:block;font-family:"Bebas Neue",Impact,sans-serif;font-size:22pt;
+       line-height:1;color:#f5342d}
+.kpi span{font-size:7.6pt;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#6b7280}
+
+.d{margin-bottom:3.4mm;padding-left:5mm;position:relative;page-break-inside:avoid}
+.d::before{content:"";position:absolute;left:0;top:2.1mm;width:2.2mm;height:2.2mm;
+           border-radius:50%;background:#f5342d}
+.d b{display:block;color:#0a0a0d}
+.d span{color:#4a4c55}
+
+table{width:100%;border-collapse:collapse;font-size:9pt;margin:0 0 5mm}
+th{text-align:left;background:#0a0a0d;color:#fff;font-size:7.4pt;font-weight:700;
+   letter-spacing:.12em;text-transform:uppercase;padding:2.2mm 3mm}
+td{padding:2.4mm 3mm;border-bottom:1px solid #e6e7eb;vertical-align:top}
+td:first-child{white-space:nowrap;font-weight:700;color:#f5342d;width:20mm}
+tbody tr:nth-child(even) td{background:#fafafb}
+
+.note{background:#fbf3f2;border-left:3px solid #f5342d;padding:3.5mm 4mm;border-radius:0 2mm 2mm 0;
+      margin:0 0 5mm;font-size:9.2pt}
+.foot{margin-top:8mm;padding-top:3mm;border-top:1px solid #dcdde1;font-size:8pt;color:#6b7280}
+
+</style></head><body>
+
+<section class="cover">
+  <img class="cover__logo" src="file:///D:/CLIENTS/FORMULA DETAILING/WEB - Formula Mobile Detailing/www/assets/images/logo.png" alt="Formula Mobile Car Detailing">
+  <div class="eyebrow">Website rebuild &middot; Build report</div>
+  <h1>What was<br><em>built</em></h1>
+  <p class="cover__sub">A complete rebuild of formulamobilecardetailing.com.au — from a
+     88-page static site and 87 indexed URLs to lead capture,
+     attribution and conversion tracking.</p>
+  <div class="cover__meta">
+    <div>Prepared for<b>Formula Mobile Car Detailing</b></div>
+    <div>Period<b>02 August 2026 &ndash; 22 August 2026</b></div>
+    <div>Working days<b>8</b></div>
+  </div>
+</section>
+
+<h2>At a glance</h2>
+<div class="kpis"><div class="kpi"><b>88</b><span>Pages built</span></div><div class="kpi"><b>87</b><span>Indexed URLs</span></div><div class="kpi"><b>7,495</b><span>Lines written</span></div><div class="kpi"><b>30</b><span>Commits</span></div><div class="kpi"><b>8</b><span>Working days</span></div><div class="kpi"><b>62</b><span>Media assets</span></div></div>
+<p>The previous site was six pages of 2021-era HTML with four broken files on every page,
+   no structured data, no canonical tags, and one enquiry form labelled as a feedback form.
+   What replaced it is below.</p>
+
+<h2>What was delivered</h2>
+<h3>Discovery</h3><div class="d"><b>Byte-verified capture of the old site</b><span>Every page and asset pulled and SHA-256 checked against the live server, kept as an untouched reference.</span></div><div class="d"><b>Front-end, back-end, SEO and conversion audit</b><span>34 findings across five areas, each verified against the live server, delivered as a branded PDF.</span></div><h3>The new site</h3><div class="d"><b>88 pages, statically generated</b><span>Every route real HTML — no client-side rendering, no hydration step, nothing that needs JavaScript to be readable.</span></div><div class="d"><b>44 suburb pages and 25 keyword landing pages</b><span>Four topic clusters — ceramic coating, paint correction, overspray removal, mobile detailing — each page with its own content and FAQ schema.</span></div><div class="d"><b>Structured data on every page</b><span>LocalBusiness, Service, Review, Breadcrumb and FAQPage markup. The old site had none.</span></div><h3>Design and interaction</h3><div class="d"><b>Brand system built from the client's own mark</b><span>Racing red taken from the logo, Bebas Neue and DM Sans vendored locally, glassmorphism and carbon-fibre mesh throughout.</span></div><div class="d"><b>Animated logo splash</b><span>The block mark lands, then the cursive writes itself on left to right, cut from the supplied logo as two registered layers.</span></div><div class="d"><b>Service selector and coating deck</b><span>An infinite coverflow of all seven services, and a four-stage coating sequence that runs as a deck on the homepage and as a scroll film on the service page.</span></div><div class="d"><b>Four process films</b><span>Cut, graded and looped from source footage, one per coating stage, crossfaded and lazy-loaded.</span></div><h3>Lead capture and measurement</h3><div class="d"><b>Four-step booking wizard</b><span>Service, location, vehicle and contact — capturing what the old form never did, so an enquiry arrives quotable.</span></div><div class="d"><b>First-touch attribution</b><span>Twelve advertising parameters captured on the first visit and never overwritten, so a lead can be traced to the campaign that paid for it.</span></div><div class="d"><b>Conversion tracking gated on the CRM</b><span>generate_lead fires only after the CRM confirms receipt, so reported conversions always match leads that actually exist.</span></div>
+
+<h2>Scale</h2>
+<table>
+  <thead><tr><th>Measure</th><th>Before</th><th>After</th></tr></thead>
+  <tbody>
+    <tr><td>Pages</td><td>6</td><td>88</td></tr>
+    <tr><td>Indexed URLs</td><td>6</td><td>87</td></tr>
+    <tr><td>Suburb pages</td><td>0</td><td>44</td></tr>
+    <tr><td>Keyword pages</td><td>0</td><td>25</td></tr>
+    <tr><td>Structured data</td><td>None</td><td>5 schema types, every page</td></tr>
+    <tr><td>Canonical tags</td><td>None</td><td>Every page</td></tr>
+    <tr><td>Lead capture</td><td>1 form, labelled &ldquo;feedback&rdquo;</td><td>4-step wizard + contact form</td></tr>
+    <tr><td>Attribution</td><td>None</td><td>12 first-touch parameters</td></tr>
+    <tr><td>Broken files</td><td>4 on every page</td><td>0</td></tr>
+  </tbody>
+</table>
+
+<h2>Work log</h2>
+<table>
+  <thead><tr><th>Date</th><th>Work completed</th></tr></thead>
+  <tbody><tr><td>02 Aug</td><td>Snapshot live formulamobilecardetailing.com.au as rebuild base<br>Disable text conversion so clones stay byte-exact<br>Correct asset count and note byte-verification in README<br>Add front-end and back-end audit of the existing site</td></tr><tr><td>03 Aug</td><td>Build the new site in www/ — Premier architecture, Formula brand, Tesla splash hero<br>Add /services/select/ — game-style infinite service carousel<br>Add branded PDF of the site audit</td></tr><tr><td>04 Aug</td><td>Correct the audit's conversion section: the lead flow exists</td></tr><tr><td>05 Aug</td><td>Surface the service selector from the homepage</td></tr><tr><td>09 Aug</td><td>Port the Glossedout lead-gen infrastructure<br>Document the Facebook photo sourcing attempt<br>Glassmorphism across the site, plus the Glossedout FAQ accordion<br>New homepage hero: carbon-fibre splash into the service carousel<br>Add /booking/ — Premier's 4-step wizard, wired to Formula's services<br>Fix the hero: card spacing, missing headline, HUD collision<br>Homepage texture, plus reviews and gallery as seamless marquees</td></tr><tr><td>10 Aug</td><td>Replace the duplicated services grid with a ceramic-coating scroll film</td></tr><tr><td>21 Aug</td><td>Hero: shorten the subline and clear it of the cards on every viewport<br>New logo mark, and a script subheading to match it<br>Real logo file, and a process film instead of the 3D model</td></tr><tr><td>22 Aug</td><td>Coating stages: display word + glass card, with parallax between them<br>Four stage films, crossfaded — one per stage instead of one loop throughout<br>Real gallery photos, slimmer header, carbon fibre, and the operator out of stage 1<br>Ten reasons to ceramic coat, on the ceramic coating page<br>Keyword clusters and a real sitemap — 63 pages to 89<br>Splash write-on, hexagon mesh everywhere, spray-on titles<br>Fix the hexagon mesh — it was never tessellating<br>Real photos on five of the seven service cards<br>Coating stages as a deck on the homepage, beam outlines, real honeycomb<br>Homepage resequenced, deck fades, suburbs become a map</td></tr></tbody>
+</table>
+<p style="font-size:8.6pt;color:#6b7280">30 commits across 8 working days.
+   51,134 lines added, 11,282 removed.</p>
+
+<h2>Still open</h2>
+<div class="note"><b>These are not outstanding build work.</b> Each needs a decision or an
+  account from the client before it can be finished.</div>
+<div class="d"><b>CRM webhook</b><span>The booking and contact forms are built and tested but not yet connected. Each needs its own GoHighLevel inbound webhook, and a custom field per attribution parameter or those values silently drop.</span></div><div class="d"><b>Pricing</b><span>No price appears anywhere on the site. The old site published none, so none was invented.</span></div><div class="d"><b>Google reviews</b><span>The review marquee is built and running on the three existing testimonials. Live Google reviews need a Places API key and the business Place ID.</span></div><div class="d"><b>Before / after photography</b><span>The single most persuasive asset a detailer can show, and the one thing the archive does not contain.</span></div><div class="d"><b>Years in business</b><span>The site now says 30+ years. The old franchising page says 20. One of them needs correcting.</span></div>
+
+<div class="foot">Figures in this report are measured directly from the project repository at
+  the time of generation, not entered by hand.</div>
+</body></html>
