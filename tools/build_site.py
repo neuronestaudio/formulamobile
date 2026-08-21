@@ -1392,7 +1392,7 @@ def build_booking():
     rail = "".join(
         f'<li class="bk__dot" data-dot data-state="{"now" if i == 0 else "todo"}">'
         f'<span>{i + 1}</span>{esc(lbl)}</li>'
-        for i, lbl in enumerate(["Service", "Where", "Vehicle", "Details"])
+        for i, lbl in enumerate(["Service", "Where", "Location", "Vehicle", "Details"])
     )
 
     return (
@@ -1419,17 +1419,26 @@ def build_booking():
 
     <form class="bk__form card" method="post" action="/thank-you/" data-booking>
 
-      <fieldset class="bk__step" data-step>
+      <fieldset class="bk__step" data-step data-autoadvance>
         <legend class="bk__legend">Choose your service</legend>
         <p class="bk__hint">Pick what you're after &mdash; not sure? Choose &ldquo;Not sure yet&rdquo;.</p>
         <div class="bk__tiles" data-requires-choice>{tiles("service", services)}</div>
       </fieldset>
 
-      <fieldset class="bk__step" data-step>
+      <!-- One choice, nothing else: picking a tile advances on its own, which
+           keeps the momentum going instead of asking for a second click. -->
+      <fieldset class="bk__step" data-step data-autoadvance>
         <legend class="bk__legend">Where are we working?</legend>
         <p class="bk__hint">We service metropolitan Melbourne.</p>
         <div class="bk__tiles bk__tiles--2" data-requires-choice>{tiles("location_type", where)}</div>
-        <div class="field--split" style="margin-top:1.4rem">
+      </fieldset>
+
+      <!-- Skipped entirely when the car is coming to the studio: we do not need
+           an address for a drop-off, and asking for one is friction. -->
+      <fieldset class="bk__step" data-step data-only-when="location_type=Mobile &mdash; at your door">
+        <legend class="bk__legend">Where should we come?</legend>
+        <p class="bk__hint">So we can confirm we cover you.</p>
+        <div class="field--split">
           <div class="field">
             <label for="bk-suburb">Suburb</label>
             <input id="bk-suburb" name="suburb" type="text" autocomplete="address-level2" required>
