@@ -465,7 +465,7 @@ def nav(active=""):
 <header class="nav">
   <div class="nav__in">
     <a class="nav__logo" href="/" aria-label="Formula Mobile Car Detailing — home">
-      <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="278">
+      <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="300">
     </a>
     <ul class="nav__links">
 {items}
@@ -502,7 +502,7 @@ def footer():
     <div class="foot__grid">
       <div>
         <div class="foot__logo">
-          <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="278">
+          <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="300">
         </div>
         <p class="muted" style="font-size:.92rem;max-width:32ch">
           Mobile car detailing across metropolitan Melbourne. Over 20 years bringing
@@ -694,15 +694,13 @@ def coating_html():
   </div>
 </section>
 
-<section class="coat" data-coating data-mode="poster" aria-label="The ceramic coating process">
+<section class="coat" data-coating aria-label="The ceramic coating process">
   <div class="coat__stage">
-    <img class="coat__poster" src="/assets/models/vehicle-poster.jpg" alt="" aria-hidden="true"
-         loading="lazy" width="1400" height="950">
-    <canvas class="coat__canvas" data-coating-canvas
-            data-model="/assets/models/vehicle.glb" aria-hidden="true"></canvas>
+    <video class="coat__vid" data-coating-vid
+           poster="/assets/video/coating-poster.jpg"
+           muted playsinline loop preload="none" aria-hidden="true"></video>
     <div class="coat__scrim" aria-hidden="true"></div>
     <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>
-    <p class="coat__load">Loading the model&hellip;</p>
   </div>
 
   <div class="coat__panels">{panels}
@@ -771,7 +769,7 @@ def build_home():
     <div class="hero__fiber" aria-hidden="true"></div>
     <div class="hero__splashin">
       <img class="hero__mark" src="/assets/images/logo.png"
-           alt="Formula Mobile Car Detailing" width="900" height="278" fetchpriority="high">
+           alt="Formula Mobile Car Detailing" width="900" height="300" fetchpriority="high">
       <div class="hero__rule" aria-hidden="true"></div>
       <p class="hero__tag">Mobile Detailing &middot; Melbourne</p>
     </div>
@@ -869,7 +867,6 @@ def build_home():
 """
         + footer().replace(
             '<script src="/assets/js/enhance.js" defer></script>',
-            '<script type="importmap">{"imports":{"three":"/assets/js/vendor/three.module.js"}}</script>\n'
             '<script src="/assets/js/coating.js" type="module"></script>\n'
             '<script src="/assets/js/select.js" defer></script>\n'
             '<script src="/assets/js/hero.js" defer></script>\n'
@@ -1098,7 +1095,7 @@ def carousel_html(inline=False):
         All services
       </a>
       <a href="/" aria-label="Formula Mobile Car Detailing — home">
-        <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="278">
+        <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="300">
       </a>
       <a class="sel__back" href="tel:{PHONE_LINK}">{PHONE_DISPLAY}</a>
     </div>
