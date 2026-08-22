@@ -469,6 +469,23 @@ tbody tr:nth-child(even) td{background:#fafafb}
 .items tfoot td{background:#f2f2f4;font-weight:700;color:#0a0a0d;border-bottom:0}
 .items tfoot td:last-child{color:%BRAND%}
 
+/* the scope breakdown: dense, two columns, scannable in one pass */
+.bd{font-size:8.8pt;margin-bottom:4mm}
+.bd td{padding:1.5mm 3mm}
+.bd td:last-child,.bd th:last-child{text-align:right;white-space:nowrap;width:18mm}
+.bd .grp td{background:#fbf3f2;font-weight:700;color:%BRAND%;
+  font-size:7.4pt;letter-spacing:.13em;text-transform:uppercase;padding:2.2mm 3mm}
+.bd .sub td{font-weight:700;color:#0a0a0d;background:#f4f4f6}
+.bd .tot td{background:#0a0a0d;color:#fff;font-weight:700;font-size:10pt;
+  border-bottom:0;padding:3mm}
+.bd tbody tr:nth-child(even) td{background:transparent}
+.bd tbody tr.alt td{background:#fafafb}
+/* a colspan cell IS the last child, so it inherited the Hours column's
+   right alignment; and the zebra rule outranked the total's fill, which was
+   printing white text on a white row */
+.bd tbody tr.grp td{text-align:left;background:#fbf3f2}
+.bd tbody tr.tot td{background:#0a0a0d;color:#fff}
+
 .infra td:first-child{width:46mm;font-weight:700;color:#0a0a0d}
 .infra td:nth-child(2){width:60mm}
 
@@ -502,6 +519,15 @@ def build_html(m):
         (m["images"] + m["video"], "Media assets"),
     ]
     kpi_html = "".join(f'<div class="kpi"><b>{v}</b><span>{k}</span></div>' for v, k in kpis)
+
+    bd = ""
+    alt = False
+    for (name, _blurb, items), (_n, sub) in zip(scaled, totals):
+        bd += f'<tr class="grp"><td colspan="2">{name}</td></tr>'
+        for t, _b, h in items:
+            bd += f'<tr class="{"alt" if alt else ""}"><td>{t}</td><td>{h}</td></tr>'
+            alt = not alt
+        bd += f'<tr class="sub"><td>{name} subtotal</td><td>{sub}</td></tr>'
 
     pkg = "".join(f'<div class="d"><b>{t}</b><span>{b}</span></div>' for t, b in package(m))
     appr = "".join(
@@ -555,6 +581,16 @@ def build_html(m):
     <div>Estimated effort<b>{grand} hours</b></div>
   </div>
 </section>
+
+<h2>Scope breakdown</h2>
+<p>A line-by-line account of what was built and the hours behind each part.
+   {n_items} line items across {len(scaled)} workstreams, {grand} hours in total.
+   Figures are estimated against delivered scope; every line names something
+   countable, so any of them can be checked against the work itself.</p>
+<table class="bd">
+  <thead><tr><th>Line item</th><th>Hours</th></tr></thead>
+  <tbody>{bd}<tr class="tot"><td>Total</td><td>{grand} hours</td></tr></tbody>
+</table>
 
 <h2>At a glance</h2>
 <div class="kpis">{kpi_html}</div>
