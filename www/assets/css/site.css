@@ -288,13 +288,8 @@ section { position: relative; }
     backdrop-filter 0.4s var(--ease);
   border-bottom: 1px solid transparent;
 }
-.nav.is-stuck {
-  background: rgba(10, 10, 13, 0.55);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom-color: var(--glass-brd);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 40px -30px rgba(0, 0, 0, 0.9);
-}
+/* the bar itself is only a positioning frame now; the pill carries the glass */
+.nav.is-stuck { background: transparent; border-bottom-color: transparent; }
 .nav__in {
   width: min(100% - 2.5rem, var(--shell));
   margin-inline: auto;
@@ -1621,9 +1616,7 @@ body::after {
 /* header, footer, reviews and the reasons/sitemap bands all take the hex */
 .nav.is-stuck::before{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background-color:rgba(8,8,12,.80);
-  background-image:url('/assets/images/carbon-fibre.jpg');
-  background-size:120px;background-blend-mode:overlay;opacity:.85}
+  background:transparent}
 .nav{isolation:isolate}
 .foot{background:transparent}
 .foot.hexbg::before{background-color:#07070b}
@@ -1994,4 +1987,66 @@ body{max-width:100%}
 @media (max-width:820px){
   .coat__ctrls{gap:.7rem;padding-bottom:1.15rem}
   .coat--deck .coat__panel{row-gap:1.9rem}
+}
+
+/* ==========================================================================
+   TEXTMONO — the brushed-metal fill, taken verbatim from
+   nextlvlprotection.com.au's .hero-text-mono (9 stops, 200% wide, 6s sweep).
+   Guarded: without background-clip:text a transparent fill is invisible text.
+   ========================================================================== */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .textmono{
+    background-image:linear-gradient(90deg,#bfc2c7,#fff 5%,#fafbfc 15%,#cfd2d6 30%,
+      #fff 65%,#bfc2c7 80%,#f8f9fa 90%,#fff,#bfc2c7);
+    background-size:200% 100%;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    animation:shineSweep 6s ease-in-out infinite;
+  }
+  .hero__l2 .textmono{display:inline}
+  @keyframes shineSweep{0%{background-position:200% 0}100%{background-position:-200% 0}}
+}
+@media (prefers-reduced-motion: reduce){ .textmono{animation:none} }
+
+/* ==========================================================================
+   PILL HEADER
+   A floating capsule rather than a full-width bar: at the top of the page it
+   is barely there, and as the visitor scrolls it fills in as opaque glass.
+   The texture lives inside the capsule so the radius clips it.
+   ========================================================================== */
+:root{--pill-h:76px}
+.nav{height:calc(var(--pill-h) + 26px);border-bottom:0}
+.nav__in{
+  position:relative;
+  height:var(--pill-h);
+  padding-inline:clamp(1rem,2vw,1.6rem);
+  border-radius:999px;
+  border:1px solid transparent;
+  transition:background .45s var(--ease),border-color .45s var(--ease),
+             box-shadow .45s var(--ease),backdrop-filter .45s var(--ease);
+}
+.nav__in::before{
+  content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  pointer-events:none;opacity:0;transition:opacity .45s var(--ease);
+  background-color:rgba(10,10,14,.55);
+  background-image:url('/assets/images/carbon-fibre.jpg');
+  background-size:110px;background-blend-mode:overlay;
+}
+.nav.is-stuck .nav__in{
+  background:rgba(11,11,15,.60);
+  -webkit-backdrop-filter:blur(26px) saturate(175%);
+  backdrop-filter:blur(26px) saturate(175%);
+  border-color:rgba(255,255,255,.15);
+  box-shadow:0 22px 48px -24px rgba(0,0,0,.9),
+             inset 0 1px 0 rgba(255,255,255,.12),
+             inset 0 -1px 0 rgba(255,255,255,.04);
+}
+.nav.is-stuck .nav__in::before{opacity:.85}
+
+:root{--logo-h:56px;--logo-w:168px}
+@media (max-width:820px){
+  :root{--pill-h:62px;--logo-h:44px;--logo-w:132px}
+}
+@media (max-width:380px){
+  :root{--logo-h:38px;--logo-w:114px}
 }

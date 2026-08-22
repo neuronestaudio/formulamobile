@@ -617,7 +617,7 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 4;
-  width: min(100% - 4rem, 880px);
+  width: min(100% - 1.6rem, 1100px);
   text-align: center;
   pointer-events: none;
 }
@@ -627,13 +627,27 @@
      line-height under 1. Bebas is too condensed to read as heavy at this size. */
   font-family: var(--font-hero);
   font-weight: 800;
-  font-size: clamp(1.55rem, 3.5vw, 2.75rem);
+  /* "Servicing Melbourne" measures 20.59em in Syne 800 at -0.02em tracking.
+     The box is 100vw - 3rem, so the largest size that can never wrap is
+     (100vw - 48px) / 20.59 = 4.857vw - 2.33px. Held just under that, capped
+     where the box stops growing (1100 / 20.59 = 53px). */
+  font-size: min(calc(4.75vw - 1.6px), 52px);
   letter-spacing: -0.02em;
   line-height: 0.95;
   text-transform: uppercase;
   margin: 0 0 1.15rem;
-  text-shadow: 0 14px 40px rgba(0, 0, 0, 0.75);
+  /* text-shadow paints through the clipped fill and muddies it; the glyph
+     shape gets its lift from a drop-shadow instead */
+  /* No text-shadow (it paints through the clipped fill) and no drop-shadow
+     filter either: a filter on an element whose background-position is being
+     animated leaves repaint artefacts across the glyphs in Chrome. The hero
+     backdrop is dark and vignetted, so the type does not need the lift. */
+  text-shadow: none;
 }
+/* Each line is its own block and never wraps, so "Servicing Melbourne" stays
+   on one line and "for 30+ years" on the second at every width. The size is
+   driven by vw so the longer line always fits rather than being clipped. */
+.hero__l1,.hero__l2{display:block;white-space:nowrap}
 .hero__sub {
   /* Next Lvl's subline: uppercase, widely tracked, deliberately quiet so the
      headline carries the frame. This replaces the earlier cursive treatment. */
@@ -670,7 +684,7 @@
   .hero__sub { font-size: 0.74rem; letter-spacing: 0.1em; }
   /* Syne is much wider per glyph than Bebas; "SERVICING MELBOURNE" needs a
      smaller step on a phone or it wraps and eats the cards. */
-  .hero__h1 { font-size: clamp(1.25rem, 5.4vw, 1.8rem); }
+
   .sel--inline .sel__stage {
     --say-gap: 2.4rem;
     padding-bottom: 8.5rem;
@@ -695,6 +709,6 @@
   .sel--inline .sel__name { font-size: 1.5rem; }
   .sel--inline .sel__blurb { -webkit-line-clamp: 2; font-size: 0.8rem; }
   .sel--inline .sel__go { margin-top: 0.7rem; padding: 0.55rem 1rem; }
-  .hero__h1 { font-size: clamp(1.75rem, 7.4vw, 2.3rem); }
+
   .hero__say .eyebrow { margin-bottom: 0.3rem; font-size: 0.62rem; }
 }
