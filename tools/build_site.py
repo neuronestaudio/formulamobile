@@ -819,18 +819,18 @@ def coating_html(scrolling=False):
         f'aria-label="{esc(t)}"></button>'
         for i, (t, _h, _b) in enumerate(COATING_STAGES))
 
-    arrows = "" if scrolling else """
-    <button class="coat__arrow coat__arrow--prev" data-coat-prev type="button" aria-label="Previous stage">
-      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
-        <path d="M15 5.5H2M6 1L2 5.5 6 10" stroke="currentColor" stroke-width="1.7"/></svg>
-      <span class="coat__arrowlbl">Back</span>
-    </button>
-    <button class="coat__arrow coat__arrow--next" data-coat-next type="button" aria-label="Next stage">
-      <span class="coat__arrowlbl">Next</span>
-      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
-      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
-        <path d="M0 5.5h13M9 1l4 4.5L9 10" stroke="currentColor" stroke-width="1.7"/></svg>
-    </button>"""
+    arrow_prev = "" if scrolling else """
+      <button class="coat__arrow coat__arrow--prev" data-coat-prev type="button" aria-label="Previous stage">
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+          <path d="M15 5.5H2M6 1L2 5.5 6 10" stroke="currentColor" stroke-width="1.7"/></svg>
+        <span class="coat__arrowlbl">Back</span>
+      </button>"""
+    arrow_next = "" if scrolling else """
+      <button class="coat__arrow coat__arrow--next" data-coat-next type="button" aria-label="Next stage">
+        <span class="coat__arrowlbl">Next</span>
+        <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
+          <path d="M0 5.5h13M9 1l4 4.5L9 10" stroke="currentColor" stroke-width="1.7"/></svg>
+      </button>"""
 
     return f"""
 <section class="band band--tight">
@@ -848,7 +848,9 @@ def coating_html(scrolling=False):
     <div class="coat__scrim" aria-hidden="true"></div>
     <div class="coat__panels">{panels}
     </div>
-    <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>{arrows}
+    <div class="coat__ctrls">{arrow_prev}
+      <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>{arrow_next}
+    </div>
   </div>
 </section>
 """

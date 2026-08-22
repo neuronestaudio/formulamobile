@@ -1704,7 +1704,7 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
    ========================================================================== */
 .coat--deck{height:auto}
 .coat--deck .coat__stage{
-  position:relative;top:auto;height:min(86vh,760px);min-height:560px;overflow:hidden;
+  position:relative;top:auto;height:min(80vh,700px);min-height:540px;overflow:hidden;
 }
 /* Slides are stacked and crossfaded rather than translated — the same
    opacity-only swap the hero and the films use, so the whole site changes
@@ -1735,7 +1735,7 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
 .coat__arrow--next{right:clamp(.7rem,2.5vw,2rem)}
 .coat--deck .coat__pips{bottom:1.6rem}
 @media (max-width:820px){
-  .coat--deck .coat__stage{height:min(88vh,700px)}
+  .coat--deck .coat__stage{height:min(76vh,620px)}
   .coat--deck .coat__panel{padding-inline:1.25rem}
   /* Swipe alone is invisible: nothing on a phone said the four stages could
      be moved through at all, so most of the process was never seen. The
@@ -1965,3 +1965,33 @@ body{max-width:100%}
 .nav__call span{display:none}
 /* a longer label needs a tighter button so the bar still balances */
 .nav__cta{font-size:.72rem;letter-spacing:.1em;padding:.72rem 1.05rem;white-space:nowrap}
+
+/* ==========================================================================
+   COATING DECK — controls below the card, stage titles centred
+   The arrows were pinned to the stage corners, which read as page furniture
+   rather than as "there are three more of these". In a real row under the
+   card they belong to the content they move.
+   ========================================================================== */
+.coat--deck .coat__stage{display:flex;flex-direction:column}
+/* the panels keep crossfading stacked; only their WRAPPER joins the column */
+.coat--deck .coat__panels{position:relative;inset:auto;flex:1 1 auto;min-height:0}
+
+.coat__ctrls{
+  display:flex;align-items:center;justify-content:center;gap:1.1rem;
+  padding:0 1.25rem 1.5rem;z-index:6;
+}
+/* the pips were absolutely placed against the stage; in the row they sit in flow */
+.coat--deck .coat__ctrls .coat__pips{position:static;inset:auto;bottom:auto;transform:none;margin:0}
+.coat--deck .coat__arrow{position:static;top:auto;bottom:auto;margin:0;transform:none}
+.coat--deck .coat__arrow:hover{transform:scale(1.07)}
+
+/* centred titles: the -.06em optical pull only makes sense flush left */
+.coat--deck .coat__word{text-align:center;margin-left:0;margin-bottom:0}
+.coat--deck .coat__card{margin-inline:auto}
+/* air between the statement and the box it explains */
+.coat--deck .coat__panel{row-gap:clamp(1.9rem,4vw,3.6rem)}
+
+@media (max-width:820px){
+  .coat__ctrls{gap:.7rem;padding-bottom:1.15rem}
+  .coat--deck .coat__panel{row-gap:1.9rem}
+}
