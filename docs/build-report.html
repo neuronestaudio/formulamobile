@@ -17,23 +17,39 @@ body{margin:0;font-family:"DM Sans","Segoe UI",system-ui,sans-serif;
 .cover::after{content:"";position:absolute;left:-30%;bottom:-55%;width:130%;height:90%;
        background:radial-gradient(closest-side,rgba(245,52,45,.30),transparent 72%)}
 .cover>*{position:relative;z-index:1}
-.cover__logo{width:64mm;margin-bottom:auto}
+.cover__logo{width:64mm;margin:0 auto auto;display:block}
 .eyebrow{font-size:8pt;font-weight:700;letter-spacing:.26em;text-transform:uppercase;
          color:#f5342d;margin-bottom:6mm}
 .cover h1{font-family:"Bebas Neue",Impact,sans-serif;font-size:44pt;line-height:.93;
           text-transform:uppercase;margin:0 0 6mm;font-weight:400;color:#fff}
 .cover h1 em{font-style:italic;color:#f5342d}
 .cover__sub{font-size:11.5pt;color:rgba(255,255,255,.72);max-width:110mm;margin:0 0 12mm}
-.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;display:flex;gap:9mm;
-             flex-wrap:wrap;font-size:8.5pt;color:rgba(255,255,255,.55)}
+.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;
+             display:grid;grid-template-columns:repeat(2,1fr);gap:5mm 8mm;
+             font-size:8.5pt;color:rgba(255,255,255,.55)}
 .cover__meta b{display:block;color:#fff;font-weight:600;margin-top:1mm;font-size:10pt}
 
+/* Every section opens a page. A heading stranded at the foot of a page with
+   its content overleaf, or a paragraph broken after one line, is the thing
+   that makes a report look thrown together. */
 h2{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
-   font-size:19pt;letter-spacing:.02em;margin:10mm 0 4mm;padding-bottom:2.5mm;
-   border-bottom:2px solid #0a0a0d;page-break-after:avoid;color:#0a0a0d}
-h2:first-of-type{margin-top:0}
+   font-size:19pt;letter-spacing:.02em;margin:0 0 4mm;padding-bottom:2.5mm;
+   border-bottom:2px solid #0a0a0d;color:#0a0a0d;
+   page-break-before:always;break-before:page;
+   page-break-after:avoid;break-after:avoid}
+/* the cover already forces a break, so the first section must not add another */
+h2:first-of-type{page-break-before:auto;break-before:auto;margin-top:0}
+
+/* no one- or two-line fragments stranded at a page boundary */
+p,li{orphans:3;widows:3}
+/* a section's opening paragraph stays with the heading that introduces it */
+h2 + p,h3 + p,h2 + .kpis,h3 + .sub{page-break-before:avoid;break-before:avoid}
+h3{page-break-after:avoid;break-after:avoid}
+/* a sub-heading plus its blurb plus the first rows of its table travel together */
+.items thead{display:table-header-group}
+.items tbody tr:first-child{page-break-before:avoid;break-before:avoid}
 h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
-   font-size:13pt;margin:7mm 0 1mm;color:#0a0a0d;page-break-after:avoid}
+   font-size:13pt;margin:7mm 0 1mm;color:#0a0a0d}
 p{margin:0 0 3mm}
 .sub{font-size:9pt;color:#6b7280;margin:0 0 2.5mm}
 
@@ -117,17 +133,17 @@ tbody tr:nth-child(even) td{background:#fafafb}
    countable, so any of them can be checked against the work itself.</p>
 <table class="bd">
   <thead><tr><th>Line item</th><th>Hours</th></tr></thead>
-  <tbody><tr class="grp"><td colspan="2">Discovery and audit</td></tr><tr class=""><td>Byte-verified capture of the live site</td><td>2</td></tr><tr class="alt"><td>Front-end, back-end, SEO and conversion audit</td><td>4</td></tr><tr class=""><td>Audit typeset and delivered as a branded PDF</td><td>1</td></tr><tr class="sub"><td>Discovery and audit subtotal</td><td>7</td></tr><tr class="grp"><td colspan="2">Infrastructure and build system</td></tr><tr class="alt"><td>Static site generator</td><td>11</td></tr><tr class=""><td>Clean URLs, canonical tags and XML sitemap</td><td>3</td></tr><tr class="alt"><td>Structured data layer</td><td>3</td></tr><tr class=""><td>Local development and preview server</td><td>1</td></tr><tr class="sub"><td>Infrastructure and build system subtotal</td><td>18</td></tr><tr class="grp"><td colspan="2">Design system</td></tr><tr class="alt"><td>Core stylesheet</td><td>9</td></tr><tr class=""><td>Service selector stylesheet</td><td>3</td></tr><tr class="alt"><td>Brand extraction and typography</td><td>2</td></tr><tr class="sub"><td>Design system subtotal</td><td>14</td></tr><tr class="grp"><td colspan="2">Interaction and motion</td></tr><tr class=""><td>Animated logo splash</td><td>3</td></tr><tr class="alt"><td>Infinite service carousel</td><td>4</td></tr><tr class=""><td>Four-stage ceramic coating sequence</td><td>4</td></tr><tr class="alt"><td>Booking wizard behaviour</td><td>5</td></tr><tr class=""><td>Interactive spray-on headings</td><td>2</td></tr><tr class="alt"><td>Scroll reveals, counters, drawer and marquees</td><td>3</td></tr><tr class="sub"><td>Interaction and motion subtotal</td><td>21</td></tr><tr class="grp"><td colspan="2">Content and pages</td></tr><tr class=""><td>25 keyword landing pages</td><td>7</td></tr><tr class="alt"><td>44 suburb pages</td><td>3</td></tr><tr class=""><td>8 service pages</td><td>3</td></tr><tr class="alt"><td>Core pages</td><td>4</td></tr><tr class="sub"><td>Content and pages subtotal</td><td>17</td></tr><tr class="grp"><td colspan="2">Media production</td></tr><tr class=""><td>8 process films</td><td>4</td></tr><tr class="alt"><td>Photography sourced from the client's own archive</td><td>4</td></tr><tr class=""><td>100 images prepared</td><td>3</td></tr><tr class="sub"><td>Media production subtotal</td><td>11</td></tr><tr class="grp"><td colspan="2">Lead capture and measurement</td></tr><tr class="alt"><td>5-step booking wizard</td><td>3</td></tr><tr class=""><td>Contact form</td><td>1</td></tr><tr class="alt"><td>First-touch attribution</td><td>3</td></tr><tr class=""><td>Conversion tracking gated on the CRM</td><td>2</td></tr><tr class="sub"><td>Lead capture and measurement subtotal</td><td>9</td></tr><tr class="grp"><td colspan="2">Quality assurance</td></tr><tr class="alt"><td>Headless-browser verification</td><td>5</td></tr><tr class=""><td>Accessibility, no-JavaScript fallbacks and form edge cases</td><td>3</td></tr><tr class="sub"><td>Quality assurance subtotal</td><td>8</td></tr><tr class="grp"><td colspan="2">Reporting and handover</td></tr><tr class="alt"><td>Build report pipeline</td><td>2</td></tr><tr class=""><td>Workspace and sourcing documentation</td><td>1</td></tr><tr class="sub"><td>Reporting and handover subtotal</td><td>3</td></tr><tr class="tot"><td>Total</td><td>108 hours</td></tr></tbody>
+  <tbody><tr class="grp"><td colspan="2">Discovery and audit</td></tr><tr class=""><td>Byte-verified capture of the live site</td><td>2</td></tr><tr class="alt"><td>Front-end, back-end, SEO and conversion audit</td><td>4</td></tr><tr class=""><td>Audit typeset and delivered as a branded PDF</td><td>1</td></tr><tr class="sub"><td>Discovery and audit subtotal</td><td>7</td></tr><tr class="grp"><td colspan="2">Infrastructure and build system</td></tr><tr class="alt"><td>Static site generator</td><td>11</td></tr><tr class=""><td>Clean URLs, canonical tags and XML sitemap</td><td>3</td></tr><tr class="alt"><td>Structured data layer</td><td>3</td></tr><tr class=""><td>Local development and preview server</td><td>1</td></tr><tr class="sub"><td>Infrastructure and build system subtotal</td><td>18</td></tr><tr class="grp"><td colspan="2">Design system</td></tr><tr class="alt"><td>Core stylesheet</td><td>9</td></tr><tr class=""><td>Service selector stylesheet</td><td>3</td></tr><tr class="alt"><td>Brand extraction and typography</td><td>2</td></tr><tr class="sub"><td>Design system subtotal</td><td>14</td></tr><tr class="grp"><td colspan="2">Interaction and motion</td></tr><tr class=""><td>Animated logo splash</td><td>3</td></tr><tr class="alt"><td>Infinite service carousel</td><td>4</td></tr><tr class=""><td>Four-stage ceramic coating sequence</td><td>4</td></tr><tr class="alt"><td>Booking wizard behaviour</td><td>5</td></tr><tr class=""><td>Interactive spray-on headings</td><td>2</td></tr><tr class="alt"><td>Scroll reveals, counters, drawer and marquees</td><td>3</td></tr><tr class="sub"><td>Interaction and motion subtotal</td><td>21</td></tr><tr class="grp"><td colspan="2">Content and pages</td></tr><tr class=""><td>25 keyword landing pages</td><td>7</td></tr><tr class="alt"><td>44 suburb pages</td><td>3</td></tr><tr class=""><td>8 service pages</td><td>3</td></tr><tr class="alt"><td>Core pages</td><td>4</td></tr><tr class="sub"><td>Content and pages subtotal</td><td>17</td></tr><tr class="grp"><td colspan="2">Media production</td></tr><tr class=""><td>8 process films</td><td>4</td></tr><tr class="alt"><td>Photography sourced from the client's own archive</td><td>4</td></tr><tr class=""><td>102 images prepared</td><td>3</td></tr><tr class="sub"><td>Media production subtotal</td><td>11</td></tr><tr class="grp"><td colspan="2">Lead capture and measurement</td></tr><tr class="alt"><td>5-step booking wizard</td><td>3</td></tr><tr class=""><td>Contact form</td><td>1</td></tr><tr class="alt"><td>First-touch attribution</td><td>3</td></tr><tr class=""><td>Conversion tracking gated on the CRM</td><td>2</td></tr><tr class="sub"><td>Lead capture and measurement subtotal</td><td>9</td></tr><tr class="grp"><td colspan="2">Quality assurance</td></tr><tr class="alt"><td>Headless-browser verification</td><td>5</td></tr><tr class=""><td>Accessibility, no-JavaScript fallbacks and form edge cases</td><td>3</td></tr><tr class="sub"><td>Quality assurance subtotal</td><td>8</td></tr><tr class="grp"><td colspan="2">Reporting and handover</td></tr><tr class="alt"><td>Build report pipeline</td><td>2</td></tr><tr class=""><td>Workspace and sourcing documentation</td><td>1</td></tr><tr class="sub"><td>Reporting and handover subtotal</td><td>3</td></tr><tr class="tot"><td>Total</td><td>108 hours</td></tr></tbody>
 </table>
 
 <h2>At a glance</h2>
-<div class="kpis"><div class="kpi"><b>88</b><span>Pages built</span></div><div class="kpi"><b>87</b><span>Indexed URLs</span></div><div class="kpi"><b>8,262</b><span>Lines written</span></div><div class="kpi"><b>108</b><span>Estimated hours</span></div><div class="kpi"><b>31</b><span>Line items</span></div><div class="kpi"><b>108</b><span>Media assets</span></div></div>
+<div class="kpis"><div class="kpi"><b>88</b><span>Pages built</span></div><div class="kpi"><b>87</b><span>Indexed URLs</span></div><div class="kpi"><b>8,278</b><span>Lines written</span></div><div class="kpi"><b>108</b><span>Estimated hours</span></div><div class="kpi"><b>31</b><span>Line items</span></div><div class="kpi"><b>110</b><span>Media assets</span></div></div>
 <p>The previous site was six pages of 2021-era HTML with four broken files on every page,
    no structured data, no canonical tags, and one enquiry form labelled as a feedback form.
    What replaced it is itemised below.</p>
 
 <h2>What is included</h2>
-<div class="d"><b>A complete website</b><span>88 pages, every one written as real HTML and owned outright. No page-builder licence, no monthly platform fee, no plugin to renew.</span></div><div class="d"><b>Findability across Melbourne</b><span>44 suburb pages and 25 keyword pages across 4 topic clusters, plus 13 kinds of structured data so search engines can read what the business actually does.</span></div><div class="d"><b>A booking system that qualifies the job</b><span>A 5-step wizard capturing 14 fields &mdash; service, mobile or studio, address, vehicle, paint and interior condition &mdash; so an enquiry arrives ready to quote instead of starting a round of phone tag.</span></div><div class="d"><b>Proof of where leads come from</b><span>Twelve advertising parameters captured on the first visit and never overwritten, so every enquiry can be traced back to the ad, post or search that produced it.</span></div><div class="d"><b>The business's own photography and film</b><span>100 images and 8 process films. Every photograph of a vehicle, a finish or a job in progress is the business's own work, pulled from its archive &mdash; no stock library. The hero's out-of-focus backdrops are generated plates, used only as darkened texture behind the service cards, never as a claim about work performed.</span></div><div class="d"><b>The source, in full</b><span>One Git repository holding the generator, the stylesheets, the scripts, the media and this report. Any developer can pick it up and keep going.</span></div>
+<div class="d"><b>A complete website</b><span>88 pages, every one written as real HTML and owned outright. No page-builder licence, no monthly platform fee, no plugin to renew.</span></div><div class="d"><b>Findability across Melbourne</b><span>44 suburb pages and 25 keyword pages across 4 topic clusters, plus 13 kinds of structured data so search engines can read what the business actually does.</span></div><div class="d"><b>A booking system that qualifies the job</b><span>A 5-step wizard capturing 14 fields &mdash; service, mobile or studio, address, vehicle, paint and interior condition &mdash; so an enquiry arrives ready to quote instead of starting a round of phone tag.</span></div><div class="d"><b>Proof of where leads come from</b><span>Twelve advertising parameters captured on the first visit and never overwritten, so every enquiry can be traced back to the ad, post or search that produced it.</span></div><div class="d"><b>The business's own photography and film</b><span>102 images and 8 process films. Every photograph of a vehicle, a finish or a job in progress is the business's own work, pulled from its archive &mdash; no stock library. The hero's out-of-focus backdrops are generated plates, used only as darkened texture behind the service cards, never as a claim about work performed.</span></div><div class="d"><b>The source, in full</b><span>One Git repository holding the generator, the stylesheets, the scripts, the media and this report. Any developer can pick it up and keep going.</span></div>
 
 <h2>How the work was structured</h2>
 <p>The order matters as much as the total. Each stage below depends on the one before it.</p>
@@ -190,7 +206,7 @@ tbody tr:nth-child(even) td{background:#fafafb}
 <p class="sub">Original assets, sourced and prepared.</p>
 <table class="items">
   <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
-  <tbody><tr><td><b>8 process films</b></td><td><span>Cut, graded and seamlessly looped from source footage, one per coating stage, crossfaded and lazy-loaded.</span></td><td>4</td></tr><tr><td><b>Photography sourced from the client's own archive</b></td><td><span>Authenticated tooling built to reach it (fb_login.py and fb_photo_grab.py, 279 lines); 230 photographs triaged down to the ones worth publishing.</span></td><td>4</td></tr><tr><td><b>100 images prepared</b></td><td><span>Cropped per breakpoint, optimised, and customer number plates blurred before publication.</span></td><td>3</td></tr></tbody>
+  <tbody><tr><td><b>8 process films</b></td><td><span>Cut, graded and seamlessly looped from source footage, one per coating stage, crossfaded and lazy-loaded.</span></td><td>4</td></tr><tr><td><b>Photography sourced from the client's own archive</b></td><td><span>Authenticated tooling built to reach it (fb_login.py and fb_photo_grab.py, 279 lines); 230 photographs triaged down to the ones worth publishing.</span></td><td>4</td></tr><tr><td><b>102 images prepared</b></td><td><span>Cropped per breakpoint, optimised, and customer number plates blurred before publication.</span></td><td>3</td></tr></tbody>
   <tfoot><tr><td colspan="2">Media production &mdash; subtotal</td><td>11</td></tr></tfoot>
 </table><h3>Lead capture and measurement</h3>
 <p class="sub">Turning visits into traceable enquiries.</p>
@@ -226,7 +242,7 @@ tbody tr:nth-child(even) td{background:#fafafb}
         <td>5-step wizard (14 fields) + contact form</td></tr>
     <tr><td>Attribution</td><td>None</td><td>12 first-touch parameters</td></tr>
     <tr><td>Own photography</td><td>Stock and placeholder</td>
-        <td>100 images, 8 films</td></tr>
+        <td>102 images, 8 films</td></tr>
     <tr><td>Broken files</td><td>4 on every page</td><td>0</td></tr>
   </tbody>
 </table>

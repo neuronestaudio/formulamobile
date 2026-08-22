@@ -422,23 +422,39 @@ body{margin:0;font-family:"DM Sans","Segoe UI",system-ui,sans-serif;
 .cover::after{content:"";position:absolute;left:-30%;bottom:-55%;width:130%;height:90%;
        background:radial-gradient(closest-side,rgba(245,52,45,.30),transparent 72%)}
 .cover>*{position:relative;z-index:1}
-.cover__logo{width:64mm;margin-bottom:auto}
+.cover__logo{width:64mm;margin:0 auto auto;display:block}
 .eyebrow{font-size:8pt;font-weight:700;letter-spacing:.26em;text-transform:uppercase;
          color:%BRAND%;margin-bottom:6mm}
 .cover h1{font-family:"Bebas Neue",Impact,sans-serif;font-size:44pt;line-height:.93;
           text-transform:uppercase;margin:0 0 6mm;font-weight:400;color:#fff}
 .cover h1 em{font-style:italic;color:%BRAND%}
 .cover__sub{font-size:11.5pt;color:rgba(255,255,255,.72);max-width:110mm;margin:0 0 12mm}
-.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;display:flex;gap:9mm;
-             flex-wrap:wrap;font-size:8.5pt;color:rgba(255,255,255,.55)}
+.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;
+             display:grid;grid-template-columns:repeat(2,1fr);gap:5mm 8mm;
+             font-size:8.5pt;color:rgba(255,255,255,.55)}
 .cover__meta b{display:block;color:#fff;font-weight:600;margin-top:1mm;font-size:10pt}
 
+/* Every section opens a page. A heading stranded at the foot of a page with
+   its content overleaf, or a paragraph broken after one line, is the thing
+   that makes a report look thrown together. */
 h2{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
-   font-size:19pt;letter-spacing:.02em;margin:10mm 0 4mm;padding-bottom:2.5mm;
-   border-bottom:2px solid #0a0a0d;page-break-after:avoid;color:#0a0a0d}
-h2:first-of-type{margin-top:0}
+   font-size:19pt;letter-spacing:.02em;margin:0 0 4mm;padding-bottom:2.5mm;
+   border-bottom:2px solid #0a0a0d;color:#0a0a0d;
+   page-break-before:always;break-before:page;
+   page-break-after:avoid;break-after:avoid}
+/* the cover already forces a break, so the first section must not add another */
+h2:first-of-type{page-break-before:auto;break-before:auto;margin-top:0}
+
+/* no one- or two-line fragments stranded at a page boundary */
+p,li{orphans:3;widows:3}
+/* a section's opening paragraph stays with the heading that introduces it */
+h2 + p,h3 + p,h2 + .kpis,h3 + .sub{page-break-before:avoid;break-before:avoid}
+h3{page-break-after:avoid;break-after:avoid}
+/* a sub-heading plus its blurb plus the first rows of its table travel together */
+.items thead{display:table-header-group}
+.items tbody tr:first-child{page-break-before:avoid;break-before:avoid}
 h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
-   font-size:13pt;margin:7mm 0 1mm;color:#0a0a0d;page-break-after:avoid}
+   font-size:13pt;margin:7mm 0 1mm;color:#0a0a0d}
 p{margin:0 0 3mm}
 .sub{font-size:9pt;color:#6b7280;margin:0 0 2.5mm}
 

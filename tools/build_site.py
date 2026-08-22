@@ -928,9 +928,9 @@ def build_home():
     <div class="hero__splashin">
       <div class="hero__lock" role="img" aria-label="Formula &mdash; Paint Correction and Coatings">
         <img class="hero__lockblock" src="/assets/images/logo-block.png" alt=""
-             width="1100" height="367" fetchpriority="high">
+             width="1200" height="400" fetchpriority="high">
         <img class="hero__lockscript" src="/assets/images/logo-script.png" alt=""
-             width="1100" height="367" fetchpriority="high">
+             width="1200" height="400" fetchpriority="high">
       </div>
       <div class="hero__rule" aria-hidden="true"></div>
       <p class="hero__tag">Mobile Detailing &middot; Melbourne</p>
