@@ -63,4 +63,23 @@
   splash.addEventListener('click', resolve);
 
   setTimeout(resolve, HOLD);
+
+  /* ---- keep the cards clear of the statement -------------------------
+     The heading wraps to a different number of lines at almost every width,
+     so a fixed padding under it either gapes or collides. Publish the block's
+     real height and let CSS add a constant gap to it. Fonts matter: Syne is
+     wider than the fallback, so a pre-swap measurement is the wrong one. */
+  (function () {
+    var say = document.querySelector('.hero__say');
+    var sel = document.querySelector('.sel--inline');
+    if (!say || !sel) return;
+    var apply = function () {
+      sel.style.setProperty('--say-h', Math.ceil(say.getBoundingClientRect().height) + 'px');
+    };
+    apply();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(apply);
+    if (window.ResizeObserver) new ResizeObserver(apply).observe(say);
+    else window.addEventListener('resize', apply);
+  }());
+
 })();

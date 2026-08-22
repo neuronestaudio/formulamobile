@@ -256,13 +256,13 @@ SERVICES = [
 # Only the four slider shots are large, so backdrops are blurred hard and each
 # gets its own grade — the worlds differ, the accent stays Formula red.
 SELECT_LOOKS = {
-    "mini-detail":       ("/assets/images/gallery/03.jpg", "#27455f"),
-    "full-detail":       ("/assets/images/slider01.jpg", "#3a3f4a"),
-    "interior-detail":   ("/assets/images/gallery/04.jpg", "#6b4526"),
-    "exterior-detail":   ("/assets/images/slider02.jpg", "#1d3a5e"),
-    "overspray-removal": ("/assets/images/services/img06.jpg", "#1d4f47"),
-    "ceramic-coating":   ("/assets/images/slider03.jpg", "#6b5320"),
-    "paint-correction":  ("/assets/images/slider04.jpg", "#3f2a5e"),
+    "mini-detail":       ("/assets/images/backdrop/mini-detail.jpg", "#27455f"),
+    "full-detail":       ("/assets/images/backdrop/full-detail.jpg", "#3a3f4a"),
+    "interior-detail":   ("/assets/images/backdrop/interior-detail.jpg", "#6b4526"),
+    "exterior-detail":   ("/assets/images/backdrop/exterior-detail.jpg", "#1d3a5e"),
+    "overspray-removal": ("/assets/images/backdrop/overspray-removal.jpg", "#1d4f47"),
+    "ceramic-coating":   ("/assets/images/backdrop/ceramic-coating.jpg", "#6b5320"),
+    "paint-correction":  ("/assets/images/backdrop/paint-correction.jpg", "#3f2a5e"),
 }
 
 TESTIMONIALS = [
@@ -517,7 +517,7 @@ def nav(active=""):
     )
     drawer_items = "\n".join(
         f'    <a href="{h}">{esc(l)}</a>' for h, l in NAV + NAV_FOOTER_EXTRA)
-    return f"""<a class="skip" href="#main" style="position:absolute;left:-9999px">Skip to content</a>
+    return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="nav">
   <div class="nav__in">
     <ul class="nav__links">
@@ -533,7 +533,7 @@ def nav(active=""):
                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
-      <a class="nav__cta btn" href="/booking/">Book</a>
+      <a class="nav__cta btn" href="/booking/">Get a free quote</a>
       <button class="nav__burger" data-drawer-open aria-label="Open menu">
         <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
           <path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" stroke-width="1.6"/>
@@ -823,8 +823,11 @@ def coating_html(scrolling=False):
     <button class="coat__arrow coat__arrow--prev" data-coat-prev type="button" aria-label="Previous stage">
       <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
         <path d="M15 5.5H2M6 1L2 5.5 6 10" stroke="currentColor" stroke-width="1.7"/></svg>
+      <span class="coat__arrowlbl">Back</span>
     </button>
     <button class="coat__arrow coat__arrow--next" data-coat-next type="button" aria-label="Next stage">
+      <span class="coat__arrowlbl">Next</span>
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
       <svg width="15" height="11" viewBox="0 0 15 11" fill="none" aria-hidden="true">
         <path d="M0 5.5h13M9 1l4 4.5L9 10" stroke="currentColor" stroke-width="1.7"/></svg>
     </button>"""

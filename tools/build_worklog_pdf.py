@@ -166,9 +166,12 @@ def package(m):
          "Twelve advertising parameters captured on the first visit and never "
          "overwritten, so every enquiry can be traced back to the ad, post or search "
          "that produced it."),
-        ("Original photography and film",
-         f"{m['images']} images and {m['video']} process films cut from the business's "
-         "own work. No stock library, no AI imagery, nothing that belongs to anyone else."),
+        ("The business's own photography and film",
+         f"{m['images']} images and {m['video']} process films. Every photograph of a "
+         "vehicle, a finish or a job in progress is the business's own work, pulled "
+         "from its archive &mdash; no stock library. The hero's out-of-focus backdrops "
+         "are generated plates, used only as darkened texture behind the service "
+         "cards, never as a claim about work performed."),
         ("The source, in full",
          "One Git repository holding the generator, the stylesheets, the scripts, the "
          "media and this report. Any developer can pick it up and keep going."),
