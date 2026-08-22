@@ -6,6 +6,18 @@
    ========================================================================== */
 
 @font-face {
+  font-family: 'Syne';
+  src: url('/assets/fonts/syne-800.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+  /* Basic Latin only. Google serves latin-ext first and that subset carries no
+     A-Z, so taking the first block silently falls back to the system stack. */
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
   font-family: 'Bebas Neue';
   src: url('/assets/fonts/bebas-neue-400.woff2') format('woff2');
   font-weight: 400;
@@ -44,13 +56,17 @@
   --fg-dim: #6b7280;
 
   --font-display: 'Bebas Neue', Impact, sans-serif;
+  /* second display face, used only for the hero statement */
+  --font-hero: 'Syne', 'Bebas Neue', Impact, sans-serif;
   --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
 
   --radius: 10px;
   --radius-lg: 16px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --shell: 1240px;
-  --nav-h: 76px;
+  --nav-h: 92px;
+  --logo-h: 72px;      /* the mark is the brand; it earns the space */
+  --logo-w: 216px;     /* 3:1 artwork — the centre track reserves this */
 
   /* ---- glass ----
      Tuned against Glossedout's heaviest treatment (blur 24 / saturate 185).
@@ -185,7 +201,11 @@ section { position: relative; }
 }
 
 /* carbon-fibre hex mesh, Premier's texture treatment */
-.mesh::before{background-image:var(--hex);opacity:.5}
+.mesh{position:relative;isolation:isolate}
+.mesh::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:var(--hex);opacity:.5;
+}
 .mesh > * { position: relative; z-index: 1; }
 
 .rule {
@@ -282,7 +302,7 @@ section { position: relative; }
   align-items: center;
   gap: 2rem;
 }
-.nav__logo img { height: 46px; width: auto; }
+.nav__logo img{height:var(--logo-h);width:auto;display:block}
 .nav__links {
   display: flex;
   gap: 1.9rem;
@@ -797,7 +817,7 @@ section { position: relative; }
 @media (max-width: 900px) {
   .foot__grid { grid-template-columns: 1fr 1fr; }
 }
-@media (max-width: 820px) {
+@media (max-width: 1040px) {
   .nav__links, .nav__call { display: none; }
   .nav__burger { display: inline-flex; }
   .callbar { display: flex; }
@@ -1192,7 +1212,6 @@ body::after {
 }
 
 /* the hex mesh reads too faint now the grain carries the fine detail */
-.mesh::before { opacity: 0.75; }
 
 .band > * { position: relative; z-index: 1; }
 
@@ -1598,8 +1617,6 @@ body::after {
 /* denser, dimmer variant for large fills like the sitemap columns */
 .hexbg--deep::before{background-color:#07070b;opacity:.85}
 
-/* the same mesh, applied over an existing background rather than replacing it */
-.mesh::before{background-image:var(--hex);opacity:.5}
 
 /* header, footer, reviews and the reasons/sitemap bands all take the hex */
 .nav.is-stuck::before{
@@ -1635,7 +1652,7 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
 @media (max-width: 820px){
   .nav__in{position:relative;justify-content:center}
   .nav__logo{margin:0 auto}
-  .nav__logo img{height:40px}
+  .nav__logo img{height:var(--logo-h);width:auto;display:block}
   .nav__burger{position:absolute;right:0;top:50%;transform:translateY(-50%);margin-left:0}
   .nav__call{position:absolute;left:0;top:50%;transform:translateY(-50%)}
 }
@@ -1645,18 +1662,18 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
    of the bar regardless of how wide the links or the actions are. */
 .nav__in{
   display:grid;
-  grid-template-columns:1fr auto 1fr;
+  grid-template-columns:1fr minmax(var(--logo-w),auto) 1fr;
   align-items:center;
   gap:1rem;
 }
 .nav__links{margin:0;justify-self:start}
 .nav__logo{justify-self:center}
-.nav__logo img{height:46px;width:auto;display:block}
+.nav__logo img{height:var(--logo-h);width:auto;display:block}
 .nav__act{display:flex;align-items:center;gap:.7rem;justify-self:end}
 @media (max-width:820px){
-  .nav__in{grid-template-columns:1fr auto 1fr}
+  .nav__in{grid-template-columns:1fr minmax(var(--logo-w),auto) 1fr}
   .nav__links{display:none}
-  .nav__logo img{height:40px}
+  .nav__logo img{height:var(--logo-h);width:auto;display:block}
   .nav__burger{position:static;transform:none}
   .nav__call{position:static;transform:none}
 }
@@ -1717,8 +1734,18 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
 .coat--deck .coat__pips{bottom:1.6rem}
 @media (max-width:820px){
   .coat--deck .coat__stage{height:min(88vh,700px)}
-  .coat__arrow{display:none}          /* swipe instead */
   .coat--deck .coat__panel{padding-inline:1.25rem}
+  /* Swipe alone is invisible: nothing on a phone said the four stages could
+     be moved through at all, so most of the process was never seen. The
+     arrows drop to the control row beside the pips, clear of the copy, and
+     stay a 44px touch target. Swipe still works for anyone who tries it. */
+  .coat__arrow{
+    top:auto;bottom:1rem;margin-top:0;
+    width:44px;height:44px;
+  }
+  .coat__arrow--prev{left:1rem}
+  .coat__arrow--next{right:1rem}
+  .coat--deck .coat__pips{bottom:1.85rem}
 }
 
 /* ==========================================================================
@@ -1816,9 +1843,9 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
 }
 .band--photo::after{
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background-image:var(--hex),
+  background-image:
     radial-gradient(120% 88% at 50% 50%, rgba(8,8,12,.14) 0%, rgba(8,8,12,.76) 100%);
-  opacity:.62;
+  opacity:.72;
 }
 /* The phone gets its own crop — the wide one zooms straight into a wheel arch
    on a narrow band. Swap the VARIABLE, not the background-image: a second
@@ -1826,4 +1853,63 @@ h1,h2,.coat__word,.sm__h,.rsn__t{isolation:auto}
    !important is what lets an author rule beat the inline custom property. */
 @media (max-width:720px){
   .band--photo{--band-img:var(--band-img-sm) !important}
+}
+
+/* ==========================================================================
+   SHINE — a specular sweep across a headline, for the premium read.
+   Guarded behind @supports because the effect works by clipping a moving
+   gradient to the glyphs; without background-clip:text a transparent fill
+   would leave the words invisible rather than merely unanimated.
+   ========================================================================== */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .shine{
+    background-image:linear-gradient(100deg,
+      var(--brand) 0%, var(--brand) 36%,
+      #ffb3ae 45%, #fff6f5 50%, #ffb3ae 55%,
+      var(--brand) 64%, var(--brand) 100%);
+    background-size:300% 100%;
+    background-position:135% 0;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    /* text-shadow paints through a transparent fill and reads as grime;
+       a drop-shadow on the glyph shape gives the same lift cleanly */
+    text-shadow:none;
+    filter:drop-shadow(0 10px 26px rgba(0,0,0,.6));
+    animation:shine 6s var(--ease) infinite;
+  }
+  /* sweep once, then hold — a continuously travelling highlight reads as a
+     loading state rather than as polish */
+  @keyframes shine{
+    0%{background-position:135% 0}
+    42%{background-position:-35% 0}
+    100%{background-position:-35% 0}
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  .shine{animation:none;background-position:-35% 0}
+}
+
+/* ---------- mobile header: stop the actions eating the logo ----------
+   The logo is absolutely centred, so it does not reserve width and the Book
+   button was printing straight over it. The fixed call bar at the foot of the
+   viewport already carries CALL and BOOK NOW on these widths, so the header
+   copy of it is redundant rather than merely tight. */
+@media (max-width:820px){
+  .nav__cta{display:none}
+  .nav__logo img{height:var(--logo-h);width:auto;display:block}
+}
+@media (max-width:380px){
+  .nav__logo img{height:var(--logo-h);width:auto;display:block}
+}
+
+/* tighter tracking on the links just above the drawer breakpoint */
+@media (max-width:1240px) and (min-width:1041px){
+  .nav__links{gap:1.15rem}
+  .nav__links a{font-size:.72rem;letter-spacing:.1em}
+}
+@media (max-width:820px){
+  :root{--nav-h:74px;--logo-h:52px;--logo-w:156px}
+}
+@media (max-width:380px){
+  :root{--logo-h:44px;--logo-w:132px}
 }

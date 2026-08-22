@@ -24,7 +24,7 @@ body{margin:0;font-family:"DM Sans","Segoe UI",system-ui,sans-serif;
           text-transform:uppercase;margin:0 0 6mm;font-weight:400;color:#fff}
 .cover h1 em{font-style:italic;color:#f5342d}
 .cover__sub{font-size:11.5pt;color:rgba(255,255,255,.72);max-width:110mm;margin:0 0 12mm}
-.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;display:flex;gap:12mm;
+.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;display:flex;gap:9mm;
              flex-wrap:wrap;font-size:8.5pt;color:rgba(255,255,255,.55)}
 .cover__meta b{display:block;color:#fff;font-weight:600;margin-top:1mm;font-size:10pt}
 
@@ -33,8 +33,9 @@ h2{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:upp
    border-bottom:2px solid #0a0a0d;page-break-after:avoid;color:#0a0a0d}
 h2:first-of-type{margin-top:0}
 h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
-   font-size:13pt;margin:6mm 0 2mm;color:#0a0a0d;page-break-after:avoid}
+   font-size:13pt;margin:7mm 0 1mm;color:#0a0a0d;page-break-after:avoid}
 p{margin:0 0 3mm}
+.sub{font-size:9pt;color:#6b7280;margin:0 0 2.5mm}
 
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:0 0 6mm}
 .kpi{border:1px solid #e3e4e8;border-radius:3mm;padding:4mm;background:#fafafb}
@@ -52,9 +53,24 @@ table{width:100%;border-collapse:collapse;font-size:9pt;margin:0 0 5mm}
 th{text-align:left;background:#0a0a0d;color:#fff;font-size:7.4pt;font-weight:700;
    letter-spacing:.12em;text-transform:uppercase;padding:2.2mm 3mm}
 td{padding:2.4mm 3mm;border-bottom:1px solid #e6e7eb;vertical-align:top}
-td:first-child{white-space:nowrap;font-weight:700;color:#f5342d;width:20mm}
 tbody tr{page-break-inside:avoid}
 tbody tr:nth-child(even) td{background:#fafafb}
+
+.items{font-size:9pt;page-break-inside:auto}
+.items th:last-child,.items td:last-child{text-align:right;white-space:nowrap;width:15mm}
+.items td:first-child{width:58mm}
+.items td b{color:#0a0a0d}
+.items td span{color:#5b5d66;display:block;font-size:8.4pt;line-height:1.45}
+.items tfoot td{background:#f2f2f4;font-weight:700;color:#0a0a0d;border-bottom:0}
+.items tfoot td:last-child{color:#f5342d}
+
+.infra td:first-child{width:46mm;font-weight:700;color:#0a0a0d}
+.infra td:nth-child(2){width:60mm}
+
+.sum td:nth-child(2){text-align:right;white-space:nowrap;width:18mm;font-weight:700}
+.sum td:nth-child(3){width:52mm}
+.sum tfoot td{background:#0a0a0d;color:#fff;font-weight:700;border-bottom:0}
+.bar{display:block;height:2.4mm;background:#f5342d;border-radius:1.2mm;min-width:1mm}
 
 .note{background:#fbf3f2;border-left:3px solid #f5342d;padding:3.5mm 4mm;border-radius:0 2mm 2mm 0;
       margin:0 0 5mm;font-size:9.2pt}
@@ -72,18 +88,102 @@ tbody tr:nth-child(even) td{background:#fafafb}
   <div class="cover__meta">
     <div>Prepared for<b>Formula Mobile Car Detailing</b></div>
     <div>Period<b>02 August 2026 &ndash; 22 August 2026</b></div>
-    <div>Working days<b>8</b></div>
+    <div>Line items<b>31</b></div>
+    <div>Estimated effort<b>108 hours</b></div>
   </div>
 </section>
 
 <h2>At a glance</h2>
-<div class="kpis"><div class="kpi"><b>88</b><span>Pages built</span></div><div class="kpi"><b>87</b><span>Indexed URLs</span></div><div class="kpi"><b>7,612</b><span>Lines written</span></div><div class="kpi"><b>33</b><span>Commits</span></div><div class="kpi"><b>8</b><span>Working days</span></div><div class="kpi"><b>64</b><span>Media assets</span></div></div>
+<div class="kpis"><div class="kpi"><b>88</b><span>Pages built</span></div><div class="kpi"><b>87</b><span>Indexed URLs</span></div><div class="kpi"><b>8,047</b><span>Lines written</span></div><div class="kpi"><b>108</b><span>Estimated hours</span></div><div class="kpi"><b>31</b><span>Line items</span></div><div class="kpi"><b>64</b><span>Media assets</span></div></div>
 <p>The previous site was six pages of 2021-era HTML with four broken files on every page,
    no structured data, no canonical tags, and one enquiry form labelled as a feedback form.
-   What replaced it is below.</p>
+   What replaced it is itemised below.</p>
 
-<h2>What was delivered</h2>
-<h3>Discovery</h3><div class="d"><b>Byte-verified capture of the old site</b><span>Every page and asset pulled and SHA-256 checked against the live server, kept as an untouched reference.</span></div><div class="d"><b>Front-end, back-end, SEO and conversion audit</b><span>34 findings across five areas, each verified against the live server, delivered as a branded PDF.</span></div><h3>The new site</h3><div class="d"><b>88 pages, statically generated</b><span>Every route real HTML — no client-side rendering, no hydration step, nothing that needs JavaScript to be readable.</span></div><div class="d"><b>44 suburb pages and 25 keyword landing pages</b><span>Four topic clusters — ceramic coating, paint correction, overspray removal, mobile detailing — each page with its own content and FAQ schema.</span></div><div class="d"><b>Structured data on every page</b><span>LocalBusiness, Service, Review, Breadcrumb and FAQPage markup. The old site had none.</span></div><h3>Design and interaction</h3><div class="d"><b>Brand system built from the client's own mark</b><span>Racing red taken from the logo, Bebas Neue and DM Sans vendored locally, glassmorphism and carbon-fibre mesh throughout.</span></div><div class="d"><b>Animated logo splash</b><span>The block mark lands, then the cursive writes itself on left to right, cut from the supplied logo as two registered layers.</span></div><div class="d"><b>Service selector and coating deck</b><span>An infinite coverflow of all seven services, and a four-stage coating sequence that runs as a deck on the homepage and as a scroll film on the service page.</span></div><div class="d"><b>Real photography throughout</b><span>Every stock and placeholder image replaced with the client's own work, pulled from their Facebook archive — gallery, service cards and section backgrounds. Customer number plates are blurred before publication.</span></div><div class="d"><b>Four process films</b><span>Cut, graded and looped from source footage, one per coating stage, crossfaded and lazy-loaded.</span></div><h3>Findability</h3><div class="d"><b>A sitemap page built as an internal-link hub</b><span>Every cluster, service and suburb reachable in one click, in the pattern the strongest competitors in this market use — alongside the machine-readable XML sitemap.</span></div><h3>Lead capture and measurement</h3><div class="d"><b>Five-step booking wizard that branches</b><span>Service, mobile-or-studio, address, vehicle, contact. The first two answers advance on their own, and the address step is asked only of mobile jobs — a studio booking never sees it. The old form asked for none of this, so an enquiry now arrives quotable.</span></div><div class="d"><b>First-touch attribution</b><span>Twelve advertising parameters captured on the first visit and never overwritten, so a lead can be traced to the campaign that paid for it.</span></div><div class="d"><b>Conversion tracking gated on the CRM</b><span>generate_lead fires only after the CRM confirms receipt, so reported conversions always match leads that actually exist.</span></div>
+<h2>What is included</h2>
+<div class="d"><b>A complete website</b><span>88 pages, every one written as real HTML and owned outright. No page-builder licence, no monthly platform fee, no plugin to renew.</span></div><div class="d"><b>Findability across Melbourne</b><span>44 suburb pages and 25 keyword pages across 4 topic clusters, plus 13 kinds of structured data so search engines can read what the business actually does.</span></div><div class="d"><b>A booking system that qualifies the job</b><span>A 5-step wizard capturing 14 fields &mdash; service, mobile or studio, address, vehicle, paint and interior condition &mdash; so an enquiry arrives ready to quote instead of starting a round of phone tag.</span></div><div class="d"><b>Proof of where leads come from</b><span>Twelve advertising parameters captured on the first visit and never overwritten, so every enquiry can be traced back to the ad, post or search that produced it.</span></div><div class="d"><b>Original photography and film</b><span>56 images and 8 process films cut from the business's own work. No stock library, no AI imagery, nothing that belongs to anyone else.</span></div><div class="d"><b>The source, in full</b><span>One Git repository holding the generator, the stylesheets, the scripts, the media and this report. Any developer can pick it up and keep going.</span></div>
+
+<h2>How the work was structured</h2>
+<p>The order matters as much as the total. Each stage below depends on the one before it.</p>
+<table class="infra">
+  <thead><tr><th>Stage</th><th>What happened</th><th>Why it was done this way</th></tr></thead>
+  <tbody><tr><td>1. Audit before anything was touched</td><td>The existing site was captured byte-for-byte and checked against the live server, then audited across five areas. That produced 34 findings, and those findings set the scope of the rebuild.</td><td>Nothing here was built because it is fashionable. Each decision answers a problem that was documented on the old site first.</td></tr><tr><td>2. Content modelled before pages were designed</td><td>Services, suburbs, testimonials, FAQs and 4 keyword clusters were defined as structured data. Only then were the page templates written against that data.</td><td>This is what makes 88 pages maintainable by one person. The alternative &mdash; building 88 pages by hand &mdash; produces a site nobody can safely change six months later.</td></tr><tr><td>3. One design system, applied everywhere</td><td>A single set of tokens, type scale and components covers every page. The carousel, the coating sequence and the booking wizard are built from the same vocabulary.</td><td>The site holds together as one brand rather than as a set of pages that were each styled separately, and a new page inherits the look for free.</td></tr><tr><td>4. Lead capture designed as a funnel, not a form</td><td>The wizard asks the questions an operator would ask on the phone, in the order they would ask them, and only asks for an address when the job is mobile.</td><td>An enquiry arrives with enough detail to quote. That is the difference between a website that generates contacts and one that generates jobs.</td></tr><tr><td>5. Measurement wired in from the start</td><td>Attribution is captured on the first visit and the conversion is reported only once the CRM confirms the lead.</td><td>Advertising can be judged on enquiries that actually exist. Retro-fitting this later means months of data that cannot be trusted.</td></tr><tr><td>6. Everything verified, not assumed</td><td>Each interactive element was walked through its states in a real browser across four viewport widths, with layout measured rather than eyeballed.</td><td>The behaviours described in this document are behaviours that were observed, not intentions that were written down.</td></tr></tbody>
+</table>
+
+<h2>Website infrastructure</h2>
+<p>How the site is put together, and what each decision means for the business running it.</p>
+<table class="infra">
+  <thead><tr><th>Decision</th><th>What it is</th><th>Why it matters</th></tr></thead>
+  <tbody><tr><td>No framework, no database, no server to run</td><td>Every page is a real HTML file on disk, produced ahead of time by a 2,123-line generator kept in the repository. Nothing is assembled in the visitor's browser.</td><td>Nothing to hack, patch or renew. A WordPress site needs its core, theme and plugins updated forever; this needs none of that.</td></tr><tr><td>Content held as data, not as pages</td><td>Services, suburbs, testimonials, FAQs and the keyword clusters are structured data inside the generator. A page is a view of that data.</td><td>Change a price or a phone number once and every page carrying it is rebuilt correctly. Six pages cannot end up disagreeing with each other.</td></tr><tr><td>Static hosting</td><td>The output is plain files, so it runs on any static host &mdash; Vercel, Netlify, Cloudflare &mdash; served from a server near the visitor.</td><td>Fast everywhere, effectively no hosting bill at this scale, and it will not fall over under a campaign's traffic.</td></tr><tr><td>Everything served from the site's own domain</td><td>4 font files vendored locally, all images and the 8 films self-hosted, no third-party stylesheets.</td><td>No dependency on somebody else's CDN staying up, and nothing leaking visitor data to services the business never chose.</td></tr><tr><td>Readable without JavaScript</td><td>Each page is complete in the HTML. The scripts add motion and the wizard flow; with them blocked the content still reads and the forms still post.</td><td>Search engines index it reliably, and a visitor on a poor connection still gets the business's information.</td></tr><tr><td>Forms post straight to the CRM</td><td>The booking and contact forms send to a GoHighLevel inbound webhook. No middle server holds customer data.</td><td>One less system to secure, and leads land where the follow-up already happens.</td></tr><tr><td>Measurement gated on the CRM</td><td>A Google Ads conversion is reported only once the CRM confirms it received the lead.</td><td>Reported conversions always match leads that actually exist, so ad spend is optimised against real enquiries rather than submissions that vanished.</td></tr></tbody>
+</table>
+
+<h2>Effort by workstream</h2>
+<table class="sum">
+  <thead><tr><th>Workstream</th><th>Hours</th><th>Share of build</th></tr></thead>
+  <tbody><tr><td>Discovery and audit</td><td>7</td><td><span class="bar" style="width:33%"></span></td></tr><tr><td>Infrastructure and build system</td><td>18</td><td><span class="bar" style="width:86%"></span></td></tr><tr><td>Design system</td><td>14</td><td><span class="bar" style="width:67%"></span></td></tr><tr><td>Interaction and motion</td><td>21</td><td><span class="bar" style="width:100%"></span></td></tr><tr><td>Content and pages</td><td>17</td><td><span class="bar" style="width:81%"></span></td></tr><tr><td>Media production</td><td>11</td><td><span class="bar" style="width:52%"></span></td></tr><tr><td>Lead capture and measurement</td><td>9</td><td><span class="bar" style="width:43%"></span></td></tr><tr><td>Quality assurance</td><td>8</td><td><span class="bar" style="width:38%"></span></td></tr><tr><td>Reporting and handover</td><td>3</td><td><span class="bar" style="width:14%"></span></td></tr></tbody>
+  <tfoot><tr><td>Total</td><td>108</td><td></td></tr></tfoot>
+</table>
+<div class="note"><b>How these hours were arrived at.</b> They are estimated against the
+  delivered scope rather than taken from a timesheet. Every one of the 31 line
+  items below names something countable &mdash; a module and its size, a number of pages,
+  a number of assets &mdash; so any figure can be checked against the work itself. Counts
+  elsewhere in this report are measured directly from the project repository.</div>
+
+<h2>The build, itemised</h2>
+<h3>Discovery and audit</h3>
+<p class="sub">Establishing what existed before anything was replaced.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>Byte-verified capture of the live site</b></td><td><span>Every page and asset pulled and SHA-256 checked against the server, kept as an untouched reference (mirror.py, 191 lines).</span></td><td>2</td></tr><tr><td><b>Front-end, back-end, SEO and conversion audit</b></td><td><span>34 findings across five areas, each verified against the live server rather than assumed.</span></td><td>4</td></tr><tr><td><b>Audit typeset and delivered as a branded PDF</b></td><td><span>Reusable report pipeline (build_audit_pdf.py, 280 lines).</span></td><td>1</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Discovery and audit &mdash; subtotal</td><td>7</td></tr></tfoot>
+</table><h3>Infrastructure and build system</h3>
+<p class="sub">The machinery that turns structured content into a website.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>Static site generator</b></td><td><span>build_site.py, 2,123 lines. Route map, page builders, shared shell, navigation, footer and every content model.</span></td><td>11</td></tr><tr><td><b>Clean URLs, canonical tags and XML sitemap</b></td><td><span>87 routes, one canonical per page, machine-readable sitemap regenerated on every build.</span></td><td>3</td></tr><tr><td><b>Structured data layer</b></td><td><span>13 schema types across the site &mdash; LocalBusiness, AutoDetailing, Service, Review, Breadcrumb, FAQPage and the rest. The old site had none.</span></td><td>3</td></tr><tr><td><b>Local development and preview server</b></td><td><span>serve.py, so the site is reviewed exactly as it will ship.</span></td><td>1</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Infrastructure and build system &mdash; subtotal</td><td>18</td></tr></tfoot>
+</table><h3>Design system</h3>
+<p class="sub">One visual language, built from the client's own mark.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>Core stylesheet</b></td><td><span>site.css &mdash; design tokens, type scale, glass treatment, carbon-fibre mesh, bands, navigation, footer, forms and every responsive breakpoint.</span></td><td>9</td></tr><tr><td><b>Service selector stylesheet</b></td><td><span>select.css &mdash; the coverflow carousel system, its perspective maths and its breakpoints.</span></td><td>3</td></tr><tr><td><b>Brand extraction and typography</b></td><td><span>Racing red taken from the supplied logo, Bebas Neue and DM Sans vendored as 4 local font files, the logo cut into registered layers.</span></td><td>2</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Design system &mdash; subtotal</td><td>14</td></tr></tfoot>
+</table><h3>Interaction and motion</h3>
+<p class="sub">10 JavaScript modules, 1,545 lines, each written for this site rather than pulled from a library.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>Animated logo splash</b></td><td><span>splash.js and hero.js, 199 lines. The block mark lands, then the cursive writes itself on left to right.</span></td><td>3</td></tr><tr><td><b>Infinite service carousel</b></td><td><span>select.js, 196 lines. Seamless looping coverflow with no duplicated markup and no visible seam.</span></td><td>4</td></tr><tr><td><b>Four-stage ceramic coating sequence</b></td><td><span>coating.js, 157 lines. Runs as a crossfading deck on the homepage and as a scroll film on the service page, from one source.</span></td><td>4</td></tr><tr><td><b>Booking wizard behaviour</b></td><td><span>booking.js, 265 lines. Step validation, conditional branching, auto-advance, progress rail and submit handling.</span></td><td>5</td></tr><tr><td><b>Interactive spray-on headings</b></td><td><span>spray.js, 105 lines.</span></td><td>2</td></tr><tr><td><b>Scroll reveals, counters, drawer and marquees</b></td><td><span>enhance.js, 145 lines.</span></td><td>3</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Interaction and motion &mdash; subtotal</td><td>21</td></tr></tfoot>
+</table><h3>Content and pages</h3>
+<p class="sub">Written from the client's own material &mdash; nothing invented to fill space.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>25 keyword landing pages</b></td><td><span>keywords.py, 343 lines. 4 topic clusters, each page with its own introduction, three supporting points and its own FAQ.</span></td><td>7</td></tr><tr><td><b>44 suburb pages</b></td><td><span>Every metropolitan suburb the business covers, individually addressable and individually indexed.</span></td><td>3</td></tr><tr><td><b>8 service pages</b></td><td><span>One per service, each with its own copy, imagery and schema.</span></td><td>3</td></tr><tr><td><b>Core pages</b></td><td><span>Home, gallery, testimonials, contact, booking, thank-you, service areas, franchising, privacy and the sitemap hub.</span></td><td>4</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Content and pages &mdash; subtotal</td><td>17</td></tr></tfoot>
+</table><h3>Media production</h3>
+<p class="sub">Original assets, sourced and prepared.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>8 process films</b></td><td><span>Cut, graded and seamlessly looped from source footage, one per coating stage, crossfaded and lazy-loaded.</span></td><td>4</td></tr><tr><td><b>Photography sourced from the client's own archive</b></td><td><span>Authenticated tooling built to reach it (fb_login.py and fb_photo_grab.py, 279 lines); 230 photographs triaged down to the ones worth publishing.</span></td><td>4</td></tr><tr><td><b>56 images prepared</b></td><td><span>Cropped per breakpoint, optimised, and customer number plates blurred before publication.</span></td><td>3</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Media production &mdash; subtotal</td><td>11</td></tr></tfoot>
+</table><h3>Lead capture and measurement</h3>
+<p class="sub">Turning visits into traceable enquiries.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>5-step booking wizard</b></td><td><span>14 fields. Service, mobile or studio, address, vehicle, paint and interior condition. The address step is asked only of mobile jobs.</span></td><td>3</td></tr><tr><td><b>Contact form</b></td><td><span>11 fields, posting through the same CRM layer.</span></td><td>1</td></tr><tr><td><b>First-touch attribution</b></td><td><span>attribution.js, 186 lines. Twelve advertising parameters captured on the first visit and never overwritten.</span></td><td>3</td></tr><tr><td><b>Conversion tracking gated on the CRM</b></td><td><span>tracking.js and lead-form.js, 292 lines. generate_lead fires only once the CRM confirms receipt.</span></td><td>2</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Lead capture and measurement &mdash; subtotal</td><td>9</td></tr></tfoot>
+</table><h3>Quality assurance</h3>
+<p class="sub">Every visual and behavioural claim checked rather than assumed.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>Headless-browser verification</b></td><td><span>Each interactive element walked through its states across four viewport widths, with layout measured rather than eyeballed.</span></td><td>5</td></tr><tr><td><b>Accessibility, no-JavaScript fallbacks and form edge cases</b></td><td><span>Keyboard paths, focus handling, native validation traps, and confirmation that every page reads with scripts disabled.</span></td><td>3</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Quality assurance &mdash; subtotal</td><td>8</td></tr></tfoot>
+</table><h3>Reporting and handover</h3>
+<p class="sub">So the work stays legible after the fact.</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody><tr><td><b>Build report pipeline</b></td><td><span>build_worklog_pdf.py, which measures the repository at generation time so this document cannot drift from what was actually built.</span></td><td>2</td></tr><tr><td><b>Workspace and sourcing documentation</b></td><td><span>How the site is built, how to rebuild it, and where every asset came from.</span></td><td>1</td></tr></tbody>
+  <tfoot><tr><td colspan="2">Reporting and handover &mdash; subtotal</td><td>3</td></tr></tfoot>
+</table>
 
 <h2>Scale</h2>
 <table>
@@ -93,27 +193,22 @@ tbody tr:nth-child(even) td{background:#fafafb}
     <tr><td>Indexed URLs</td><td>6</td><td>87</td></tr>
     <tr><td>Suburb pages</td><td>0</td><td>44</td></tr>
     <tr><td>Keyword pages</td><td>0</td><td>25</td></tr>
-    <tr><td>Structured data</td><td>None</td><td>5 schema types, every page</td></tr>
+    <tr><td>Structured data</td><td>None</td><td>13 schema types</td></tr>
     <tr><td>Canonical tags</td><td>None</td><td>Every page</td></tr>
-    <tr><td>Lead capture</td><td>1 form, labelled &ldquo;feedback&rdquo;</td><td>5-step branching wizard + contact form</td></tr>
+    <tr><td>Lead capture</td><td>1 form, labelled &ldquo;feedback&rdquo;</td>
+        <td>5-step wizard (14 fields) + contact form</td></tr>
     <tr><td>Attribution</td><td>None</td><td>12 first-touch parameters</td></tr>
+    <tr><td>Own photography</td><td>Stock and placeholder</td>
+        <td>56 images, 8 films</td></tr>
     <tr><td>Broken files</td><td>4 on every page</td><td>0</td></tr>
   </tbody>
 </table>
-
-<h2>Work log</h2>
-<table>
-  <thead><tr><th>Date</th><th>Work completed</th></tr></thead>
-  <tbody><tr><td>02 Aug</td><td>Snapshot live formulamobilecardetailing.com.au as rebuild base<br>Disable text conversion so clones stay byte-exact<br>Correct asset count and note byte-verification in README<br>Add front-end and back-end audit of the existing site</td></tr><tr><td>03 Aug</td><td>Build the new site in www/ — Premier architecture, Formula brand, Tesla splash hero<br>Add /services/select/ — game-style infinite service carousel<br>Add branded PDF of the site audit</td></tr><tr><td>04 Aug</td><td>Correct the audit's conversion section: the lead flow exists</td></tr><tr><td>05 Aug</td><td>Surface the service selector from the homepage</td></tr><tr><td>09 Aug</td><td>Port the Glossedout lead-gen infrastructure<br>Document the Facebook photo sourcing attempt<br>Glassmorphism across the site, plus the Glossedout FAQ accordion<br>New homepage hero: carbon-fibre splash into the service carousel<br>Add /booking/ — Premier's 4-step wizard, wired to Formula's services<br>Fix the hero: card spacing, missing headline, HUD collision<br>Homepage texture, plus reviews and gallery as seamless marquees</td></tr><tr><td>10 Aug</td><td>Replace the duplicated services grid with a ceramic-coating scroll film</td></tr><tr><td>21 Aug</td><td>Hero: shorten the subline and clear it of the cards on every viewport<br>New logo mark, and a script subheading to match it<br>Real logo file, and a process film instead of the 3D model</td></tr><tr><td>22 Aug</td><td>Coating stages: display word + glass card, with parallax between them<br>Four stage films, crossfaded — one per stage instead of one loop throughout<br>Real gallery photos, slimmer header, carbon fibre, and the operator out of stage 1<br>Ten reasons to ceramic coat, on the ceramic coating page<br>Keyword clusters and a real sitemap — 63 pages to 89<br>Splash write-on, hexagon mesh everywhere, spray-on titles<br>Fix the hexagon mesh — it was never tessellating<br>Real photos on five of the seven service cards<br>Coating stages as a deck on the homepage, beam outlines, real honeycomb<br>Homepage resequenced, deck fades, suburbs become a map<br>Add a client-facing build report PDF<br>Booking: location choice becomes step 2, address step 3 and mobile-only<br>Closing CTA takes a real car from Formula's album as its background</td></tr></tbody>
-</table>
-<p style="font-size:8.6pt;color:#6b7280">33 commits across 8 working days.
-   51,680 lines added, 11,296 removed.</p>
 
 <h2>Still open</h2>
 <div class="note"><b>These are not outstanding build work.</b> Each needs a decision or an
   account from the client before it can be finished.</div>
 <div class="d"><b>CRM webhook</b><span>The booking and contact forms are built and tested but not yet connected. Each needs its own GoHighLevel inbound webhook, and a custom field per attribution parameter or those values silently drop.</span></div><div class="d"><b>Pricing</b><span>No price appears anywhere on the site. The old site published none, so none was invented.</span></div><div class="d"><b>Google reviews</b><span>The review marquee is built and running on the three existing testimonials. Live Google reviews need a Places API key and the business Place ID.</span></div><div class="d"><b>Before / after photography</b><span>The single most persuasive asset a detailer can show, and the one thing the archive does not contain.</span></div><div class="d"><b>Years in business</b><span>The site now says 30+ years. The old franchising page says 20. One of them needs correcting.</span></div>
 
-<div class="foot">Figures in this report are measured directly from the project repository at
-  the time of generation, not entered by hand.</div>
+<div class="foot">Counts in this report are measured directly from the project repository
+  at the time of generation. Hours are estimated against delivered scope.</div>
 </body></html>

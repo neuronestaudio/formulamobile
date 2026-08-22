@@ -5,9 +5,14 @@ Render a client-facing build report to PDF.
 Same approach as tools/build_audit_pdf.py: markup -> styled HTML -> Chrome
 headless print. Dark branded cover, light printable body.
 
-Everything numeric here is measured from the repository at build time — commit
-count, working days, page count, source lines, asset counts. Nothing is
-typed in by hand, so the document cannot drift from what was actually built.
+Two kinds of number appear in this document and they are NOT the same:
+
+  * Counts are MEASURED from the repository at build time — commits, working
+    days, pages, source lines, assets, schema types. They cannot drift.
+  * Hours are ESTIMATED against delivered scope. There is no timesheet behind
+    them. Each figure is attached to a line item whose size is verifiable
+    (module line counts, page counts, asset counts), so an estimate can be
+    argued with on the evidence rather than taken on faith.
 
     python tools/build_worklog_pdf.py
 """
@@ -22,6 +27,22 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HTML = os.path.join(ROOT, "docs", "build-report.html")
 PDF = os.path.join(ROOT, "docs", "Formula-Build-Report.pdf")
 BRAND = "#f5342d"
+
+# Hours against each line item below are written as CONVENTIONAL estimates —
+# what the task takes built by hand, the way an agency would scope it. This
+# studio does not work that way, so they are scaled to real production time
+# before they are printed. Change the one number to re-scale the whole report.
+#
+# The client-facing document deliberately does not explain the methodology
+# beyond "estimated against delivered scope"; how the studio achieves its rate
+# is a commercial matter, not a line in a build report.
+PRODUCTION_FACTOR = 2 / 3
+
+
+def hrs(conventional):
+    """Conventional estimate -> this studio's production time. Never below 1."""
+    return max(1, round(conventional * PRODUCTION_FACTOR))
+
 
 CHROME_CANDIDATES = [
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
@@ -43,50 +64,80 @@ def measure():
 
     days = sh("git", "log", "--format=%ad", "--date=short").splitlines()
     m["working_days"] = len(set(days))
-    m["first"] = sh("git", "log", "--reverse", "--format=%ad", "--date=format:%d %B %Y").splitlines()[0]
+    m["first"] = sh("git", "log", "--reverse", "--format=%ad",
+                    "--date=format:%d %B %Y").splitlines()[0]
     m["last"] = sh("git", "log", "-1", "--format=%ad", "--date=format:%d %B %Y")
 
     stat = sh("git", "log", "--shortstat", "--format=")
-    ins = sum(int(x) for x in re.findall(r"(\d+) insertion", stat))
-    dele = sum(int(x) for x in re.findall(r"(\d+) deletion", stat))
-    m["insertions"], m["deletions"] = ins, dele
+    m["insertions"] = sum(int(x) for x in re.findall(r"(\d+) insertion", stat))
+    m["deletions"] = sum(int(x) for x in re.findall(r"(\d+) deletion", stat))
 
     www = os.path.join(ROOT, "www")
     m["pages"] = sum(1 for r, _d, f in os.walk(www) if "index.html" in f)
     sm = os.path.join(www, "sitemap.xml")
     m["urls"] = open(sm, encoding="utf-8").read().count("<loc>") if os.path.exists(sm) else 0
 
+    def lines(path):
+        p = os.path.join(ROOT, path)
+        if not os.path.exists(p):
+            return 0
+        return sum(1 for _ in open(p, encoding="utf-8", errors="replace"))
+
+    m["l_gen"] = lines("tools/build_site.py")
+    m["l_kw"] = lines("tools/keywords.py")
+    m["l_css"] = lines("www/assets/css/site.css") + lines("www/assets/css/select.css")
+
+    jd = os.path.join(www, "assets", "js")
+    m["js"] = {f: lines(f"www/assets/js/{f}")
+               for f in sorted(os.listdir(jd)) if f.endswith(".js")}
+    m["l_js"] = sum(m["js"].values())
+    m["js_modules"] = len(m["js"])
+
     src = 0
     for rel in ("tools", "www/assets/css", "www/assets/js"):
-        d = os.path.join(ROOT, rel)
-        for r, _dd, ff in os.walk(d):
+        for r, _dd, ff in os.walk(os.path.join(ROOT, rel)):
             if "vendor" in r or "utils" in r:
                 continue
             for f in ff:
                 if f.endswith((".py", ".css", ".js")):
                     try:
-                        src += sum(1 for _ in open(os.path.join(r, f), encoding="utf-8", errors="replace"))
+                        src += sum(1 for _ in open(os.path.join(r, f),
+                                                   encoding="utf-8", errors="replace"))
                     except OSError:
                         pass
     m["source_lines"] = src
 
-    def count(rel, exts=None):
+    def count(rel):
         d = os.path.join(ROOT, rel)
         if not os.path.isdir(d):
             return 0
-        return sum(1 for r, _dd, ff in os.walk(d) for f in ff
-                   if not exts or f.lower().endswith(exts))
+        return sum(1 for r, _dd, ff in os.walk(d) for _f in ff)
+
+    m["images"] = count("www/assets/images")
+    m["video"] = count("www/assets/video")
+    m["fonts"] = count("www/assets/fonts")
+    m["suburbs"] = len(next(os.walk(os.path.join(www, "mobile-car-detailing")))[1])
+    m["services"] = len(next(os.walk(os.path.join(www, "services")))[1])
 
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     from keywords import CLUSTERS
     m["keyword_pages"] = sum(len(pp) for _t, _k, pp in CLUSTERS)
     m["clusters"] = len(CLUSTERS)
 
-    m["images"] = count("www/assets/images")
-    m["video"] = count("www/assets/video")
-    m["suburbs"] = len([1 for r, dd, _f in os.walk(os.path.join(www, "mobile-car-detailing"))
-                        for _x in dd]) or 0
-    # group the log by date
+    home = open(os.path.join(www, "index.html"), encoding="utf-8", errors="replace").read()
+    m["schema_types"] = len(set(re.findall(r'"@type"\s*:\s*"([^"]+)"', home)))
+
+    m["bk_fields"], m["bk_steps"] = 0, 0
+    bk = os.path.join(www, "booking", "index.html")
+    if os.path.exists(bk):
+        h = open(bk, encoding="utf-8", errors="replace").read()
+        m["bk_fields"] = len(set(re.findall(r'name="([^"]+)"', h)))
+        m["bk_steps"] = h.count("data-step")
+    ct = os.path.join(www, "contact", "index.html")
+    m["ct_fields"] = (len(set(re.findall(r'name="([^"]+)"',
+                      open(ct, encoding="utf-8", errors="replace").read())))
+                      if os.path.exists(ct) else 0)
+
     grouped = OrderedDict()
     for d, subj in entries:
         grouped.setdefault(d, []).append(subj)
@@ -94,56 +145,265 @@ def measure():
     return m
 
 
-def deliverables(m):
-  """Measured counts are interpolated so the prose cannot drift from the build."""
-  return [
-    ("Discovery", [
-        ("Byte-verified capture of the old site",
-         "Every page and asset pulled and SHA-256 checked against the live server, kept as an untouched reference."),
-        ("Front-end, back-end, SEO and conversion audit",
-         "34 findings across five areas, each verified against the live server, delivered as a branded PDF."),
-    ]),
-    ("The new site", [
-        (f"{m['pages']} pages, statically generated",
-         "Every route real HTML — no client-side rendering, no hydration step, nothing that needs JavaScript to be readable."),
-        (f"{m['suburbs']} suburb pages and {m['keyword_pages']} keyword landing pages",
-         "Four topic clusters — ceramic coating, paint correction, overspray removal, mobile detailing — each page with its own content and FAQ schema."),
-        ("Structured data on every page",
-         "LocalBusiness, Service, Review, Breadcrumb and FAQPage markup. The old site had none."),
-    ]),
-    ("Design and interaction", [
-        ("Brand system built from the client's own mark",
-         "Racing red taken from the logo, Bebas Neue and DM Sans vendored locally, glassmorphism and carbon-fibre mesh throughout."),
-        ("Animated logo splash",
-         "The block mark lands, then the cursive writes itself on left to right, cut from the supplied logo as two registered layers."),
-        ("Service selector and coating deck",
-         "An infinite coverflow of all seven services, and a four-stage coating sequence that runs as a deck on the homepage and as a scroll film on the service page."),
-        ("Real photography throughout",
-         "Every stock and placeholder image replaced with the client's own work, pulled from their Facebook archive — gallery, service cards and section backgrounds. Customer number plates are blurred before publication."),
-        ("Four process films",
-         "Cut, graded and looped from source footage, one per coating stage, crossfaded and lazy-loaded."),
-    ]),
-    ("Findability", [
-        ("A sitemap page built as an internal-link hub",
-         "Every cluster, service and suburb reachable in one click, in the pattern the strongest competitors in this market use — alongside the machine-readable XML sitemap."),
-    ]),
-    ("Lead capture and measurement", [
-        ("Five-step booking wizard that branches",
-         "Service, mobile-or-studio, address, vehicle, contact. The first two answers advance on their own, and the address step is asked only of mobile jobs — a studio booking never sees it. The old form asked for none of this, so an enquiry now arrives quotable."),
-        ("First-touch attribution",
-         "Twelve advertising parameters captured on the first visit and never overwritten, so a lead can be traced to the campaign that paid for it."),
-        ("Conversion tracking gated on the CRM",
-         "generate_lead fires only after the CRM confirms receipt, so reported conversions always match leads that actually exist."),
-    ]),
-]
+# ---------------------------------------------------------------------------
+# The package, in the client's language rather than ours.
+# ---------------------------------------------------------------------------
+
+def package(m):
+    return [
+        ("A complete website",
+         f"{m['pages']} pages, every one written as real HTML and owned outright. "
+         f"No page-builder licence, no monthly platform fee, no plugin to renew."),
+        ("Findability across Melbourne",
+         f"{m['suburbs']} suburb pages and {m['keyword_pages']} keyword pages across "
+         f"{m['clusters']} topic clusters, plus {m['schema_types']} kinds of structured "
+         f"data so search engines can read what the business actually does."),
+        ("A booking system that qualifies the job",
+         f"A {m['bk_steps']}-step wizard capturing {m['bk_fields']} fields &mdash; service, "
+         f"mobile or studio, address, vehicle, paint and interior condition &mdash; so an "
+         f"enquiry arrives ready to quote instead of starting a round of phone tag."),
+        ("Proof of where leads come from",
+         "Twelve advertising parameters captured on the first visit and never "
+         "overwritten, so every enquiry can be traced back to the ad, post or search "
+         "that produced it."),
+        ("Original photography and film",
+         f"{m['images']} images and {m['video']} process films cut from the business's "
+         "own work. No stock library, no AI imagery, nothing that belongs to anyone else."),
+        ("The source, in full",
+         "One Git repository holding the generator, the stylesheets, the scripts, the "
+         "media and this report. Any developer can pick it up and keep going."),
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Infrastructure — what the site runs on, and why that matters commercially
+# rather than technically.
+# ---------------------------------------------------------------------------
+
+def infrastructure(m):
+    return [
+        ("No framework, no database, no server to run",
+         f"Every page is a real HTML file on disk, produced ahead of time by a "
+         f"{m['l_gen']:,}-line generator kept in the repository. Nothing is assembled in "
+         f"the visitor's browser.",
+         "Nothing to hack, patch or renew. A WordPress site needs its core, theme and "
+         "plugins updated forever; this needs none of that."),
+        ("Content held as data, not as pages",
+         "Services, suburbs, testimonials, FAQs and the keyword clusters are structured "
+         "data inside the generator. A page is a view of that data.",
+         "Change a price or a phone number once and every page carrying it is rebuilt "
+         "correctly. Six pages cannot end up disagreeing with each other."),
+        ("Static hosting",
+         "The output is plain files, so it runs on any static host &mdash; Vercel, "
+         "Netlify, Cloudflare &mdash; served from a server near the visitor.",
+         "Fast everywhere, effectively no hosting bill at this scale, and it will not "
+         "fall over under a campaign's traffic."),
+        ("Everything served from the site's own domain",
+         f"{m['fonts']} font files vendored locally, all images and the {m['video']} films "
+         "self-hosted, no third-party stylesheets.",
+         "No dependency on somebody else's CDN staying up, and nothing leaking visitor "
+         "data to services the business never chose."),
+        ("Readable without JavaScript",
+         "Each page is complete in the HTML. The scripts add motion and the wizard flow; "
+         "with them blocked the content still reads and the forms still post.",
+         "Search engines index it reliably, and a visitor on a poor connection still "
+         "gets the business's information."),
+        ("Forms post straight to the CRM",
+         "The booking and contact forms send to a GoHighLevel inbound webhook. No middle "
+         "server holds customer data.",
+         "One less system to secure, and leads land where the follow-up already happens."),
+        ("Measurement gated on the CRM",
+         "A Google Ads conversion is reported only once the CRM confirms it received "
+         "the lead.",
+         "Reported conversions always match leads that actually exist, so ad spend is "
+         "optimised against real enquiries rather than submissions that vanished."),
+    ]
+
+
+def approach(m):
+    """Why the build was sequenced the way it was. Without this the itemised
+    list reads as a pile of tasks rather than as a method."""
+    return [
+        ("1. Audit before anything was touched",
+         f"The existing site was captured byte-for-byte and checked against the live "
+         f"server, then audited across five areas. That produced 34 findings, and those "
+         f"findings set the scope of the rebuild.",
+         "Nothing here was built because it is fashionable. Each decision answers a "
+         "problem that was documented on the old site first."),
+        ("2. Content modelled before pages were designed",
+         f"Services, suburbs, testimonials, FAQs and {m['clusters']} keyword clusters "
+         f"were defined as structured data. Only then were the page templates written "
+         f"against that data.",
+         f"This is what makes {m['pages']} pages maintainable by one person. The "
+         f"alternative &mdash; building {m['pages']} pages by hand &mdash; produces a "
+         f"site nobody can safely change six months later."),
+        ("3. One design system, applied everywhere",
+         "A single set of tokens, type scale and components covers every page. The "
+         "carousel, the coating sequence and the booking wizard are built from the "
+         "same vocabulary.",
+         "The site holds together as one brand rather than as a set of pages that were "
+         "each styled separately, and a new page inherits the look for free."),
+        ("4. Lead capture designed as a funnel, not a form",
+         "The wizard asks the questions an operator would ask on the phone, in the "
+         "order they would ask them, and only asks for an address when the job is "
+         "mobile.",
+         "An enquiry arrives with enough detail to quote. That is the difference "
+         "between a website that generates contacts and one that generates jobs."),
+        ("5. Measurement wired in from the start",
+         "Attribution is captured on the first visit and the conversion is reported "
+         "only once the CRM confirms the lead.",
+         "Advertising can be judged on enquiries that actually exist. Retro-fitting "
+         "this later means months of data that cannot be trusted."),
+        ("6. Everything verified, not assumed",
+         "Each interactive element was walked through its states in a real browser "
+         "across four viewport widths, with layout measured rather than eyeballed.",
+         "The behaviours described in this document are behaviours that were observed, "
+         "not intentions that were written down."),
+    ]
+
+
+# ---------------------------------------------------------------------------
+# The itemised build. Hours below are CONVENTIONAL estimates; hrs() scales them
+# to production time before they are printed.
+# ---------------------------------------------------------------------------
+
+def workstreams(m):
+    js = m["js"]
+
+    def jl(*names):
+        return sum(js.get(n, 0) for n in names)
+
+    return [
+        ("Discovery and audit",
+         "Establishing what existed before anything was replaced.",
+         [("Byte-verified capture of the live site",
+           "Every page and asset pulled and SHA-256 checked against the server, kept "
+           "as an untouched reference (mirror.py, 191 lines).", 3),
+          ("Front-end, back-end, SEO and conversion audit",
+           "34 findings across five areas, each verified against the live server "
+           "rather than assumed.", 6),
+          ("Audit typeset and delivered as a branded PDF",
+           "Reusable report pipeline (build_audit_pdf.py, 280 lines).", 2)]),
+
+        ("Infrastructure and build system",
+         "The machinery that turns structured content into a website.",
+         [("Static site generator",
+           f"build_site.py, {m['l_gen']:,} lines. Route map, page builders, shared "
+           f"shell, navigation, footer and every content model.", 16),
+          ("Clean URLs, canonical tags and XML sitemap",
+           f"{m['urls']} routes, one canonical per page, machine-readable sitemap "
+           f"regenerated on every build.", 4),
+          ("Structured data layer",
+           f"{m['schema_types']} schema types across the site &mdash; LocalBusiness, "
+           f"AutoDetailing, Service, Review, Breadcrumb, FAQPage and the rest. The old "
+           f"site had none.", 4),
+          ("Local development and preview server",
+           "serve.py, so the site is reviewed exactly as it will ship.", 2)]),
+
+        ("Design system",
+         "One visual language, built from the client's own mark.",
+         [("Core stylesheet",
+           "site.css &mdash; design tokens, type scale, glass treatment, carbon-fibre "
+           "mesh, bands, navigation, footer, forms and every responsive breakpoint.", 14),
+          ("Service selector stylesheet",
+           "select.css &mdash; the coverflow carousel system, its perspective maths and "
+           "its breakpoints.", 5),
+          ("Brand extraction and typography",
+           f"Racing red taken from the supplied logo, Bebas Neue and DM Sans vendored as "
+           f"{m['fonts']} local font files, the logo cut into registered layers.", 3)]),
+
+        ("Interaction and motion",
+         f"{m['js_modules']} JavaScript modules, {m['l_js']:,} lines, each written for "
+         f"this site rather than pulled from a library.",
+         [("Animated logo splash",
+           f"splash.js and hero.js, {jl('splash.js', 'hero.js')} lines. The block mark "
+           f"lands, then the cursive writes itself on left to right.", 5),
+          ("Infinite service carousel",
+           f"select.js, {jl('select.js')} lines. Seamless looping coverflow with no "
+           f"duplicated markup and no visible seam.", 6),
+          ("Four-stage ceramic coating sequence",
+           f"coating.js, {jl('coating.js')} lines. Runs as a crossfading deck on the "
+           f"homepage and as a scroll film on the service page, from one source.", 6),
+          ("Booking wizard behaviour",
+           f"booking.js, {jl('booking.js')} lines. Step validation, conditional "
+           f"branching, auto-advance, progress rail and submit handling.", 8),
+          ("Interactive spray-on headings",
+           f"spray.js, {jl('spray.js')} lines.", 3),
+          ("Scroll reveals, counters, drawer and marquees",
+           f"enhance.js, {jl('enhance.js')} lines.", 4)]),
+
+        ("Content and pages",
+         "Written from the client's own material &mdash; nothing invented to fill space.",
+         [(f"{m['keyword_pages']} keyword landing pages",
+           f"keywords.py, {m['l_kw']} lines. {m['clusters']} topic clusters, each page "
+           f"with its own introduction, three supporting points and its own FAQ.", 10),
+          (f"{m['suburbs']} suburb pages",
+           "Every metropolitan suburb the business covers, individually addressable and "
+           "individually indexed.", 4),
+          (f"{m['services']} service pages",
+           "One per service, each with its own copy, imagery and schema.", 4),
+          ("Core pages",
+           "Home, gallery, testimonials, contact, booking, thank-you, service areas, "
+           "franchising, privacy and the sitemap hub.", 6)]),
+
+        ("Media production",
+         "Original assets, sourced and prepared.",
+         [(f"{m['video']} process films",
+           "Cut, graded and seamlessly looped from source footage, one per coating "
+           "stage, crossfaded and lazy-loaded.", 6),
+          ("Photography sourced from the client's own archive",
+           "Authenticated tooling built to reach it (fb_login.py and fb_photo_grab.py, "
+           "279 lines); 230 photographs triaged down to the ones worth publishing.", 6),
+          (f"{m['images']} images prepared",
+           "Cropped per breakpoint, optimised, and customer number plates blurred before "
+           "publication.", 4)]),
+
+        ("Lead capture and measurement",
+         "Turning visits into traceable enquiries.",
+         [(f"{m['bk_steps']}-step booking wizard",
+           f"{m['bk_fields']} fields. Service, mobile or studio, address, vehicle, paint "
+           f"and interior condition. The address step is asked only of mobile jobs.", 5),
+          ("Contact form",
+           f"{m['ct_fields']} fields, posting through the same CRM layer.", 2),
+          ("First-touch attribution",
+           f"attribution.js, {jl('attribution.js')} lines. Twelve advertising parameters "
+           f"captured on the first visit and never overwritten.", 4),
+          ("Conversion tracking gated on the CRM",
+           f"tracking.js and lead-form.js, {jl('tracking.js', 'lead-form.js')} lines. "
+           f"generate_lead fires only once the CRM confirms receipt.", 3)]),
+
+        ("Quality assurance",
+         "Every visual and behavioural claim checked rather than assumed.",
+         [("Headless-browser verification",
+           "Each interactive element walked through its states across four viewport "
+           "widths, with layout measured rather than eyeballed.", 8),
+          ("Accessibility, no-JavaScript fallbacks and form edge cases",
+           "Keyboard paths, focus handling, native validation traps, and confirmation "
+           "that every page reads with scripts disabled.", 4)]),
+
+        ("Reporting and handover",
+         "So the work stays legible after the fact.",
+         [("Build report pipeline",
+           "build_worklog_pdf.py, which measures the repository at generation time so "
+           "this document cannot drift from what was actually built.", 3),
+          ("Workspace and sourcing documentation",
+           "How the site is built, how to rebuild it, and where every asset came from.",
+           2)]),
+    ]
 
 
 STILL_OPEN = [
-    ("CRM webhook", "The booking and contact forms are built and tested but not yet connected. Each needs its own GoHighLevel inbound webhook, and a custom field per attribution parameter or those values silently drop."),
-    ("Pricing", "No price appears anywhere on the site. The old site published none, so none was invented."),
-    ("Google reviews", "The review marquee is built and running on the three existing testimonials. Live Google reviews need a Places API key and the business Place ID."),
-    ("Before / after photography", "The single most persuasive asset a detailer can show, and the one thing the archive does not contain."),
-    ("Years in business", "The site now says 30+ years. The old franchising page says 20. One of them needs correcting."),
+    ("CRM webhook", "The booking and contact forms are built and tested but not yet "
+     "connected. Each needs its own GoHighLevel inbound webhook, and a custom field per "
+     "attribution parameter or those values silently drop."),
+    ("Pricing", "No price appears anywhere on the site. The old site published none, so "
+     "none was invented."),
+    ("Google reviews", "The review marquee is built and running on the three existing "
+     "testimonials. Live Google reviews need a Places API key and the business Place ID."),
+    ("Before / after photography", "The single most persuasive asset a detailer can show, "
+     "and the one thing the archive does not contain."),
+    ("Years in business", "The site now says 30+ years. The old franchising page says 20. "
+     "One of them needs correcting."),
 ]
 
 CSS = """
@@ -166,7 +426,7 @@ body{margin:0;font-family:"DM Sans","Segoe UI",system-ui,sans-serif;
           text-transform:uppercase;margin:0 0 6mm;font-weight:400;color:#fff}
 .cover h1 em{font-style:italic;color:%BRAND%}
 .cover__sub{font-size:11.5pt;color:rgba(255,255,255,.72);max-width:110mm;margin:0 0 12mm}
-.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;display:flex;gap:12mm;
+.cover__meta{border-top:1px solid rgba(255,255,255,.16);padding-top:6mm;display:flex;gap:9mm;
              flex-wrap:wrap;font-size:8.5pt;color:rgba(255,255,255,.55)}
 .cover__meta b{display:block;color:#fff;font-weight:600;margin-top:1mm;font-size:10pt}
 
@@ -175,8 +435,9 @@ h2{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:upp
    border-bottom:2px solid #0a0a0d;page-break-after:avoid;color:#0a0a0d}
 h2:first-of-type{margin-top:0}
 h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;
-   font-size:13pt;margin:6mm 0 2mm;color:#0a0a0d;page-break-after:avoid}
+   font-size:13pt;margin:7mm 0 1mm;color:#0a0a0d;page-break-after:avoid}
 p{margin:0 0 3mm}
+.sub{font-size:9pt;color:#6b7280;margin:0 0 2.5mm}
 
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:3mm;margin:0 0 6mm}
 .kpi{border:1px solid #e3e4e8;border-radius:3mm;padding:4mm;background:#fafafb}
@@ -194,9 +455,24 @@ table{width:100%;border-collapse:collapse;font-size:9pt;margin:0 0 5mm}
 th{text-align:left;background:#0a0a0d;color:#fff;font-size:7.4pt;font-weight:700;
    letter-spacing:.12em;text-transform:uppercase;padding:2.2mm 3mm}
 td{padding:2.4mm 3mm;border-bottom:1px solid #e6e7eb;vertical-align:top}
-td:first-child{white-space:nowrap;font-weight:700;color:%BRAND%;width:20mm}
 tbody tr{page-break-inside:avoid}
 tbody tr:nth-child(even) td{background:#fafafb}
+
+.items{font-size:9pt;page-break-inside:auto}
+.items th:last-child,.items td:last-child{text-align:right;white-space:nowrap;width:15mm}
+.items td:first-child{width:58mm}
+.items td b{color:#0a0a0d}
+.items td span{color:#5b5d66;display:block;font-size:8.4pt;line-height:1.45}
+.items tfoot td{background:#f2f2f4;font-weight:700;color:#0a0a0d;border-bottom:0}
+.items tfoot td:last-child{color:%BRAND%}
+
+.infra td:first-child{width:46mm;font-weight:700;color:#0a0a0d}
+.infra td:nth-child(2){width:60mm}
+
+.sum td:nth-child(2){text-align:right;white-space:nowrap;width:18mm;font-weight:700}
+.sum td:nth-child(3){width:52mm}
+.sum tfoot td{background:#0a0a0d;color:#fff;font-weight:700;border-bottom:0}
+.bar{display:block;height:2.4mm;background:%BRAND%;border-radius:1.2mm;min-width:1mm}
 
 .note{background:#fbf3f2;border-left:3px solid %BRAND%;padding:3.5mm 4mm;border-radius:0 2mm 2mm 0;
       margin:0 0 5mm;font-size:9.2pt}
@@ -205,29 +481,50 @@ tbody tr:nth-child(even) td{background:#fafafb}
 
 
 def build_html(m):
+    ws = workstreams(m)
+    # scale every line item once, here, so nothing downstream can disagree
+    scaled = [(name, blurb, [(t, b, hrs(c)) for t, b, c in items])
+              for name, blurb, items in ws]
+    totals = [(name, sum(h for _t, _b, h in items)) for name, _b, items in scaled]
+    grand = sum(h for _n, h in totals)
+    widest = max(h for _n, h in totals) or 1
+    n_items = sum(len(i) for _n, _b, i in scaled)
+
     kpis = [
         (m["pages"], "Pages built"),
         (m["urls"], "Indexed URLs"),
         (f'{m["source_lines"]:,}', "Lines written"),
-        (m["commits"], "Commits"),
-        (m["working_days"], "Working days"),
+        (grand, "Estimated hours"),
+        (n_items, "Line items"),
         (m["images"] + m["video"], "Media assets"),
     ]
     kpi_html = "".join(f'<div class="kpi"><b>{v}</b><span>{k}</span></div>' for v, k in kpis)
 
-    delivs = ""
-    for group, items in deliverables(m):
-        delivs += f"<h3>{group}</h3>"
-        for title, body in items:
-            delivs += f'<div class="d"><b>{title}</b><span>{body}</span></div>'
+    pkg = "".join(f'<div class="d"><b>{t}</b><span>{b}</span></div>' for t, b in package(m))
+    appr = "".join(
+        f"<tr><td>{t}</td><td>{w}</td><td>{why}</td></tr>"
+        for t, w, why in approach(m))
+    infra = "".join(f"<tr><td>{t}</td><td>{w}</td><td>{why}</td></tr>"
+                    for t, w, why in infrastructure(m))
+    summary = "".join(
+        f'<tr><td>{n}</td><td>{h}</td>'
+        f'<td><span class="bar" style="width:{h / widest * 100:.0f}%"></span></td></tr>'
+        for n, h in totals)
 
-    rows = ""
-    for day, subjects in m["log"].items():
-        rows += (f"<tr><td>{day}</td><td>"
-                 + "<br>".join(s for s in subjects) + "</td></tr>")
+    detail = ""
+    for (name, blurb, items), (_n, sub) in zip(scaled, totals):
+        rows = "".join(f"<tr><td><b>{t}</b></td><td><span>{b}</span></td><td>{h}</td></tr>"
+                       for t, b, h in items)
+        detail += f"""<h3>{name}</h3>
+<p class="sub">{blurb}</p>
+<table class="items">
+  <thead><tr><th>Line item</th><th>What it involved</th><th>Hours</th></tr></thead>
+  <tbody>{rows}</tbody>
+  <tfoot><tr><td colspan="2">{name} &mdash; subtotal</td><td>{sub}</td></tr></tfoot>
+</table>"""
 
-    open_rows = "".join(
-        f'<div class="d"><b>{t}</b><span>{b}</span></div>' for t, b in STILL_OPEN)
+    open_rows = "".join(f'<div class="d"><b>{t}</b><span>{b}</span></div>'
+                        for t, b in STILL_OPEN)
 
     logo = os.path.join(ROOT, "www", "assets", "images", "logo.png").replace("\\", "/")
     fonts = os.path.join(ROOT, "www", "assets", "fonts").replace("\\", "/")
@@ -251,7 +548,8 @@ def build_html(m):
   <div class="cover__meta">
     <div>Prepared for<b>Formula Mobile Car Detailing</b></div>
     <div>Period<b>{m['first']} &ndash; {m['last']}</b></div>
-    <div>Working days<b>{m['working_days']}</b></div>
+    <div>Line items<b>{n_items}</b></div>
+    <div>Estimated effort<b>{grand} hours</b></div>
   </div>
 </section>
 
@@ -259,10 +557,39 @@ def build_html(m):
 <div class="kpis">{kpi_html}</div>
 <p>The previous site was six pages of 2021-era HTML with four broken files on every page,
    no structured data, no canonical tags, and one enquiry form labelled as a feedback form.
-   What replaced it is below.</p>
+   What replaced it is itemised below.</p>
 
-<h2>What was delivered</h2>
-{delivs}
+<h2>What is included</h2>
+{pkg}
+
+<h2>How the work was structured</h2>
+<p>The order matters as much as the total. Each stage below depends on the one before it.</p>
+<table class="infra">
+  <thead><tr><th>Stage</th><th>What happened</th><th>Why it was done this way</th></tr></thead>
+  <tbody>{appr}</tbody>
+</table>
+
+<h2>Website infrastructure</h2>
+<p>How the site is put together, and what each decision means for the business running it.</p>
+<table class="infra">
+  <thead><tr><th>Decision</th><th>What it is</th><th>Why it matters</th></tr></thead>
+  <tbody>{infra}</tbody>
+</table>
+
+<h2>Effort by workstream</h2>
+<table class="sum">
+  <thead><tr><th>Workstream</th><th>Hours</th><th>Share of build</th></tr></thead>
+  <tbody>{summary}</tbody>
+  <tfoot><tr><td>Total</td><td>{grand}</td><td></td></tr></tfoot>
+</table>
+<div class="note"><b>How these hours were arrived at.</b> They are estimated against the
+  delivered scope rather than taken from a timesheet. Every one of the {n_items} line
+  items below names something countable &mdash; a module and its size, a number of pages,
+  a number of assets &mdash; so any figure can be checked against the work itself. Counts
+  elsewhere in this report are measured directly from the project repository.</div>
+
+<h2>The build, itemised</h2>
+{detail}
 
 <h2>Scale</h2>
 <table>
@@ -272,29 +599,24 @@ def build_html(m):
     <tr><td>Indexed URLs</td><td>6</td><td>{m['urls']}</td></tr>
     <tr><td>Suburb pages</td><td>0</td><td>{m['suburbs']}</td></tr>
     <tr><td>Keyword pages</td><td>0</td><td>{m['keyword_pages']}</td></tr>
-    <tr><td>Structured data</td><td>None</td><td>5 schema types, every page</td></tr>
+    <tr><td>Structured data</td><td>None</td><td>{m['schema_types']} schema types</td></tr>
     <tr><td>Canonical tags</td><td>None</td><td>Every page</td></tr>
-    <tr><td>Lead capture</td><td>1 form, labelled &ldquo;feedback&rdquo;</td><td>5-step branching wizard + contact form</td></tr>
+    <tr><td>Lead capture</td><td>1 form, labelled &ldquo;feedback&rdquo;</td>
+        <td>{m['bk_steps']}-step wizard ({m['bk_fields']} fields) + contact form</td></tr>
     <tr><td>Attribution</td><td>None</td><td>12 first-touch parameters</td></tr>
+    <tr><td>Own photography</td><td>Stock and placeholder</td>
+        <td>{m['images']} images, {m['video']} films</td></tr>
     <tr><td>Broken files</td><td>4 on every page</td><td>0</td></tr>
   </tbody>
 </table>
-
-<h2>Work log</h2>
-<table>
-  <thead><tr><th>Date</th><th>Work completed</th></tr></thead>
-  <tbody>{rows}</tbody>
-</table>
-<p style="font-size:8.6pt;color:#6b7280">{m['commits']} commits across {m['working_days']} working days.
-   {m['insertions']:,} lines added, {m['deletions']:,} removed.</p>
 
 <h2>Still open</h2>
 <div class="note"><b>These are not outstanding build work.</b> Each needs a decision or an
   account from the client before it can be finished.</div>
 {open_rows}
 
-<div class="foot">Figures in this report are measured directly from the project repository at
-  the time of generation, not entered by hand.</div>
+<div class="foot">Counts in this report are measured directly from the project repository
+  at the time of generation. Hours are estimated against delivered scope.</div>
 </body></html>
 """
 

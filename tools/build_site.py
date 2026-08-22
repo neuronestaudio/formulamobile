@@ -700,7 +700,7 @@ def faq_schema():
 </script>"""
 
 
-def faq_block(heading="Common questions"):
+def faq_block(heading="Common questions", photo=False):
     """Native <details> accordion: keyboard-accessible and fully functional
     with JS disabled, which a div-and-onclick implementation is not."""
     rows = "\n".join(f"""
@@ -714,8 +714,14 @@ def faq_block(heading="Common questions"):
           <div class="faq__a"><p>{esc(a)}</p></div>
         </details>""" for i, (q, a) in enumerate(FAQS))
 
+    # only the homepage carries the photo: it is a 300 KB asset and the FAQ
+    # block is emitted on 25 keyword pages as well.
+    band = ('band band--tight band--photo" style="'
+            "--band-img:url('/assets/images/cta-bg.jpg');"
+            "--band-img-sm:url('/assets/images/cta-bg-sm.jpg')"
+            if photo else 'band band--tight')
     return f"""
-<section class="band band--tight">
+<section class="{band}">
   <div class="shell">
     <div style="max-width:52ch;margin-bottom:2.2rem" data-reveal>
       <span class="eyebrow">FAQ</span>
@@ -928,7 +934,7 @@ def build_home():
 
   <div class="hero__say">
     <span class="eyebrow">Mobile &middot; Metropolitan Melbourne</span>
-    <h1 class="hero__h1">Servicing Melbourne<br>for <span class="slant hl">30+ years</span></h1>
+    <h1 class="hero__h1">Servicing Melbourne<br>for <span class="slant hl shine">30+ years</span></h1>
     <p class="hero__sub">Paint Protection &amp; Ceramic Coating Specialists</p>
   </div>
 
@@ -968,7 +974,7 @@ def build_home():
 
 
 
-<section class="band band--raise mesh">
+<section class="band band--raise">
   <div class="shell">
     <div style="max-width:52ch;margin-bottom:2.4rem" data-reveal>
       <span class="eyebrow">Recent work</span>
@@ -1028,10 +1034,9 @@ def build_home():
   </div>
 </section>
 
-{faq_block()}
+{faq_block(photo=True)}
 
-<section class="band band--photo"
-  style="--band-img:url('/assets/images/cta-bg.jpg');--band-img-sm:url('/assets/images/cta-bg-sm.jpg')">
+<section class="band mesh">
   <div class="shell" style="text-align:center">
     <h2 data-reveal>Ready to book <span class="slant hl">your detail?</span></h2>
     <p class="lede" style="margin:0 auto 2rem" data-reveal="0.06">
@@ -1328,7 +1333,7 @@ def build_select():
 """
 
 
-def build_booking():
+def booking_section(heading="", band="band band--tight"):
     """4-step booking wizard, adopting the flow from
     premiermobiledetailing.com.au/booking: Service -> Location -> Vehicle ->
     Details, with a progress rail, back/continue, and a phone fallback on
@@ -1396,25 +1401,10 @@ def build_booking():
         for i, lbl in enumerate(["Service", "Where", "Location", "Vehicle", "Details"])
     )
 
-    return (
-        head("Book a Detail | Formula Mobile Car Detailing",
-             "Book mobile car detailing across Melbourne — takes under a minute, and "
-             "we'll call or text back to confirm a time.",
-             "/booking/", SERVICES[1]["img"], breadcrumb_schema(trail))
-        + nav()
-        + crumbs(trail)
-        + f"""
-<section class="band band--tight">
-  <div class="shell">
-    <span class="eyebrow">Booking</span>
-    <h1>Book your <span class="slant hl">detail</span></h1>
-    <p class="lede">Takes under a minute. We'll call or text back to confirm a time
-      &mdash; no obligation, and no payment up front.</p>
-  </div>
-</section>
-
-<section class="band band--tight">
+    return f"""
+<section class="{band}">
   <div class="shell bk">
+    {heading}
     <ol class="bk__rail">{rail}</ol>
     <p class="visually-hidden" data-live aria-live="polite"></p>
 
@@ -1505,6 +1495,28 @@ def build_booking():
 
 <script src="/assets/js/booking.js" defer></script>
 """
+
+
+def build_booking():
+    trail = [("/", "Home"), ("/booking/", "Book")]
+    return (
+        head("Book a Detail | Formula Mobile Car Detailing",
+             "Book mobile car detailing across Melbourne — takes under a minute, and "
+             "we'll call or text back to confirm a time.",
+             "/booking/", SERVICES[1]["img"], breadcrumb_schema(trail))
+        + nav()
+        + crumbs(trail)
+        + """
+<section class="band band--tight">
+  <div class="shell">
+    <span class="eyebrow">Booking</span>
+    <h1>Book your <span class="slant hl">detail</span></h1>
+    <p class="lede">Takes under a minute. We'll call or text back to confirm a time
+      &mdash; no obligation, and no payment up front.</p>
+  </div>
+</section>
+"""
+        + booking_section()
         + footer()
     )
 

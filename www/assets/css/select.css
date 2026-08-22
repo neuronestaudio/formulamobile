@@ -617,24 +617,36 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 4;
-  width: min(100% - 2.5rem, 720px);
+  width: min(100% - 2.5rem, 1020px);
   text-align: center;
   pointer-events: none;
 }
 .hero__say .eyebrow { margin-bottom: 0.5rem; }
 .hero__h1 {
-  font-size: clamp(2.2rem, 5.4vw, 4rem);
-  margin: 0 0 0.5rem;
+  /* measured off nextlvlprotection.com.au's hero: Syne, negative tracking,
+     line-height under 1. Bebas is too condensed to read as heavy at this size. */
+  font-family: var(--font-hero);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 4.3vw, 3.3rem);
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin: 0 0 1.15rem;
   text-shadow: 0 14px 40px rgba(0, 0, 0, 0.75);
 }
 .hero__sub {
-  font-family: 'Yellowtail', cursive;
-  color: #eceff5;
-  font-size: clamp(1.3rem, 2.9vw, 2rem);
-  line-height: 1.25;
+  /* Next Lvl's subline: uppercase, widely tracked, deliberately quiet so the
+     headline carries the frame. This replaces the earlier cursive treatment. */
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: clamp(0.78rem, 1.55vw, 1.05rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.5;
   margin: 0 auto;
-  max-width: 40rem;
-  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(0, 0, 0, 0.6);
+  max-width: 46rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85);
 }
 /* it belongs to the splash-resolved state, like the carousel */
 .hero .hero__say { opacity: 0; transition: opacity 1s var(--ease) 0.15s; }
@@ -649,14 +661,17 @@
    sides — heading above, HUD below. Without the bottom padding the card is
    centred into space the counter and pips already occupy, and they collide. */
 .sel--inline .sel__stage {
-  padding-top: calc(var(--nav-h) + 13rem);
+  padding-top: calc(var(--nav-h) + 14.6rem);
   padding-bottom: 7.5rem;
 }
 
 @media (max-width: 820px) {
-  .hero__sub { font-size: 1.2rem; }
+  .hero__sub { font-size: 0.74rem; letter-spacing: 0.1em; }
+  /* Syne is much wider per glyph than Bebas; "SERVICING MELBOURNE" needs a
+     smaller step on a phone or it wraps and eats the cards. */
+  .hero__h1 { font-size: clamp(1.4rem, 6.2vw, 2rem); }
   .sel--inline .sel__stage {
-    padding-top: calc(var(--nav-h) + 8rem);
+    padding-top: calc(var(--nav-h) + 11.4rem);
     padding-bottom: 8.5rem;
   }
   .sel--inline .sel__track,
@@ -669,7 +684,7 @@
    At the 396px card the HUD ended up sitting on the card's lower third. */
 @media (max-height: 730px) {
   .sel--inline .sel__stage {
-    padding-top: calc(var(--nav-h) + 6.5rem);
+    padding-top: calc(var(--nav-h) + 8.8rem);
     padding-bottom: 7rem;
   }
   .sel--inline .sel__track,
@@ -679,6 +694,6 @@
   .sel--inline .sel__name { font-size: 1.5rem; }
   .sel--inline .sel__blurb { -webkit-line-clamp: 2; font-size: 0.8rem; }
   .sel--inline .sel__go { margin-top: 0.7rem; padding: 0.55rem 1rem; }
-  .hero__h1 { font-size: clamp(1.9rem, 8vw, 2.4rem); }
+  .hero__h1 { font-size: clamp(1.75rem, 7.4vw, 2.3rem); }
   .hero__say .eyebrow { margin-bottom: 0.3rem; font-size: 0.62rem; }
 }
