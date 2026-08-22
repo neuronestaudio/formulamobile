@@ -2050,3 +2050,13 @@ body{max-width:100%}
 @media (max-width:380px){
   :root{--logo-h:38px;--logo-w:114px}
 }
+
+/* the studio band takes the red carbon weave instead of the hex mesh */
+.cf2{position:relative;isolation:isolate}
+.cf2::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:url('/assets/images/carbon-fibre-2.jpg');
+  background-size:300px;opacity:.5;
+}
+/* the panel now holds a photograph rather than an embedded map */
+.area__map img{width:100%;height:100%;object-fit:cover;display:block}

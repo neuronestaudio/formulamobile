@@ -1014,28 +1014,25 @@ def build_home():
   </div>
 </section>
 
-<section class="band band--raise mesh">
+<section class="band band--raise cf2">
   <div class="shell">
     <div class="area">
       <div>
-        <span class="eyebrow">Where we go</span>
-        <h2>Across <span class="slant hl">metropolitan Melbourne</span></h2>
-        <p class="lede">We're mobile. We come to your home or your office, and everything
-          is done onsite &mdash; you don't need to go anywhere.</p>
+        <span class="eyebrow">The studio</span>
+        <h2>A dedicated <span class="slant hl">coating studio</span></h2>
+        <p class="lede">Correction and coating work is conducted in our specialty
+          studio, created for these applications &mdash; controlled lighting, a sealed
+          floor and the room to work a panel properly.</p>
         <p style="margin-top:1.6rem;display:flex;gap:.8rem;flex-wrap:wrap">
           <a class="btn" href="/booking/">Book a detail</a>
-          <a class="btn btn--ghost" href="/service-areas/">All service areas</a>
+          <a class="btn btn--ghost" href="/services/">See our services</a>
         </p>
       </div>
       <div class="area__map">
-        <iframe title="Formula Mobile Car Detailing service area — metropolitan Melbourne"
-          src="https://www.google.com/maps?q=Melbourne+VIC+Australia&z=9&output=embed"
-          loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        <img src="/assets/images/studio.jpg" alt="Formula's coating studio"
+             width="1280" height="880" loading="lazy" decoding="async">
       </div>
     </div>
-  </div>
-  <div class="mq" style="--mq-dur:{max(40, len(SUBURBS) * 2)}s;margin-top:2.4rem">
-    <div class="mq__track">{subchips}</div>
   </div>
 </section>
 
