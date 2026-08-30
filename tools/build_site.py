@@ -54,11 +54,11 @@ GADS_CONVERSION = ""   # e.g. "AW-XXXXXXXXX/AbCdEfGhIjKlMnOp"
 SPLASH = [
     {
         "img": "/assets/images/slider01.jpg",
-        "tier": "Full Detail",
+        "tier": "Deluxe Detail",
         "title": "Inside and out",
         "copy": "Engine bay, door jams, clay bar, hand polish, extraction through the "
                 "carpets and leather conditioned. The whole vehicle, done properly.",
-        "href": "/services/full-detail/",
+        "href": "/services/deluxe-detail/",
     },
     {
         "img": "/assets/images/slider02.jpg",
@@ -80,39 +80,17 @@ SPLASH = [
 
 SERVICES = [
     {
-        "slug": "mini-detail",
-        "name": "Mini Detail",
-        "img": "/assets/images/services/mini-detail.jpg",
-        "blurb": "A pressure wash, shampoo and rinse, wheels and under-guards degreased, "
-                 "chamois dried, interior vacuumed and windows cleaned inside and out.",
-        "intro": "A mini detail or valet is the maintenance service — the one that keeps a "
-                 "well-kept car well-kept. Available with or without a hand polish.",
-        "groups": [
-            ("A mini detail or valet consists of", [
-                "Vehicle pressure washed first, shampooed and then pressure rinsed",
-                "Wheels and under guards degreased and pressure washed",
-                "Vehicle chamois dried",
-                "Seats, carpets and cargo area vacuumed",
-                "Dash wiped and blown with compressed air",
-                "Windows cleaned inside and out",
-                "Tyres glossed and plastics sealed",
-            ]),
-            ("Mini detail with hand polish adds", [
-                "Paint work cleaned with a clay bar",
-                "Paint work hand polished",
-            ]),
-        ],
-    },
-    {
-        "slug": "full-detail",
-        "name": "Full Detail",
+        "slug": "deluxe-detail",
+        "name": "Deluxe Detail",
         "img": "/assets/images/services/full-detail.jpg",
-        "blurb": "The complete service. Engine bay degreased, clay bar, hand polish, "
-                 "full interior extraction and leather conditioned.",
-        "intro": "Everything the mini detail covers, plus the engine bay, door jams, clay "
-                 "bar decontamination, a hand polish and a full interior extraction.",
+        "blurb": "The complete service, inside and out. Engine bay degreased, clay bar "
+                 "decontamination, hand polish, and a full interior extraction across "
+                 "every surface.",
+        "intro": "One detail that takes the car end to end \u2014 the wash and "
+                 "decontamination, the paint work, then a full interior extraction "
+                 "across carpet, mats, seats, wheel, dash, console, tints and mirrors.",
         "groups": [
-            ("A full detail consists of", [
+            ("Outside", [
                 "Door jams cleaned",
                 "Wheels and under guards degreased and pressure washed",
                 "Engine bay degreased and pressure washed",
@@ -120,60 +98,15 @@ SERVICES = [
                 "Paint work chamois dried",
                 "Paint work hand polished",
                 "Tyres glossed and plastics sealed",
-                "Door trims, dash, steering wheel, console, vents and visors detailed",
-                "Ashtrays cleaned",
-                "Seats, carpets, floor mats and cargo area cleaned with extraction",
-                "Leather seats cleaned and conditioned",
-                "Roof lining spot cleaned",
                 "Windows cleaned inside and out",
             ]),
-        ],
-    },
-    {
-        "slug": "interior-detail",
-        "name": "Interior Detail",
-        "img": "/assets/images/services/img03.jpg",
-        "blurb": "Specialised products and equipment across every interior surface — "
-                 "carpet, mats, seats, wheel, dash, console, tints and mirrors.",
-        "intro": "Interior car detailing involves using specialised products and equipment "
-                 "to treat all interior surfaces. It goes beyond just making it look clean. "
-                 "More than a spray and wipe, our mobile interior detailing uses A-grade "
-                 "shampoos and cleaning agents to ensure that what you're sitting in is safe "
-                 "for both you and your passengers.",
-        "groups": [
-            ("Our full interior detailing process consists of", [
-                "Door jams cleaned",
-                "Door trims, dash, steering wheel, console, visors and vents detailed",
-                "Ashtrays cleaned",
+            ("Inside", [
+                "Door trims, dash, steering wheel, console, vents and visors detailed",
                 "Seats, carpets, floor mats and cargo area cleaned with extraction",
                 "Leather seats cleaned and conditioned",
                 "Roof lining spot cleaned",
-                "Windows cleaned",
-            ]),
-        ],
-    },
-    {
-        "slug": "exterior-detail",
-        "name": "Exterior Detail",
-        "img": "/assets/images/services/exterior-detail.jpg",
-        "blurb": "A four stage process for brush marks, spider webbing, oxidised, dull "
-                 "or plain neglected paint work.",
-        "intro": "We specialise in surface damage that may need our 4 stage process. Whether "
-                 "brush marks, spider webbing, oxidised dull or just plain neglected paint "
-                 "work, we have a process to fix most situations.",
-        "groups": [
-            ("4 stage exterior detail process", [
-                "Vehicle pressure washed first to remove loose dirt and grime",
-                "Hand washed with car shampoo, then pressure rinsed",
-                "Clay bar the paint work to deep clean all grime and foreign matter away",
-                "Machine cut to remove scratches, spider webbing and dullness",
-                "Machine glaze to de-swirl the surface and put back a deep gloss",
-                "Hand polish with a quality liquid polish, wax or both to seal and protect",
-            ]),
-            ("Windows", [
-                "The exterior of the windows can accumulate a build up of environmental "
-                "pollution that normal window cleaning will not remove. We have a process "
-                "that cleans the build up off the glass, leaving a smooth polished finish.",
+                "Tints and mirrors cleaned",
+                "Ashtrays cleaned",
             ]),
         ],
     },
@@ -256,10 +189,7 @@ SERVICES = [
 # Only the four slider shots are large, so backdrops are blurred hard and each
 # gets its own grade — the worlds differ, the accent stays Formula red.
 SELECT_LOOKS = {
-    "mini-detail":       ("/assets/images/backdrop/mini-detail.jpg", "#6b4526"),
-    "full-detail":       ("/assets/images/backdrop/full-detail.jpg", "#6b4526"),
-    "interior-detail":   ("/assets/images/backdrop/interior-detail.jpg", "#6b4526"),
-    "exterior-detail":   ("/assets/images/backdrop/exterior-detail.jpg", "#6b4526"),
+    "deluxe-detail":     ("/assets/images/backdrop/full-detail.jpg", "#6b4526"),
     "overspray-removal": ("/assets/images/backdrop/overspray-removal.jpg", "#6b4526"),
     "ceramic-coating":   ("/assets/images/backdrop/ceramic-coating.jpg", "#6b4526"),
     "paint-correction":  ("/assets/images/backdrop/paint-correction.jpg", "#6b4526"),
@@ -435,6 +365,15 @@ NAV_FOOTER_EXTRA = [("/service-areas/", "Service areas"), ("/franchising/", "Fra
 # --------------------------------------------------------------------------
 # shell
 # --------------------------------------------------------------------------
+
+def svc_img(slug, fallback=0):
+    """Positional indexes into SERVICES break whenever the list changes; the
+    four detailing tiers collapsing into one is exactly that. Look up by slug."""
+    for s in SERVICES:
+        if s["slug"] == slug:
+            return s["img"]
+    return SERVICES[fallback]["img"]
+
 
 def esc(s):
     return html.escape(s, quote=True)
@@ -1326,7 +1265,7 @@ def build_select():
         "Choose a Service | Formula Mobile Car Detailing",
         "Browse all seven Formula Mobile Car Detailing services — mini and full detailing, "
         "interior, exterior, overspray removal, ceramic coatings and paint correction.",
-        "/services/select/", SERVICES[0]["img"], breadcrumb_schema(trail))}
+        "/services/select/", svc_img("deluxe-detail"), breadcrumb_schema(trail))}
 <link rel="stylesheet" href="/assets/css/select.css">
 {carousel_html(inline=False)}
 <script src="/assets/js/select.js" defer></script>
@@ -1489,7 +1428,7 @@ def build_booking():
         head("Book a Detail | Formula Mobile Car Detailing",
              "Book mobile car detailing across Melbourne — takes under a minute, and "
              "we'll call or text back to confirm a time.",
-             "/booking/", SERVICES[1]["img"], breadcrumb_schema(trail))
+             "/booking/", svc_img("ceramic-coating"), breadcrumb_schema(trail))
         + nav()
         + crumbs(trail)
         + """
@@ -1912,6 +1851,11 @@ def build_keyword_page(cluster_title, cluster_key, entry, siblings):
     content differs page to page rather than being a template with the keyword
     swapped, because near-duplicates get treated as thin content.
     """
+    # cluster keys are not guaranteed to be service slugs
+    _slug = {"mobile-detailing": "deluxe-detail"}.get(cluster_key, cluster_key)
+    svc_link = (f'<a class="btn btn--ghost" href="/services/{_slug}/">Service details</a>'
+                if any(x["slug"] == _slug for x in SERVICES) else "")
+
     slug, h1, desc, intro, points, faq = entry
     q, a = faq
 
@@ -1935,7 +1879,7 @@ def build_keyword_page(cluster_title, cluster_key, entry, siblings):
 
     return (
         head(f"{h1} | Formula Mobile Car Detailing", desc, f"/{slug}/",
-             SERVICES[5]["img"], schema)
+             svc_img("paint-correction"), schema)
         + nav()
         + crumbs(trail)
         + f"""
@@ -1978,7 +1922,7 @@ def build_keyword_page(cluster_title, cluster_key, entry, siblings):
     <h2>More on {esc(cluster_title.replace(" Melbourne", ""))}</h2>
     <ul class="ticks" style="columns:2;margin-top:1.2rem">{rel}</ul>
     <p style="margin-top:1.8rem">
-      <a class="btn btn--ghost" href="/services/{esc(cluster_key)}/">Service details</a>
+      {svc_link}
     </p>
   </div>
 </section>
