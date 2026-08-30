@@ -217,17 +217,16 @@ TESTIMONIALS = [
 # nothing about price or turnaround is invented, because the old site stated
 # neither.
 FAQS = [
-    ("Do you come to me?",
-     "Yes — we're fully mobile across metropolitan Melbourne. We work at your home or your office and you don't "
-     "need to go anywhere. Because everything is done onsite the process is "
-     "completely transparent: you can watch the work happen."),
-    ("What's the difference between a mini detail and a full detail?",
-     "A mini detail is the maintenance service — pressure wash, shampoo and rinse, "
-     "wheels and under-guards degreased, chamois dry, interior vacuumed, dash "
-     "blown with compressed air, windows in and out, tyres glossed. A full detail "
-     "adds the engine bay, door jams, a clay bar decontamination, a hand polish, "
-     "and a full interior extraction through the seats, carpets, mats and cargo "
-     "area with the leather cleaned and conditioned."),
+    ("Where is the work carried out?",
+     "At our studio. Correction and coating are conducted in our specialty studio, "
+     "created for these applications — the lighting is controlled, which is how "
+     "swirls and defects are found in the first place, and the environment is clean "
+     "and stable, which is what a coating needs to cure against."),
+    ("What does the Deluxe Detail cover?",
+     "The car end to end. Outside: door jams, wheels and under guards degreased, "
+     "engine bay, a clay bar decontamination, chamois dry and a hand polish. Inside: "
+     "door trims, dash, wheel, console and vents, seats and carpets cleaned with "
+     "extraction, leather conditioned and the roof lining spot cleaned."),
     ("What is paint correction, and how many stages do I need?",
      "Paint correction removes swirl marks from a poor cut and polish, "
      "environmental damage from being left out in the elements, and the marks, "
@@ -252,9 +251,6 @@ FAQS = [
      "paint work. The vehicle is pressure washed, hand washed and rinsed, clay "
      "barred, machine cut to remove the scratches and dullness, machine glazed to "
      "de-swirl and restore gloss, then hand polished to seal and protect."),
-    ("Which suburbs do you service?",
-     "Metropolitan Melbourne. If you're in the metro area we'll come to you — "
-     "call 1300 132 750 and our operators will confirm."),
 ]
 
 
@@ -360,7 +356,7 @@ NAV = [
     ("/testimonials/", "Reviews"),
     ("/contact/", "Contact"),
 ]
-NAV_FOOTER_EXTRA = [("/service-areas/", "Service areas"), ("/franchising/", "Franchising")]
+NAV_FOOTER_EXTRA = [("/franchising/", "Franchising")]
 
 # --------------------------------------------------------------------------
 # shell
@@ -494,11 +490,8 @@ def footer():
     svc = "\n".join(
         f'        <li><a href="/services/{s["slug"]}/">{esc(s["name"])}</a></li>'
         for s in SERVICES
-    ) + '\n        <li><a href="/services/select/">Browse all seven &rarr;</a></li>'
-    areas = "\n".join(
-        f'        <li><a href="/mobile-car-detailing/{slugify(s)}/">{esc(s)}</a></li>'
-        for s in SUBURBS[:7]
-    )
+    ) + '\n        <li><a href="/services/select/">Browse all services &rarr;</a></li>'
+    areas = ""   # the business does not travel; there are no area pages
     return f"""</main>
 <footer class="foot hexbg">
   <div class="shell">
@@ -509,7 +502,7 @@ def footer():
         </div>
         <p class="muted" style="font-size:.92rem;max-width:32ch">
           Mobile car detailing across metropolitan Melbourne. Over 30 years bringing
-          paint work back to its best — we come to your home or office.
+          paint work back to its best.
         </p>
       </div>
       <div>
@@ -522,7 +515,6 @@ def footer():
         <h4>Areas</h4>
         <ul>
 {areas}
-          <li><a href="/service-areas/">All areas &rarr;</a></li>
           <li><a href="/franchising/">Franchising</a></li>
         </ul>
       </div>
@@ -596,7 +588,7 @@ def local_business_schema():
   "@type": "AutoDetailing",
   "@id": "{SITE}/#business",
   "name": "Formula Mobile Car Detailing",
-  "description": "Mobile car detailing across metropolitan Melbourne — full detailing, paint correction and ceramic coatings, at your home or office.",
+  "description": "Paint correction, ceramic coating and detailing in Melbourne — specialist work conducted in our own studio.",
   "url": "{SITE}/",
   "telephone": "+61{PHONE_LINK[1:]}",
   "email": "{EMAIL}",
@@ -653,12 +645,9 @@ def faq_block(heading="Common questions", photo=False):
           <div class="faq__a"><p>{esc(a)}</p></div>
         </details>""" for i, (q, a) in enumerate(FAQS))
 
-    # only the homepage carries the photo: it is a 300 KB asset and the FAQ
-    # block is emitted on 25 keyword pages as well.
-    band = ('band band--tight band--photo" style="'
-            "--band-img:url('/assets/images/cta-bg.jpg');"
-            "--band-img-sm:url('/assets/images/cta-bg-sm.jpg')"
-            if photo else 'band band--tight')
+    # The homepage FAQ takes the same red carbon weave as the studio band. It
+    # stays opt-in because this block is also emitted on 25 keyword pages.
+    band = 'band band--tight cf2' if photo else 'band band--tight'
     return f"""
 <section class="{band}">
   <div class="shell">
@@ -828,10 +817,7 @@ def build_home():
         </svg>
       </a>""" for x in SERVICES)
 
-    _chips = "".join(
-        f'<a class="mq__chip" href="/mobile-car-detailing/{slugify(x)}/">{esc(x)}</a>'
-        for x in SUBURBS)
-    subchips = _chips + _chips   # doubled, so the marquee loop has no seam
+    subchips = ""
 
     # Marquee: the track holds every review TWICE and translates exactly -50%,
     # so the loop is seamless. Duration scales with the count to hold speed.
@@ -847,13 +833,13 @@ def build_home():
     quotes = _revs + _revs   # the second pass is what makes the seam invisible
 
     area_links = " ".join(
-        f'<a href="/mobile-car-detailing/{slugify(s)}/">{esc(s)}</a>' for s in SUBURBS
+        '' for s in []
     )
 
     return (
         head("Mobile Car Detailing Melbourne | Formula Mobile Car Detailing",
              "Mobile car detailing across metropolitan Melbourne. Full detailing, paint "
-             "correction and ceramic coatings at your home or office. Over 30 years. "
+             "correction and ceramic coatings, conducted in our own studio. Over 30 years. "
              f"Call {PHONE_DISPLAY}.",
              "/", schema=local_business_schema() + faq_schema()
              + '<link rel="stylesheet" href="/assets/css/select.css">')
@@ -908,7 +894,7 @@ def build_home():
       <div class="stat" data-reveal><span class="stat__n" data-count="30" data-suffix="+">30+</span><span class="stat__l">Years detailing</span></div>
       <div class="stat" data-reveal="0.08"><span class="stat__n" data-count="7">7</span><span class="stat__l">Services</span></div>
       <div class="stat" data-reveal="0.16"><span class="stat__n" data-count="10" data-suffix="H">10H</span><span class="stat__l">Graphene coating</span></div>
-      <div class="stat" data-reveal="0.24"><span class="stat__n">100%</span><span class="stat__l">Mobile &mdash; we come to you</span></div>
+      <div class="stat" data-reveal="0.24"><span class="stat__n">100%</span><span class="stat__l">Work done in our studio</span></div>
     </div>
   </div>
 </section>
@@ -1586,8 +1572,6 @@ def build_contact():
           <h4 style="margin-top:1.4rem">Hours</h4>
           <p class="muted">Monday&ndash;Saturday 6:30am &ndash; 6:30pm<br>Sunday closed</p>
           <h4 style="margin-top:1.4rem">Where</h4>
-          <p class="muted">We're mobile across metropolitan Melbourne &mdash; we come to your
-            home or office.</p>
         </div>
         <div class="card" style="padding:0;overflow:hidden">
           <iframe title="Formula Mobile Car Detailing service area — metropolitan Melbourne"
@@ -1629,7 +1613,7 @@ def build_franchising():
     return (
         head("Franchising | Formula Mobile Car Detailing",
              "Join the Formula Mobile Car Detailing family. Comprehensive on-the-job "
-             "training, a proven model built on 20 years, and low mobile overheads.",
+             "training and a proven model built on 20 years in the industry.",
              "/franchising/", schema=breadcrumb_schema(trail))
         + nav("/franchising/") + crumbs(trail)
         + f"""
@@ -1663,8 +1647,7 @@ def build_franchising():
 
 def build_suburb(name):
     slug = slugify(name)
-    trail = [("/", "Home"), ("/service-areas/", "Service areas"),
-             (f"/mobile-car-detailing/{slug}/", name)]
+    trail = [("/", "Home"),              (f"/mobile-car-detailing/{slug}/", name)]
     svc = "\n".join(f"""
         <a class="card card--media" href="/services/{s['slug']}/" data-reveal="{i*0.05:.2f}">
           <img src="{s['img']}" alt="{esc(s['name'])} in {esc(name)}" loading="lazy"
@@ -1691,7 +1674,7 @@ def build_suburb(name):
     return (
         head(f"Mobile Car Detailing {name} | Formula Mobile Car Detailing",
              f"Mobile car detailing in {name}. Full detailing, paint correction and ceramic "
-             f"coatings at your home or office. Over 30 years. Call {PHONE_DISPLAY}.",
+             f"coatings, conducted in our own studio. Over 30 years. Call {PHONE_DISPLAY}.",
              f"/mobile-car-detailing/{slug}/", schema=schema)
         + nav() + crumbs(trail)
         + f"""
@@ -1720,7 +1703,6 @@ def build_suburb(name):
   <div class="shell">
     <h2>Also servicing</h2>
     <div class="arealinks" style="margin-top:1.4rem">{near}</div>
-    <p style="margin-top:1.6rem"><a class="btn btn--ghost" href="/service-areas/">All service areas</a></p>
   </div>
 </section>
 """ + footer())
@@ -1728,7 +1710,7 @@ def build_suburb(name):
 
 def build_areas_index():
     links = " ".join(
-        f'<a href="/mobile-car-detailing/{slugify(s)}/">{esc(s)}</a>' for s in SUBURBS)
+        '' for s in [])
     trail = [("/", "Home"), ("/service-areas/", "Service areas")]
     return (
         head("Service Areas | Mobile Car Detailing Across Melbourne",
@@ -1741,8 +1723,7 @@ def build_areas_index():
   <div class="shell">
     <span class="eyebrow">Where we go</span>
     <h1>Servicing <span class="slant hl">metropolitan Melbourne</span></h1>
-    <p class="lede">We're fully mobile. Pick your suburb, or just call us &mdash; if you're in
-      the Melbourne metro area, we'll come to you.</p>
+    <p class="lede"></p>
   </div>
 </section>
 <section class="band band--tight">
@@ -1791,7 +1772,7 @@ def build_sitemap_page():
 
     core = [("/", "Home"), ("/booking/", "Book a detail"), ("/services/", "Services"),
             ("/services/select/", "Browse services"), ("/gallery/", "Gallery"),
-            ("/testimonials/", "Reviews"), ("/service-areas/", "Service areas"),
+            ("/testimonials/", "Reviews"),
             ("/franchising/", "Franchising"), ("/contact/", "Contact"),
             ("/privacy/", "Privacy policy")]
 
@@ -1834,11 +1815,7 @@ def build_sitemap_page():
 
 <section class="band band--tight">
   <div class="shell">
-    <h2>Melbourne suburbs <span class="slant hl">we service</span></h2>
-    <p class="lede" style="margin-bottom:1.8rem">Mobile detailing across
-      {len(SUBURBS)} metropolitan suburbs. If yours is not listed, call
-      {PHONE_DISPLAY} &mdash; we most likely still cover it.</p>
-    <ul class="sm__subs">{links([(f"/mobile-car-detailing/{slugify(x)}/", x) for x in SUBURBS])}</ul>
+
   </div>
 </section>
 """
@@ -1990,10 +1967,6 @@ def main():
     write("/testimonials/", build_testimonials());  routes.append(("/testimonials/", "0.7"))
     write("/contact/", build_contact());            routes.append(("/contact/", "0.9"))
     write("/franchising/", build_franchising());    routes.append(("/franchising/", "0.7"))
-    write("/service-areas/", build_areas_index());  routes.append(("/service-areas/", "0.8"))
-    for sub in SUBURBS:
-        write(f"/mobile-car-detailing/{slugify(sub)}/", build_suburb(sub))
-        routes.append((f"/mobile-car-detailing/{slugify(sub)}/", "0.6"))
     # keyword clusters
     for _title, _key, _pages in CLUSTERS:
         sibs = [(x[0], x[1]) for x in _pages]
