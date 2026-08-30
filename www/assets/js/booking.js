@@ -204,7 +204,6 @@
       phone: (fd.get('phone') || '').trim(),
       email: (fd.get('email') || '').trim(),
       service: fd.get('service') || '',
-      location_type: fd.get('location_type') || '',
       suburb: (fd.get('suburb') || '').trim(),
       postcode: (fd.get('postcode') || '').trim(),
       vehicle: (fd.get('vehicle') || '').trim(),

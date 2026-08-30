@@ -2060,3 +2060,17 @@ body{max-width:100%}
 }
 /* the panel now holds a photograph rather than an embedded map */
 .area__map img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---------- footer: stop the columns collapsing to slivers ----------
+   A max-width:900px two-column rule sat LATER in this sheet than the
+   single-column rule, so it won on a phone and squeezed the brand column to
+   88px - the blurb wrapped two words to a line and the logo was crushed to a
+   1.63 ratio because the global img max-width:100% beat its width:auto.
+   Size the mark from its WIDTH so its ratio cannot be overridden. */
+@media (max-width:640px){
+  .foot__grid{grid-template-columns:1fr;gap:2rem}
+}
+@media (max-width:900px){
+  .foot__grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+.foot__logo img{width:min(196px,100%);height:auto;margin-bottom:1.1rem}

@@ -95,7 +95,7 @@
 <section class="band band--tight">
   <div class="shell bk">
     
-    <ol class="bk__rail"><li class="bk__dot" data-dot data-state="now"><span>1</span>Service</li><li class="bk__dot" data-dot data-state="todo"><span>2</span>Where</li><li class="bk__dot" data-dot data-state="todo"><span>3</span>Location</li><li class="bk__dot" data-dot data-state="todo"><span>4</span>Vehicle</li><li class="bk__dot" data-dot data-state="todo"><span>5</span>Details</li></ol>
+    <ol class="bk__rail"><li class="bk__dot" data-dot data-state="now"><span>1</span>Service</li><li class="bk__dot" data-dot data-state="todo"><span>2</span>Location</li><li class="bk__dot" data-dot data-state="todo"><span>3</span>Vehicle</li><li class="bk__dot" data-dot data-state="todo"><span>4</span>Details</li></ol>
     <p class="visually-hidden" data-live aria-live="polite"></p>
 
     <form class="bk__form card" method="post" action="/thank-you/" data-booking>
@@ -146,29 +146,9 @@
           </label></div>
       </fieldset>
 
-      <!-- One choice, nothing else: picking a tile advances on its own, which
-           keeps the momentum going instead of asking for a second click. -->
-      <fieldset class="bk__step" data-step data-autoadvance>
-        <legend class="bk__legend">Where are we working?</legend>
-        <p class="bk__hint">We service metropolitan Melbourne.</p>
-        <div class="bk__tiles bk__tiles--2" data-requires-choice>
-          <label class="bk__tile">
-            <input type="radio" name="location_type" value="Mobile — at your door">
-            <span class="bk__tiletitle">Mobile — at your door</span>
-            <span class="bk__tilesub">to your home or office.</span>
-          </label>
-          <label class="bk__tile">
-            <input type="radio" name="location_type" value="Studio — paint correction">
-            <span class="bk__tiletitle">Studio — paint correction</span>
-            <span class="bk__tilesub">Correction work is done in our specialty studio.</span>
-          </label></div>
-      </fieldset>
-
-      <!-- Skipped entirely when the car is coming to the studio: we do not need
-           an address for a drop-off, and asking for one is friction. -->
-      <fieldset class="bk__step" data-step data-only-when="location_type=Mobile &mdash; at your door">
-        <legend class="bk__legend">Where should we come?</legend>
-        <p class="bk__hint">So we can confirm we cover you.</p>
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Where are you?</legend>
+        <p class="bk__hint">Suburb and postcode.</p>
         <div class="field--split">
           <div class="field">
             <label for="bk-suburb">Suburb</label>
@@ -235,7 +215,7 @@
       </fieldset>
 
       <fieldset class="bk__step" data-step>
-        <legend class="bk__legend">How do we reach you?</legend>
+        <legend class="bk__legend">Where to send the quote</legend>
         <div class="field">
           <label for="bk-name">Name</label>
           <input id="bk-name" name="name" type="text" autocomplete="name" required>
@@ -252,7 +232,7 @@
           </div>
         </div>
         <div class="field">
-          <label for="bk-comments">Anything else? <span class="muted">(optional)</span></label>
+          <label for="bk-comments">Special requests <span class="muted">(optional)</span></label>
           <textarea id="bk-comments" name="comments" rows="4"></textarea>
         </div>
       </fieldset>
@@ -283,7 +263,7 @@
           <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="300">
         </div>
         <p class="muted" style="font-size:.92rem;max-width:32ch">
-          Mobile car detailing across metropolitan Melbourne. Over 20 years bringing
+          Mobile car detailing across metropolitan Melbourne. Over 30 years bringing
           paint work back to its best — we come to your home or office.
         </p>
       </div>

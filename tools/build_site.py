@@ -256,13 +256,13 @@ SERVICES = [
 # Only the four slider shots are large, so backdrops are blurred hard and each
 # gets its own grade — the worlds differ, the accent stays Formula red.
 SELECT_LOOKS = {
-    "mini-detail":       ("/assets/images/backdrop/mini-detail.jpg", "#27455f"),
-    "full-detail":       ("/assets/images/backdrop/full-detail.jpg", "#3a3f4a"),
+    "mini-detail":       ("/assets/images/backdrop/mini-detail.jpg", "#6b4526"),
+    "full-detail":       ("/assets/images/backdrop/full-detail.jpg", "#6b4526"),
     "interior-detail":   ("/assets/images/backdrop/interior-detail.jpg", "#6b4526"),
-    "exterior-detail":   ("/assets/images/backdrop/exterior-detail.jpg", "#1d3a5e"),
-    "overspray-removal": ("/assets/images/backdrop/overspray-removal.jpg", "#1d4f47"),
-    "ceramic-coating":   ("/assets/images/backdrop/ceramic-coating.jpg", "#6b5320"),
-    "paint-correction":  ("/assets/images/backdrop/paint-correction.jpg", "#3f2a5e"),
+    "exterior-detail":   ("/assets/images/backdrop/exterior-detail.jpg", "#6b4526"),
+    "overspray-removal": ("/assets/images/backdrop/overspray-removal.jpg", "#6b4526"),
+    "ceramic-coating":   ("/assets/images/backdrop/ceramic-coating.jpg", "#6b4526"),
+    "paint-correction":  ("/assets/images/backdrop/paint-correction.jpg", "#6b4526"),
 }
 
 TESTIMONIALS = [
@@ -569,7 +569,7 @@ def footer():
           <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="300">
         </div>
         <p class="muted" style="font-size:.92rem;max-width:32ch">
-          Mobile car detailing across metropolitan Melbourne. Over 20 years bringing
+          Mobile car detailing across metropolitan Melbourne. Over 30 years bringing
           paint work back to its best — we come to your home or office.
         </p>
       </div>
@@ -914,7 +914,7 @@ def build_home():
     return (
         head("Mobile Car Detailing Melbourne | Formula Mobile Car Detailing",
              "Mobile car detailing across metropolitan Melbourne. Full detailing, paint "
-             "correction and ceramic coatings at your home or office. Over 20 years. "
+             "correction and ceramic coatings at your home or office. Over 30 years. "
              f"Call {PHONE_DISPLAY}.",
              "/", schema=local_business_schema() + faq_schema()
              + '<link rel="stylesheet" href="/assets/css/select.css">')
@@ -1375,12 +1375,6 @@ def booking_section(heading="", band="band band--tight"):
 
     # Formula is mobile; paint correction is the exception — their own copy says
     # it is "conducted in our specialty studio created for these applications".
-    where = [
-        ("Mobile — at your door", "Mobile — at your door",
-         "to your home or office."),
-        ("Studio — paint correction", "Studio — paint correction",
-         "Correction work is done in our specialty studio."),
-    ]
 
     paint = [
         ("New / Excellent", "New / Excellent", "Near-new, minimal marks."),
@@ -1400,7 +1394,7 @@ def booking_section(heading="", band="band band--tight"):
     rail = "".join(
         f'<li class="bk__dot" data-dot data-state="{"now" if i == 0 else "todo"}">'
         f'<span>{i + 1}</span>{esc(lbl)}</li>'
-        for i, lbl in enumerate(["Service", "Where", "Location", "Vehicle", "Details"])
+        for i, lbl in enumerate(["Service", "Location", "Vehicle", "Details"])
     )
 
     return f"""
@@ -1418,19 +1412,9 @@ def booking_section(heading="", band="band band--tight"):
         <div class="bk__tiles" data-requires-choice>{tiles("service", services)}</div>
       </fieldset>
 
-      <!-- One choice, nothing else: picking a tile advances on its own, which
-           keeps the momentum going instead of asking for a second click. -->
-      <fieldset class="bk__step" data-step data-autoadvance>
-        <legend class="bk__legend">Where are we working?</legend>
-        <p class="bk__hint">We service metropolitan Melbourne.</p>
-        <div class="bk__tiles bk__tiles--2" data-requires-choice>{tiles("location_type", where)}</div>
-      </fieldset>
-
-      <!-- Skipped entirely when the car is coming to the studio: we do not need
-           an address for a drop-off, and asking for one is friction. -->
-      <fieldset class="bk__step" data-step data-only-when="location_type=Mobile &mdash; at your door">
-        <legend class="bk__legend">Where should we come?</legend>
-        <p class="bk__hint">So we can confirm we cover you.</p>
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Where are you?</legend>
+        <p class="bk__hint">Suburb and postcode.</p>
         <div class="field--split">
           <div class="field">
             <label for="bk-suburb">Suburb</label>
@@ -1457,7 +1441,7 @@ def booking_section(heading="", band="band band--tight"):
       </fieldset>
 
       <fieldset class="bk__step" data-step>
-        <legend class="bk__legend">How do we reach you?</legend>
+        <legend class="bk__legend">Where to send the quote</legend>
         <div class="field">
           <label for="bk-name">Name</label>
           <input id="bk-name" name="name" type="text" autocomplete="name" required>
@@ -1474,7 +1458,7 @@ def booking_section(heading="", band="band band--tight"):
           </div>
         </div>
         <div class="field">
-          <label for="bk-comments">Anything else? <span class="muted">(optional)</span></label>
+          <label for="bk-comments">Special requests <span class="muted">(optional)</span></label>
           <textarea id="bk-comments" name="comments" rows="4"></textarea>
         </div>
       </fieldset>
@@ -1641,7 +1625,7 @@ def build_contact():
           <input id="vehicle" name="vehicle" type="text" placeholder="Make, model, year">
         </div>
         <div class="field">
-          <label for="comments">Anything else?</label>
+          <label for="comments">Special requests</label>
           <textarea id="comments" name="comments"></textarea>
         </div>
         <p class="formerr" data-form-error role="alert" hidden></p>
@@ -1768,7 +1752,7 @@ def build_suburb(name):
     return (
         head(f"Mobile Car Detailing {name} | Formula Mobile Car Detailing",
              f"Mobile car detailing in {name}. Full detailing, paint correction and ceramic "
-             f"coatings at your home or office. Over 20 years. Call {PHONE_DISPLAY}.",
+             f"coatings at your home or office. Over 30 years. Call {PHONE_DISPLAY}.",
              f"/mobile-car-detailing/{slug}/", schema=schema)
         + nav() + crumbs(trail)
         + f"""
