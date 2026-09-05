@@ -2011,7 +2011,7 @@ body{max-width:100%}
    The texture lives inside the capsule so the radius clips it.
    ========================================================================== */
 :root{--pill-h:76px}
-.nav{height:calc(var(--pill-h) + 26px);border-bottom:0}
+.nav{height:calc(var(--pill-h) + 42px);border-bottom:0}
 .nav__in{
   position:relative;
   height:var(--pill-h);
@@ -2453,4 +2453,36 @@ body{max-width:100%}
 }
 @media (prefers-reduced-motion: reduce){
   .svcslant__i,.svcslant__i::before,.svcslant__blurb{transition:none}
+}
+
+/* ---------- header: one row, and clear of the top edge ----------
+   .nav__links--r and .nav__act both sat in column 2 with no row set, so grid
+   auto-placement gave them a row each: the actions were being pushed onto a
+   second row and hanging out the bottom of the pill (act bottom 98px against
+   a pill bottom of 89px). Pin everything to row 1. */
+.nav__in{grid-template-rows:1fr}
+.nav__links--l,.nav__links--r,.nav__act,.nav__logo{grid-row:1}
+.nav__act{align-self:center}
+/* the capsule should read as floating, not as clipped to the top edge */
+:root{--nav-h:112px}
+@media (max-width:820px){ :root{--nav-h:88px} }
+
+/* the statement sits high in the frame rather than dead centre - the studio
+   floor below it is the part of the photograph worth seeing */
+.hero--photo .hero__say{transform:translateY(-100px)}
+@media (max-width:820px){ .hero--photo .hero__say{transform:translateY(-56px)} }
+
+/* ---------- gallery strip: rounded rectangles, near-touching ----------
+   The diagonal blades read well but the client wants the panels upright with
+   rounded corners and almost no gap, so the strip reads as one continuous
+   band of work. The counter-skew on the image goes with the panel skew. */
+.mq--slant{--slant:0deg;--panel:clamp(190px,16vw,250px);clip-path:none}
+.mq--slant .mq__track{gap:6px}
+.slantile{border-radius:14px}
+.slantile img{transform:none;filter:saturate(.98) contrast(1.03)}
+.slantile:hover img{transform:scale(1.06)}
+@media (max-width:820px){
+  .mq--slant{--panel:clamp(140px,42vw,190px)}
+  .mq--slant .mq__track{gap:5px}
+  .slantile{border-radius:11px}
 }

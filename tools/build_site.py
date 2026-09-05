@@ -112,18 +112,6 @@ SERVICES = [
         ],
     },
     {
-        "slug": "overspray-removal",
-        "name": "Overspray Removal",
-        "img": "/assets/images/services/img06.jpg",
-        "blurb": "Industrial fallout, paint overspray, concrete, acid rain and tree sap "
-                 "lifted off your duco.",
-        "intro": "Overspray and industrial fallout caused by airborne particles of paint, "
-                 "steel, dust, concrete, chemical and acid rain and tree sap are very "
-                 "damaging to your vehicle's duco. These airborne emissions can be caused by "
-                 "negligent work processes, accidental overspray or even vandalism.",
-        "groups": [],
-    },
-    {
         "slug": "ceramic-coating",
         "name": "Ceramic Coatings",
         "img": "/assets/images/services/ceramic-coating.jpg",
@@ -191,7 +179,6 @@ SERVICES = [
 # gets its own grade — the worlds differ, the accent stays Formula red.
 SELECT_LOOKS = {
     "deluxe-detail":     ("/assets/images/backdrop/full-detail.jpg", "#6b4526"),
-    "overspray-removal": ("/assets/images/backdrop/overspray-removal.jpg", "#6b4526"),
     "ceramic-coating":   ("/assets/images/backdrop/ceramic-coating.jpg", "#6b4526"),
     "paint-correction":  ("/assets/images/backdrop/paint-correction.jpg", "#6b4526"),
 }
@@ -241,11 +228,6 @@ FAQS = [
      "and lasts up to 5 years. Quartz Ceramic Coating is 9H, up to 800nm, around "
      "3 years. Our interior coating works on both leather and fabric and protects "
      "for up to 12 months."),
-    ("Can you remove overspray or industrial fallout?",
-     "Yes — it's one of our specialities. Airborne paint, steel, dust, concrete, "
-     "chemical and acid rain and tree sap are all very damaging to your duco, "
-     "whether they came from negligent work processes nearby, accidental "
-     "overspray or vandalism. We have a process to lift them off the paint."),
     ("My paint looks dull and swirled. Can it be brought back?",
      "Usually, yes. We specialise in surface damage through our 4 stage exterior "
      "process — brush marks, spider webbing, oxidised dull or plain neglected "
@@ -1048,7 +1030,7 @@ def build_home():
   <div class="hero__say">
     <span class="eyebrow">Melbourne &middot; In our studio</span>
     <h1 class="hero__h1"><span class="hero__l1 textmono">Servicing Melbourne</span><span class="hero__l2"><span class="textmono">for</span> <span class="slant hl shine">30+ years</span></span></h1>
-    <p class="hero__sub">Paint Protection &amp; Ceramic Coating Specialists</p>
+    <p class="hero__sub">+30 Years Paint Protection &amp; Ceramic Coating Specialist</p>
     <div class="hero__cta">
       <a class="btn btn--lg" href="/booking/">Get a free quote</a>
       <a class="btn btn--ghost btn--lg" href="/services/select/">Browse our services</a>
@@ -1163,7 +1145,7 @@ def build_services_index():
     trail = [("/", "Home"), ("/services/", "Services")]
     return (
         head("Car Detailing Services Melbourne | Formula Mobile Car Detailing",
-             "Mini and full detailing, interior and exterior detailing, overspray removal, "
+             "Deluxe detailing, "
              "ceramic coatings and paint correction — mobile across Melbourne.",
              "/services/", schema=breadcrumb_schema(trail) + faq_schema())
         + nav("/services/")
@@ -1410,7 +1392,7 @@ def build_select():
     return f"""{head(
         "Choose a Service | Formula Mobile Car Detailing",
         "Browse all seven Formula Mobile Car Detailing services — mini and full detailing, "
-        "interior, exterior, overspray removal, ceramic coatings and paint correction.",
+        "deluxe detailing, ceramic coatings and paint correction.",
         "/services/select/", svc_img("deluxe-detail"), breadcrumb_schema(trail))}
 <link rel="stylesheet" href="/assets/css/select.css">
 {carousel_html(inline=False)}
@@ -1948,7 +1930,7 @@ def build_sitemap_page():
     return (
         head("Sitemap | Formula Mobile Car Detailing",
              "Every page on formulamobilecardetailing.com.au \u2014 detailing, ceramic "
-             "coating, paint correction, overspray removal, and every Melbourne "
+             "coating, paint correction, deluxe detailing, and every Melbourne "
              "suburb we cover.",
              "/sitemap/")
         + nav()
@@ -1959,7 +1941,7 @@ def build_sitemap_page():
     <span class="eyebrow">Sitemap</span>
     <h1>Every page, <span class="slant hl">one place</span></h1>
     <p class="lede">{total} pages covering detailing, ceramic coating, paint correction
-      and overspray removal across metropolitan Melbourne.</p>
+      and deluxe detailing across metropolitan Melbourne.</p>
     <p style="margin-top:1.4rem">
       <a class="btn btn--ghost" href="/sitemap.xml">View the XML sitemap</a>
     </p>
