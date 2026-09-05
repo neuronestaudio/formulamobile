@@ -2354,3 +2354,37 @@ body{max-width:100%}
 .nav__links--l{grid-column:1;justify-self:end;padding-right:calc(var(--logo-w) / 2 + 1.4rem)}
 .nav__links--r{grid-column:2;justify-self:start;padding-left:calc(var(--logo-w) / 2 + 1.4rem)}
 .nav__act{grid-column:2;justify-self:end}
+
+/* ==========================================================================
+   COATING DECK — contained, not full bleed
+   The deck was a full-width video plate running the site's background off the
+   page for 700px, with a 208px word on it. Framed inside the shell instead:
+   the page background carries straight through, and the film becomes an
+   element in the section rather than the section itself.
+   ========================================================================== */
+.coat--deck{background:transparent}
+.coat--deck .coat__stage{
+  width:min(100% - 2.5rem,var(--shell));
+  margin-inline:auto;
+  height:min(62vh,540px);
+  min-height:420px;
+  border-radius:var(--radius-lg);
+  border:1px solid var(--glass-brd);
+  box-shadow:var(--glass-inset),0 40px 80px -46px rgba(0,0,0,.95);
+  overflow:hidden;
+  background:#07070a;
+}
+/* the display word was sized for a full-bleed plate and is far too loud inside
+   a framed one */
+.coat--deck .coat__word{font-size:clamp(2.6rem,7vw,6rem)}
+.coat--deck .coat__card{max-width:min(100%,38rem)}
+.coat--deck .coat__panel{padding-inline:clamp(1.25rem,4vw,3rem)}
+
+/* controls sit under the frame, on the page background */
+.coat--deck .coat__ctrls{padding-top:1.3rem;padding-bottom:0}
+
+@media (max-width:820px){
+  .coat--deck .coat__stage{height:min(66vh,470px);min-height:380px;
+    width:min(100% - 1.6rem,var(--shell))}
+  .coat--deck .coat__word{font-size:clamp(2rem,11vw,3.2rem)}
+}

@@ -54,7 +54,9 @@
     var n = panels.length;
 
     var show = function (i) {
-      i = Math.max(0, Math.min(n - 1, i));
+      // wrap rather than clamp: past 04 goes back to 01, before 01 goes to 04,
+      // so the four stages run as a loop the way the strip above them does
+      i = ((i % n) + n) % n;
       track.style.setProperty('--at', i);
       setStage(i);
     };
