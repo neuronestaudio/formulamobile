@@ -44,7 +44,7 @@ GA_ID = "G-ZKYL0YQ0QZ"
 # URL would deliver Formula's leads into a different business's CRM.
 # --------------------------------------------------------------------------
 GTM_ID = ""            # e.g. "GTM-XXXXXXX"
-GHL_WEBHOOK = ""       # e.g. "https://services.leadconnectorhq.com/hooks/<id>/webhook-trigger/<id>"
+GHL_WEBHOOK = "https://services.leadconnectorhq.com/hooks/hNVXPl4iU47f42LDBVad/webhook-trigger/5Fk7YCgZKOViortglwIn"
 GADS_CONVERSION = ""   # e.g. "AW-XXXXXXXXX/AbCdEfGhIjKlMnOp"
 
 # --------------------------------------------------------------------------
@@ -320,6 +320,87 @@ COATING_REASONS = [
      "routine or put you on a scheduled program."),
 ]
 
+# --------------------------------------------------------------------------
+# Coating products, named by manufacturer.
+#
+# The site has always described these four coatings by their specification —
+# 10H, N1, Quartz, nanometre thickness — without saying whose they are. The
+# client has confirmed they are the same GYEON and ONYX products Premier runs,
+# so the TDS and warranty pages name them.
+#
+# Every figure below is the client's own published number, carried across from
+# SERVICES["ceramic-coating"]["products"]. Nothing here is manufacturer data we
+# went and sourced ourselves, which is why the pages say the individual data
+# sheets are still to come rather than pretending to publish them.
+#
+# `brand` is the only inferred field: N1 + 10H + graphene is ONYX's certified
+# system, and Quartz is GYEON's Q2 line. Renny to confirm, especially the
+# interior coating — changing one string here re-sections the page.
+# --------------------------------------------------------------------------
+COATINGS = [
+    {
+        "brand": "ONYX", "kind": "Nano-Ceramic", "flag": "Hardest",
+        "name": "Graphene Pro 10H N1",
+        "sub": "Certified 10H &middot; N1 nano-ceramic",
+        "copy": "The world's first N1 nano coating — nano-technology combined with the "
+                "properties of graphene, laying up to 1000nm of protection on the duco.",
+        "specs": [("Hardness", "10H"), ("Thickness", "Up to 1000nm"),
+                  ("Chemical resistance", "Grade 3")],
+        "term": "Lifetime", "termunit": "", "termsub": "On a maintained vehicle",
+        "termnote": "Our longest cover. Stays valid while the vehicle is kept to the "
+                    "maintenance schedule we set out on handover.",
+    },
+    {
+        "brand": "GYEON", "kind": "Quartz &middot; Multi-Layer", "flag": "Most popular",
+        "name": "Quartz 9H Pro",
+        "sub": "Multi-layer 9H system",
+        "copy": "Grade 3 chemical resistance, built up in multiple layers to increase film "
+                "thickness to a maximum of 800nm.",
+        "specs": [("Hardness", "9H"), ("Thickness", "Up to 800nm"),
+                  ("Application", "Multi-layer")],
+        "term": "5", "termunit": "Year", "termsub": "Multi-layer application",
+        "termnote": "The step most cars land on — meaningful thickness without going to "
+                    "the lifetime program.",
+    },
+    {
+        "brand": "GYEON", "kind": "Quartz &middot; Single-Layer", "flag": "",
+        "name": "Quartz Ceramic Coating",
+        "sub": "Single-layer 9H",
+        "copy": "Enhances the reflective properties of the paint with a smooth, deep shine. "
+                "Applicable to paint, metal and glass.",
+        "specs": [("Hardness", "9H"), ("Thickness", "Up to 800nm"),
+                  ("Surfaces", "Paint, metal, glass")],
+        "term": "3", "termunit": "Year", "termsub": "Single-layer application",
+        "termnote": "Entry into the Quartz system. Can be topped up later rather than "
+                    "stripped and redone.",
+    },
+    {
+        "brand": "GYEON", "kind": "Interior", "flag": "",
+        "name": "Interior Coating",
+        "sub": "Leather &amp; fabric",
+        "copy": "A hybrid solvent base for both fabric and leather, protecting against "
+                "stains, dirt, contaminants, water and oil.",
+        "specs": [("Surfaces", "Leather + fabric"), ("Repellency", "150&deg;"),
+                  ("Base", "Hybrid solvent")],
+        "term": "12", "termunit": "Month", "termsub": "Cabin surfaces",
+        "termnote": "Runs alongside a paint coating rather than instead of one.",
+    },
+]
+
+# What makes a coating warranty worth anything. Generic to the trade — not
+# claims about this business specifically.
+WARRANTY_TRUST = [
+    ("Named products",
+     "Every coating we fit is named in full, with its hardness, thickness and durability "
+     "published. You know exactly what went on your paint."),
+    ("Registered against your vehicle",
+     "Coatings are recorded against your car at the time of application, so cover is "
+     "traceable rather than a verbal promise."),
+    ("Certified application",
+     "Coating warranties are only valid when the paint is prepped, coated and cured the "
+     "way the manufacturer requires. That is the whole reason they are fitted by us."),
+]
+
 SUBURBS = [
     "Brighton", "Toorak", "South Yarra", "Hawthorn", "Kew", "Camberwell",
     "Malvern", "Armadale", "Prahran", "St Kilda", "Elwood", "Port Melbourne",
@@ -352,6 +433,10 @@ GALLERY = [
 # lives in the footer; Areas is reachable from Services and the footer.
 NAV = [
     ("/services/", "Services"),
+    # "Products", not "Product Data" — the longer label pushes this six-item
+    # bar onto two lines from 1100px up. Measured in the browser, not guessed.
+    ("/product-data/", "Products"),
+    ("/warranties/", "Warranties"),
     ("/gallery/", "Gallery"),
     ("/testimonials/", "Reviews"),
     ("/contact/", "Contact"),
@@ -531,6 +616,15 @@ def footer():
           <a class="btn" href="/booking/">Book a detail</a>
         </p>
       </div>
+    </div>
+    <div class="foot__brands">
+      <span class="foot__brandlbl">Coatings we fit</span>
+      <a class="foot__brand" href="/product-data/" aria-label="GYEON coatings — see product data">
+        <img src="/assets/images/brands/gyeon.png" alt="GYEON" width="520" height="176" loading="lazy" decoding="async">
+      </a>
+      <a class="foot__brand" href="/product-data/" aria-label="ONYX Coating — see product data">
+        <img src="/assets/images/brands/onyx.png" alt="ONYX Coating" width="520" height="196" loading="lazy" decoding="async">
+      </a>
     </div>
     <div class="foot__base">
       <span>&copy; <span data-year>2026</span> Formula Mobile Car Detailing. All rights reserved.</span>
@@ -795,20 +889,39 @@ def crumbs(trail):
 
 
 # --------------------------------------------------------------------------
+# the slanted photo strip, shared by the home band and the gallery page
+# --------------------------------------------------------------------------
+
+def slant_row(images):
+    """One marquee track of skewed photo panels, doubled.
+
+    The loop works by translating the track exactly -50%, so the second copy is
+    what the eye is on when the first wraps round — which means the track must
+    hold every image twice and nothing may be dropped from either copy."""
+    row = "".join(f"""
+            <figure class="slantile" data-lightbox>
+              <img src="{g}" alt="{esc(a)}" loading="lazy" width="800" height="600">
+            </figure>""" for g, a in images)
+    return row + row   # doubled, so the loop has no seam
+
+
+def slant_band(images, dur, reverse=False, extra=""):
+    """A full-width slanted strip. `dur` sets the speed; alternating `reverse`
+    on stacked bands stops them reading as one sheet sliding sideways."""
+    cls = "mq mq--slant" + (" mq--rev" if reverse else "") + (f" {extra}" if extra else "")
+    return f"""  <div class="{cls}" style="--mq-dur:{dur}s">
+    <div class="mq__track">{slant_row(images)}
+    </div>
+  </div>"""
+
+
+# --------------------------------------------------------------------------
 # page: home
 # --------------------------------------------------------------------------
 
 def build_home():
-    def tile_row(images):
-        row = "".join(f"""
-            <figure class="mq__tile" data-lightbox>
-              <img src="{g}" alt="{esc(a)}" loading="lazy" width="800" height="600">
-            </figure>""" for g, a in images)
-        return row + row   # doubled for the seamless loop
-
-    half = len(GALLERY) // 2
-    tiles_top = tile_row(GALLERY[:half])
-    tiles_bot = tile_row(GALLERY[half:])
+    slants = slant_row(GALLERY)
+    gal_tags = "".join(f"<li>{esc(x['name'])}</li>" for x in SERVICES[:3])
 
     svcbtns = "".join(f"""
       <a class="svcbtn" href="/services/{x['slug']}/">{esc(x['name'])}
@@ -904,25 +1017,27 @@ def build_home():
 
 
 
-<section class="band band--raise">
-  <div class="shell">
-    <div style="max-width:52ch;margin-bottom:2.4rem" data-reveal>
-      <span class="eyebrow">Recent work</span>
+<section class="band band--raise gal">
+  <div class="shell gal__head" data-reveal>
+    <div>
+      <span class="eyebrow">Gallery</span>
       <h2>The finish <span class="slant hl">speaks</span></h2>
     </div>
+    <ul class="gal__tags">{gal_tags}</ul>
   </div>
-  <div class="mq__rows">
-    <div class="mq mq--tiles" style="--mq-dur:52s">
-      <div class="mq__track">{tiles_top}
-      </div>
-    </div>
-    <div class="mq mq--tiles mq--rev" style="--mq-dur:58s">
-      <div class="mq__track">{tiles_bot}
-      </div>
+
+  <div class="mq mq--slant" style="--mq-dur:64s">
+    <div class="mq__track">{slants}
     </div>
   </div>
-  <div class="shell">
-    <p style="margin-top:2rem"><a class="btn btn--ghost" href="/gallery/">See the full gallery</a></p>
+
+  <div class="shell gal__foot">
+    <span class="gal__note">Real cars. Real results.</span>
+    <a class="gal__more" href="/gallery/">See the full gallery
+      <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
+        <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+    </a>
   </div>
 </section>
 
@@ -1433,10 +1548,20 @@ def build_booking():
 
 
 def build_gallery():
-    tiles = "\n".join(f"""
-        <figure class="tile" data-lightbox data-reveal="{i*0.04:.2f}">
-          <img src="{g}" alt="{esc(a)}" loading="lazy" width="800" height="600">
-        </figure>""" for i, (g, a) in enumerate(GALLERY, start=1))
+    """Three slanted strips running against each other, same treatment as the
+    home band.
+
+    Each band carries the whole set rather than a third of it. The loop
+    translates the doubled track -50%, so half a track has to be wider than the
+    viewport or the wrap becomes a visible gap — four panels a row would be
+    about 1200px and tear on any normal desktop. Rotating the start index
+    instead keeps every band full-width while making sure no two rows show the
+    same car in the same place."""
+    n = len(GALLERY)
+    bands = "\n".join(
+        slant_band(GALLERY[(n // 3) * r:] + GALLERY[:(n // 3) * r],
+                   dur=58 + r * 11, reverse=bool(r % 2))
+        for r in range(3))
     trail = [("/", "Home"), ("/gallery/", "Gallery")]
     return (
         head("Gallery | Formula Mobile Car Detailing Melbourne",
@@ -1449,13 +1574,12 @@ def build_gallery():
   <div class="shell">
     <span class="eyebrow">Gallery</span>
     <h1>Recent <span class="slant hl">work</span></h1>
-    <p class="lede">A selection of vehicles we've detailed, corrected and coated.</p>
+    <p class="lede">A selection of vehicles we've detailed, corrected and coated.
+      Hover to hold a strip, click any panel to open it.</p>
   </div>
 </section>
-<section class="band band--tight">
-  <div class="shell"><div class="tiles">
-{tiles}
-  </div></div>
+<section class="band band--tight galrows">
+{bands}
 </section>
 """ + footer())
 
@@ -1907,6 +2031,218 @@ def build_keyword_page(cluster_title, cluster_key, entry, siblings):
         + footer())
 
 
+# --------------------------------------------------------------------------
+# pages: product data + warranties
+# --------------------------------------------------------------------------
+
+def _by_brand(brand):
+    return [c for c in COATINGS if c["brand"] == brand]
+
+
+def _tds_card(c, i, hero=False):
+    """One product card. Specs render as a definition list so the figures stay
+    machine-readable rather than being prose with numbers buried in it.
+
+    `hero` splits the card into copy-left / specs-right. A brand with only one
+    product would otherwise get a single card stretched across the full grid,
+    which throws each spec value a thousand pixels from its own label."""
+    flag = (f'<span class="tds__flag">{esc(c["flag"])}</span>' if c["flag"] else "")
+    rows = "\n".join(
+        f'          <div class="tds__spec"><dt>{k}</dt><dd>{v}</dd></div>'
+        for k, v in c["specs"])
+    cls = "card tds__card" + (" tds__card--hero" if hero else "")
+    return f"""      <article class="{cls}" data-reveal="{i*0.06:.2f}">
+        <div class="tds__head">
+          <span class="card__num">{c["brand"]} &middot; {c["kind"]}</span>
+          {flag}
+        </div>
+        <div class="tds__body">
+          <h3 class="card__title">{esc(c["name"])}</h3>
+          <p class="tds__sub">{c["sub"]}</p>
+          <p class="muted">{esc(c["copy"])}</p>
+        </div>
+        <dl class="tds__specs">
+{rows}
+        </dl>
+      </article>"""
+
+
+def build_tds():
+    # A section holding a single product gets the wide treatment; a section
+    # with several keeps the even grid. Driven by count, so adding a second
+    # ONYX product re-lays the section correctly with no edit here.
+    _o, _g = _by_brand("ONYX"), _by_brand("GYEON")
+    onyx = "\n".join(_tds_card(c, i, hero=len(_o) == 1) for i, c in enumerate(_o))
+    gyeon = "\n".join(_tds_card(c, i, hero=len(_g) == 1) for i, c in enumerate(_g))
+    return (
+        head("Coating Product Data | GYEON & ONYX Specifications | Formula Mobile Car Detailing",
+             "Hardness, thickness and durability for every GYEON and ONYX ceramic coating "
+             "we fit — published in full, nothing hidden.",
+             "/product-data/",
+             og_img="/assets/images/services/ceramic-coating.jpg",
+             schema=breadcrumb_schema([("/", "Home"), ("/product-data/", "Product Data")]))
+        + nav("/product-data/")
+        + crumbs([("/", "Home"), ("/services/ceramic-coating/", "Ceramic Coatings"),
+                  ("/product-data/", "Product Data")])
+        + f"""
+<section class="band band--tight hexbg">
+  <div class="shell" style="max-width:74ch">
+    <span class="eyebrow">Technical data</span>
+    <h1>GYEON &amp; ONYX. <span class="slant hl">Nothing hidden.</span></h1>
+    <p class="lede">We fit professional GYEON and ONYX coatings only — and we publish the
+      specification for every one. Hardness, film thickness and how long it lasts, in the
+      open, so you can compare us against anyone.</p>
+    <div class="svcbtns svcbtns--start" style="margin-top:2rem">
+      <a class="btn btn--lg" href="/booking/">Start your quote</a>
+      <a class="btn btn--ghost btn--lg" href="/warranties/">View warranties &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="band">
+  <div class="shell">
+    <span class="eyebrow">ONYX &middot; Nano-ceramic</span>
+    <h2>Certified <span class="slant hl">10H &amp; N1.</span></h2>
+    <p class="lede">ONYX makes the first certified 10H and N1 nano-ceramic system — the
+      hardest and thickest coating we fit, and the only one on a lifetime program.</p>
+    <div class="grid grid--3 tds__grid" style="margin-top:2.2rem">
+{onyx}
+    </div>
+  </div>
+</section>
+
+<section class="band band--raise">
+  <div class="shell">
+    <span class="eyebrow">GYEON &middot; Quartz system</span>
+    <h2>The Quartz <span class="slant hl">system.</span></h2>
+    <p class="lede">SiO&sup2; coatings from a single-layer 9H through to a multi-layer build,
+      plus a dedicated interior coating for leather and fabric.</p>
+    <div class="grid grid--3 tds__grid" style="margin-top:2.2rem">
+{gyeon}
+    </div>
+    <p class="muted" style="margin-top:2rem;max-width:70ch">
+      <strong>Note:</strong> the figures above are the specifications we publish for the
+      coatings we fit. Individual manufacturer data sheets are being added to this page.
+      Need the full TDS for a specific product now?
+      <a href="/contact/">Ask us</a> and we will send it through.
+    </p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="band band--tight">
+  <div class="shell" style="max-width:70ch">
+    <span class="eyebrow">Straight answers</span>
+    <h2>Premium products. <span class="slant hl">Named in full.</span></h2>
+    <p class="lede">Get a straight price and know exactly which coating is going on your car,
+      how thick it is, and how long it is covered for.</p>
+    <div class="svcbtns svcbtns--start" style="margin-top:2rem">
+      <a class="btn btn--lg" href="/booking/">Start your quote</a>
+      <a class="btn btn--ghost btn--lg" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
+    </div>
+  </div>
+</section>
+""" + footer())
+
+
+def _warranty_card(c, i):
+    unit = c.get("termunit", "")
+    # A word cannot count up, so only the numeric terms get the counter hook.
+    num = (f'<span class="stat__n" data-count="{c["term"]}">{c["term"]}</span>'
+           if c["term"].isdigit() else f'<span class="stat__n">{esc(c["term"])}</span>')
+    label = f"{unit} warranty" if unit else "warranty"
+    return f"""      <article class="card wty__card" data-reveal="{i*0.06:.2f}">
+        <span class="card__num">{c["brand"]} &middot; {c["kind"]}</span>
+        <h3 class="card__title">{esc(c["name"])}</h3>
+        <p class="tds__sub">{c["termsub"]}</p>
+        <div class="wty__term">
+          {num}<span class="stat__l">{label}</span>
+        </div>
+        <p class="muted">{esc(c["termnote"])}</p>
+      </article>"""
+
+
+def build_warranties():
+    cards = "\n".join(_warranty_card(c, i) for i, c in enumerate(COATINGS))
+    trust = "\n".join(
+        f"""      <div class="card" data-reveal="{i*0.07:.2f}">
+        <h3 class="card__title">{esc(t)}</h3>
+        <p class="muted">{esc(d)}</p>
+      </div>""" for i, (t, d) in enumerate(WARRANTY_TRUST))
+    return (
+        head("Ceramic Coating Warranties Melbourne | GYEON & ONYX | Formula Mobile Car Detailing",
+             "Every GYEON and ONYX coating we fit is covered — from 12 months to a lifetime "
+             "program. What each warranty covers and what keeps it valid.",
+             "/warranties/",
+             og_img="/assets/images/services/ceramic-coating.jpg",
+             schema=breadcrumb_schema([("/", "Home"), ("/warranties/", "Warranties")]))
+        + nav("/warranties/")
+        + crumbs([("/", "Home"), ("/services/ceramic-coating/", "Ceramic Coatings"),
+                  ("/warranties/", "Warranties")])
+        + f"""
+<section class="band band--tight hexbg">
+  <div class="shell" style="max-width:74ch">
+    <span class="eyebrow">Coating warranties</span>
+    <h1>Real products. <span class="slant hl">Real cover.</span></h1>
+    <p class="lede">Every GYEON and ONYX coating we fit carries a warranty — from 12 months
+      on the interior through to a lifetime program on the 10H N1. Named products, published
+      specifications, no mystery bottles.</p>
+    <div class="svcbtns svcbtns--start" style="margin-top:2rem">
+      <a class="btn btn--lg" href="/booking/">Start your quote</a>
+      <a class="btn btn--ghost btn--lg" href="/product-data/">View product data &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="band">
+  <div class="shell">
+    <span class="eyebrow">Why it matters</span>
+    <h2>What makes a warranty <span class="slant hl">worth anything.</span></h2>
+    <div class="grid grid--3" style="margin-top:2.2rem">
+{trust}
+    </div>
+  </div>
+</section>
+
+<section class="band band--raise">
+  <div class="shell">
+    <span class="eyebrow">Cover by coating</span>
+    <h2>Pick the <span class="slant hl">durability.</span></h2>
+    <p class="lede">Choose the coating that suits the car and how long you are keeping it.
+      Every term below is the cover on that specific product.</p>
+    <div class="grid grid--2 wty__grid" style="margin-top:2.2rem">
+{cards}
+    </div>
+    <p class="muted" style="margin-top:2rem;max-width:70ch">
+      Warranty terms are confirmed in writing at handover along with the maintenance
+      schedule that keeps them valid. Full specifications for each coating are on the
+      <a href="/product-data/">product data page</a>.
+    </p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<section class="band band--tight">
+  <div class="shell" style="max-width:70ch">
+    <span class="eyebrow">Next step</span>
+    <h2>Not sure which <span class="slant hl">one you need?</span></h2>
+    <p class="lede">Tell us the car, how long you are keeping it and where it lives. We will
+      tell you which coating is worth it and which is overkill.</p>
+    <div class="svcbtns svcbtns--start" style="margin-top:2rem">
+      <a class="btn btn--lg" href="/booking/">Start your quote</a>
+      <a class="btn btn--ghost btn--lg" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
+    </div>
+  </div>
+</section>
+""" + footer())
+
+
 def build_privacy():
     return (
         head("Privacy Policy | Formula Mobile Car Detailing",
@@ -1973,6 +2309,9 @@ def main():
         for _e in _pages:
             write(f"/{_e[0]}/", build_keyword_page(_title, _key, _e, sibs))
             routes.append((f"/{_e[0]}/", "0.7"))
+
+    write("/product-data/", build_tds());           routes.append(("/product-data/", "0.8"))
+    write("/warranties/", build_warranties());      routes.append(("/warranties/", "0.8"))
 
     write("/thank-you/", build_thanks())
     write("/sitemap/", build_sitemap_page());       routes.append(("/sitemap/", "0.3"))
