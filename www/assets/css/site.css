@@ -2486,3 +2486,15 @@ body{max-width:100%}
   .mq--slant .mq__track{gap:5px}
   .slantile{border-radius:11px}
 }
+
+/* ---------- coating deck: room around and inside the frame ----------
+   The section carried no padding at all, so the framed panel ended on the
+   section boundary and the next band began at the same pixel. Inside it, the
+   control row sat 1px off the bottom edge. Both need air. */
+.coat--deck{
+  padding-top:clamp(1rem,2.5vw,2rem);
+  padding-bottom:clamp(2.6rem,5.5vw,4.8rem);
+}
+.coat--deck .coat__ctrls{padding-bottom:clamp(1.1rem,2.2vw,1.7rem)}
+/* the panel content keeps clear of the controls beneath it */
+.coat--deck .coat__panel{padding-bottom:clamp(3.2rem,6vw,4.6rem)}
