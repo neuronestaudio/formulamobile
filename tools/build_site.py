@@ -415,20 +415,23 @@ SUBURBS = [
 
 # Real work from the client's own Facebook album — their studio, their
 # customers' cars. Each carries its own alt text rather than one generic line.
+# Twelve different vehicles, ordered so no two neighbours share a colour or
+# a body shape - the strip was running the purple Holden back to back.
 GALLERY = [
-    ("/assets/images/gallery/01.jpg", "Mercedes-AMG GT after a full detail"),
-    ("/assets/images/gallery/02.jpg", "Mercedes coupe under the studio lighting"),
-    ("/assets/images/gallery/03.jpg", "Custom Holden HQ, paint corrected"),
-    ("/assets/images/gallery/04.jpg", "Restored Ford F100 in the studio"),
-    ("/assets/images/gallery/05.jpg", "Volvo XC90 detailed inside and out"),
-    ("/assets/images/gallery/06.jpg", "Holden HQ, deep gloss finish"),
-    ("/assets/images/gallery/07.jpg", "Ford F100 after paint correction"),
-    ("/assets/images/gallery/08.jpg", "Volvo XC90, ceramic coated"),
-    ("/assets/images/gallery/09.jpg", "Corrected panel, close up"),
-    ("/assets/images/gallery/10.jpg", "Custom builds in the Formula studio"),
-    ("/assets/images/gallery/11.jpg", "Ford F100 detail work"),
-    ("/assets/images/gallery/12.jpg", "The Formula detailing studio"),
+    ("/assets/images/gallery/01.jpg", "Porsche 911 in the studio after paint correction"),
+    ("/assets/images/gallery/02.jpg", "Volvo XC90 under the studio lighting"),
+    ("/assets/images/gallery/03.jpg", "Custom Holden HQ wagon, paint corrected"),
+    ("/assets/images/gallery/04.jpg", "Mercedes-AMG GT, corrected and coated"),
+    ("/assets/images/gallery/05.jpg", "Ford Mustang convertible after a detail"),
+    ("/assets/images/gallery/06.jpg", "Restored Ford F100 in the studio"),
+    ("/assets/images/gallery/07.jpg", "Honda Civic Type R, ceramic coated"),
+    ("/assets/images/gallery/08.jpg", "BMW M3 after paint correction"),
+    ("/assets/images/gallery/09.jpg", "Ford Falcon coupe, deep gloss finish"),
+    ("/assets/images/gallery/10.jpg", "Mercedes-Benz GLC in the coating studio"),
+    ("/assets/images/gallery/11.jpg", "Audi SQ5 detailed inside and out"),
+    ("/assets/images/gallery/12.jpg", "Classic Ford after a full correction"),
 ]
+
 
 # Header stays to four links. Franchising is a different audience entirely and
 # lives in the footer; Areas is reachable from Services and the footer.
