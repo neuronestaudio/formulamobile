@@ -15,6 +15,7 @@ it needs to come from the client before it goes on the page.
 
 import html
 import json
+import hashlib
 import os
 import re
 import shutil
@@ -650,12 +651,39 @@ def slugify(s):
     return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
 
 
+_BUST_CACHE = {}
+
+
+def bust(html):
+    """Stamp every stylesheet and script with a hash of its own contents.
+
+    The filenames are stable (site.css, not site.<hash>.css) but the assets are
+    served `max-age=31536000, immutable`. That combination is a lie the cache
+    believes: a CSS change is invisible to the edge and to every returning
+    visitor for a year. A content hash in the URL makes the promise true - the
+    URL changes exactly when the bytes change, and not otherwise.
+    """
+    def stamp(m):
+        rel = m.group(1)
+        if rel not in _BUST_CACHE:
+            f = os.path.join(OUT, rel.lstrip("/"))
+            try:
+                with open(f, "rb") as fh:
+                    _BUST_CACHE[rel] = hashlib.sha256(fh.read()).hexdigest()[:10]
+            except OSError:
+                _BUST_CACHE[rel] = ""
+        h = _BUST_CACHE[rel]
+        return '"%s?v=%s"' % (rel, h) if h else '"%s"' % rel
+
+    return re.sub(r'"(/assets/(?:css|js)/[^"?]+)"', stamp, html)
+
+
 def write(path, content):
     full = os.path.join(OUT, path.strip("/"), "index.html") if path != "/" \
         else os.path.join(OUT, "index.html")
     os.makedirs(os.path.dirname(full), exist_ok=True)
     with open(full, "w", encoding="utf-8", newline="\n") as f:
-        f.write(content)
+        f.write(bust(content))
     return full
 
 

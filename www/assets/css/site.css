@@ -2158,14 +2158,96 @@ body{max-width:100%}
   .tds__spec dd { text-align: left; }
 }
 
-/* ── gallery page: stacked slanted strips ───────────────────────── */
-/* Same .mq--slant band the home page uses, stacked three deep and running in
-   opposite directions so it reads as a moving mesh rather than one sheet
-   sliding sideways. */
-.galrows {
-  display: grid;
-  gap: clamp(12px, 1.8vw, 22px);
+/* ── the slanted photo band ─────────────────────────────────── */
+/* Photo panels sheared into diagonal strips, running as a seamless marquee.
+   The panel is skewed and the image inside is counter-skewed by the same angle,
+   so the car stays upright while its frame runs on the diagonal. The image is
+   also scaled up, because a skewed box exposes the corners of whatever it
+   contains — at scale 1 you get bare triangles at the leading and trailing
+   edges. */
+.gal { overflow: hidden; }
+.gal__head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1.6rem; flex-wrap: wrap; margin-bottom: 1.8rem;
 }
+.gal__head h2 { margin: 0; }
+.gal__tags {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: .9rem; list-style: none; margin: 0; padding: 0;
+}
+.gal__tags li {
+  font-size: .66rem; font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--fg-dim);
+}
+.gal__tags li + li::before {
+  content: '/'; margin-right: .9rem; color: var(--border); font-weight: 400;
+}
+.gal__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.4rem; flex-wrap: wrap; margin-top: 1.6rem;
+}
+.gal__note {
+  display: flex; align-items: center; gap: 1rem;
+  font-size: .66rem; font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--fg-dim);
+}
+.gal__note::after {
+  content: ''; width: clamp(40px, 7vw, 90px); height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+.gal__more {
+  display: inline-flex; align-items: center; gap: .6rem;
+  font-size: .66rem; font-weight: 700; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--fg-muted);
+  text-decoration: none; transition: color .3s var(--ease);
+}
+.gal__more:hover { color: var(--brand); }
+.gal__more svg { transition: transform .3s var(--ease); }
+.gal__more:hover svg { transform: translateX(4px); }
+
+.mq--slant {
+  --slant: -11deg;
+  --panel: clamp(180px, 21vw, 286px);
+  --striph: clamp(290px, 36vw, 430px);
+  /* the strip's own edges run off-level too, which is what makes the band
+     read as cut rather than stacked */
+  clip-path: polygon(0 4.5%, 100% 0, 100% 95.5%, 0 100%);
+}
+.mq--slant .mq__track { gap: 14px; align-items: stretch; height: var(--striph); }
+
+.slantile {
+  flex: 0 0 var(--panel);
+  position: relative; overflow: hidden;
+  transform: skewX(var(--slant));
+  background: #0b0b0f;
+}
+.slantile img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transform: skewX(calc(var(--slant) * -1)) scale(1.3);
+  filter: saturate(.96) contrast(1.04);
+  transition: transform .9s var(--ease), filter .5s var(--ease);
+}
+.slantile:hover img {
+  transform: skewX(calc(var(--slant) * -1)) scale(1.38);
+  filter: saturate(1.12) contrast(1.06);
+}
+.slantile::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, rgba(var(--brand-rgb), .28), transparent 34%);
+  opacity: 0; transition: opacity .45s var(--ease);
+}
+.slantile:hover::after { opacity: 1; }
+
+@media (max-width: 760px) {
+  .mq--slant {
+    --panel: clamp(140px, 44vw, 200px);
+    --striph: clamp(220px, 58vw, 300px);
+    --slant: -9deg;
+  }
+}
+
+/* ── gallery page: three bands stacked ──────────────────────────── */
+.galrows { display: grid; gap: clamp(12px, 1.8vw, 22px); }
 
 /* Mirror every second band so the cut edges chevron into each other instead of
    sitting as three parallel bars. */
@@ -2175,8 +2257,8 @@ body{max-width:100%}
 }
 
 /* On a page whose whole purpose is opening a photo, a strip that keeps moving
-   under the cursor is hostile. Scoped to this page so the home band and the
-   review marquee keep the behaviour they were designed with. */
+   under the cursor is hostile. Scoped here so the home band and the review
+   marquee keep the behaviour they were designed with. */
 .galrows .mq:hover .mq__track,
 .galrows .mq:focus-within .mq__track { animation-play-state: paused; }
 
