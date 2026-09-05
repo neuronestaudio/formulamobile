@@ -19,7 +19,7 @@
     <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/bebas-neue-400.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/dm-sans-latin.woff2" crossorigin>
 <script>document.documentElement.classList.add('js');</script>
-<link rel="stylesheet" href="/assets/css/site.css?v=847db7fba0">
+<link rel="stylesheet" href="/assets/css/site.css?v=f9134a13dc">
 
 <script>
   window.FORMULA_CFG = {
@@ -645,18 +645,155 @@
 </section>
 
 
+
 <section class="band mesh">
-  <div class="shell" style="text-align:center">
-    <h2 data-reveal>Ready to book <span class="slant hl">your detail?</span></h2>
-    <p class="lede" style="margin:0 auto 2rem" data-reveal="0.06">
-      Talk to our operators for an obligation-free chat about what your vehicle needs.
-    </p>
-    <div style="display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap" data-reveal="0.12">
-      <a class="btn btn--lg" href="tel:1300132750">Call 1300 132 750</a>
-      <a class="btn btn--ghost btn--lg" href="/booking/">Book a detail</a>
+  <div class="shell bk">
+    <div class="bk__head" data-reveal>
+      <span class="eyebrow">Booking</span>
+      <h2>Ready to book <span class="slant hl">your detail?</span></h2>
+      <p class="lede">Takes under a minute. We&rsquo;ll call or text back to confirm a
+        time &mdash; no obligation, and no payment up front.</p>
     </div>
+    <ol class="bk__rail"><li class="bk__dot" data-dot data-state="now"><span>1</span>Service</li><li class="bk__dot" data-dot data-state="todo"><span>2</span>Location</li><li class="bk__dot" data-dot data-state="todo"><span>3</span>Vehicle</li><li class="bk__dot" data-dot data-state="todo"><span>4</span>Details</li></ol>
+    <p class="visually-hidden" data-live aria-live="polite"></p>
+
+    <form class="bk__form card" method="post" action="/thank-you/" data-booking>
+
+      <fieldset class="bk__step" data-step data-autoadvance>
+        <legend class="bk__legend">Choose your service</legend>
+        <p class="bk__hint">Pick what you're after &mdash; not sure? Choose &ldquo;Not sure yet&rdquo;.</p>
+        <div class="bk__tiles" data-requires-choice>
+          <label class="bk__tile">
+            <input type="radio" name="service" value="Deluxe Detail">
+            <span class="bk__tiletitle">Deluxe Detail</span>
+            <span class="bk__tilesub">The complete service, inside and out. Engine bay degreased, clay bar decontamination, hand polish, and a full interior extraction across every surface.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="service" value="Ceramic Coatings">
+            <span class="bk__tiletitle">Ceramic Coatings</span>
+            <span class="bk__tilesub">Graphene Pro 10H N1, Quartz 9H Pro and Quartz 9H — industrial-grade polymer sealers that chemically bond to your paint.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="service" value="Paint Correction">
+            <span class="bk__tiletitle">Paint Correction</span>
+            <span class="bk__tilesub">Three to six stage correction in our specialty studio, matched to the depth of the damage and the type of duco.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="service" value="Not sure yet">
+            <span class="bk__tiletitle">Not sure yet</span>
+            <span class="bk__tilesub">Help me pick the right service.</span>
+          </label></div>
+      </fieldset>
+
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Where are you?</legend>
+        <p class="bk__hint">Suburb and postcode.</p>
+        <div class="field--split">
+          <div class="field">
+            <label for="bk-suburb">Suburb</label>
+            <input id="bk-suburb" name="suburb" type="text" autocomplete="address-level2" required>
+          </div>
+          <div class="field">
+            <label for="bk-postcode">Postcode</label>
+            <input id="bk-postcode" name="postcode" type="text" inputmode="numeric"
+                   autocomplete="postal-code" pattern="[0-9]{4}" maxlength="4">
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Tell us about the car</legend>
+        <div class="field">
+          <label for="bk-vehicle">Make, model and year</label>
+          <input id="bk-vehicle" name="vehicle" type="text" placeholder="e.g. BMW M3, 2021" required>
+        </div>
+        <p class="bk__sublabel">Paint condition</p>
+        <div class="bk__tiles bk__tiles--4" data-requires-choice>
+          <label class="bk__tile">
+            <input type="radio" name="paint_condition" value="New / Excellent">
+            <span class="bk__tiletitle">New / Excellent</span>
+            <span class="bk__tilesub">Near-new, minimal marks.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="paint_condition" value="Good">
+            <span class="bk__tiletitle">Good</span>
+            <span class="bk__tilesub">Light swirls and minor marks.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="paint_condition" value="Fair">
+            <span class="bk__tiletitle">Fair</span>
+            <span class="bk__tilesub">Noticeable swirls, scratches or wash marks.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="paint_condition" value="Poor">
+            <span class="bk__tiletitle">Poor</span>
+            <span class="bk__tilesub">Heavy scratches, spider webbing or oxidised and dull.</span>
+          </label></div>
+        <p class="bk__sublabel">Interior condition</p>
+        <div class="bk__tiles bk__tiles--4" data-requires-choice>
+          <label class="bk__tile">
+            <input type="radio" name="interior_condition" value="Clean / Tidy">
+            <span class="bk__tiletitle">Clean / Tidy</span>
+            <span class="bk__tilesub">Well kept, just needs a refresh.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="interior_condition" value="Lightly messy">
+            <span class="bk__tiletitle">Lightly messy</span>
+            <span class="bk__tilesub">Everyday use, crumbs and dust.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="interior_condition" value="Dirty">
+            <span class="bk__tiletitle">Dirty</span>
+            <span class="bk__tilesub">Stains, spills and built-up grime.</span>
+          </label>
+          <label class="bk__tile">
+            <input type="radio" name="interior_condition" value="Full reset">
+            <span class="bk__tiletitle">Full reset</span>
+            <span class="bk__tilesub">Heavily soiled — needs a deep clean.</span>
+          </label></div>
+      </fieldset>
+
+      <fieldset class="bk__step" data-step>
+        <legend class="bk__legend">Where to send the quote</legend>
+        <div class="field">
+          <label for="bk-name">Name</label>
+          <input id="bk-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field--split">
+          <div class="field">
+            <label for="bk-phone">Mobile</label>
+            <input id="bk-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"
+                   pattern="[0-9 \(\)+\-]{6,}" required>
+          </div>
+          <div class="field">
+            <label for="bk-email">Email <span class="muted">(optional)</span></label>
+            <input id="bk-email" name="email" type="email" autocomplete="email">
+          </div>
+        </div>
+        <div class="field">
+          <label for="bk-comments">Special requests <span class="muted">(optional)</span></label>
+          <textarea id="bk-comments" name="comments" rows="4"></textarea>
+        </div>
+      </fieldset>
+
+      <p class="formerr" data-form-error role="alert" hidden></p>
+
+      <div class="bk__nav">
+        <button class="btn btn--ghost" type="button" data-back hidden>&larr; Back</button>
+        <button class="btn" type="button" data-next-step>Continue &rarr;</button>
+        <button class="btn btn--lg" type="submit" data-submit hidden>Request my booking</button>
+      </div>
+    </form>
+
+    <p class="bk__alt muted">
+      Prefer to talk? Call <a href="tel:1300132750">1300 132 750</a>
+      or email <a href="mailto:info@formulamobilecardetailing.com.au">info@formulamobilecardetailing.com.au</a>.
+    </p>
   </div>
 </section>
+
+<script src="/assets/js/booking.js?v=eda722de01" defer></script>
+
 </main>
 <footer class="foot hexbg">
   <div class="shell">

@@ -1106,18 +1106,7 @@ def build_home():
 
 {faq_block(photo=True)}
 
-<section class="band mesh">
-  <div class="shell" style="text-align:center">
-    <h2 data-reveal>Ready to book <span class="slant hl">your detail?</span></h2>
-    <p class="lede" style="margin:0 auto 2rem" data-reveal="0.06">
-      Talk to our operators for an obligation-free chat about what your vehicle needs.
-    </p>
-    <div style="display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap" data-reveal="0.12">
-      <a class="btn btn--lg" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
-      <a class="btn btn--ghost btn--lg" href="/booking/">Book a detail</a>
-    </div>
-  </div>
-</section>
+{booking_section(CTA_HEAD, "band mesh")}
 """
         + footer().replace(
             '<script src="/assets/js/enhance.js" defer></script>',
@@ -1400,6 +1389,14 @@ def build_select():
 </body>
 </html>
 """
+
+
+CTA_HEAD = """<div class="bk__head" data-reveal>
+      <span class="eyebrow">Booking</span>
+      <h2>Ready to book <span class="slant hl">your detail?</span></h2>
+      <p class="lede">Takes under a minute. We&rsquo;ll call or text back to confirm a
+        time &mdash; no obligation, and no payment up front.</p>
+    </div>"""
 
 
 def booking_section(heading="", band="band band--tight"):

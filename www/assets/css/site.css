@@ -2498,3 +2498,8 @@ body{max-width:100%}
 .coat--deck .coat__ctrls{padding-bottom:clamp(1.1rem,2.2vw,1.7rem)}
 /* the panel content keeps clear of the controls beneath it */
 .coat--deck .coat__panel{padding-bottom:clamp(3.2rem,6vw,4.6rem)}
+
+/* the homepage copy of the wizard gets its own heading block above the rail */
+.bk__head{max-width:56ch;margin:0 auto 2.2rem;text-align:center}
+.bk__head h2{margin:.2rem 0 .6rem}
+.bk__head .lede{margin:0 auto}
