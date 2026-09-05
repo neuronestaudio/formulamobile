@@ -234,6 +234,29 @@ FAQS = [
      "paint work. The vehicle is pressure washed, hand washed and rinsed, clay "
      "barred, machine cut to remove the scratches and dullness, machine glazed to "
      "de-swirl and restore gloss, then hand polished to seal and protect."),
+    ("Is graphene worth it over a standard ceramic?",
+     "Graphene Pro 10H N1 is the hardest coating we apply. It holds gloss and "
+     "beading longer than a standard ceramic and is more forgiving of heat and "
+     "water spotting. Whether it is worth the difference depends on the car and "
+     "how it is stored \u2014 our operators will tell you honestly."),
+    ("Should I coat a new car straight away?",
+     "It is the best time to do it. There is no accumulated damage to correct "
+     "first, so the coating goes onto paint that is already close to perfect and "
+     "the finish is locked in from the start."),
+    ("Does a coating need maintaining?",
+     "Minimal, but not nothing. Wash it properly and it will hold its gloss and "
+     "beading for years. We can walk you through the maintenance, or put you on a "
+     "scheduled maintenance program."),
+    ("Can I still use an automatic wash?",
+     "We would not recommend it. Brush washes are what put the swirl marks and "
+     "spider webbing into paint that correction later has to remove."),
+    ("Can you coat just the wheels or the glass?",
+     "Yes. Wheels, glass and trim can be coated on their own or alongside the "
+     "paint. Coated glass sheds water and is easier to keep clear."),
+    ("Can you quote a coating over the phone?",
+     "We can give you a range, but not a firm price. What a coating costs depends "
+     "on the size of the car and how much correction the paint needs first \u2014 "
+     "that has to be seen."),
 ]
 
 

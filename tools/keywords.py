@@ -31,8 +31,8 @@ CLUSTERS = [
            "Graphene Pro 10H N1 at up to 1000nm, Quartz 9H Pro at up to 800nm with grade 3 chemical resistance, and Quartz Ceramic Coating. Glass and interior surfaces have their own coatings."),
           ("What has to happen first",
            "A coating bonds to whatever surface it is laid on, so the paint is washed, clay barred and corrected before anything is applied.")],
-         ("Do you coat at my place or at a studio?",
-          "Both. Most coating work is done mobile across metropolitan Melbourne. Paint correction ahead of a coating is conducted in our specialty studio, created for these applications.")),
+         ("Where is the coating applied?",
+          "In our studio. Correction and coating are conducted in our specialty studio, created for these applications \u2014 a coating needs controlled lighting to find the defects and a clean, stable environment to cure against.")),
 
         ("ceramic-coating-cost-melbourne", "Ceramic Coating Cost Melbourne",
          "What actually drives the cost of a ceramic coating in Melbourne, and why paint condition matters more than the coating itself.",
@@ -79,8 +79,8 @@ CLUSTERS = [
            "Paint correction ahead of a coating is conducted in our specialty studio, created for these applications."),
           ("Over twenty years",
            "We have been correcting and coating vehicles in Melbourne for more than thirty years.")],
-         ("Which suburbs do you cover?",
-          "Metropolitan Melbourne. If you are in the metro area we will come to you — call 1300 132 750 and our operators will confirm.")),
+         ("Where are you based?",
+          "Melbourne. Bookings come to our studio — call 1300 132 750 and our operators will confirm a time.")),
 
         ("ceramic-coating-new-car-melbourne", "Ceramic Coating a New Car",
          "Coating a new car in Melbourne, before daily driving starts leaving its mark.",
