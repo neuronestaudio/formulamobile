@@ -1049,11 +1049,11 @@ def build_home():
 
 
 
-<section class="band mesh band--raise">
+<section class="band band--raise cf2">
   <div class="shell">
     <div class="grid grid--4">
       <div class="stat" data-reveal><span class="stat__n" data-count="30" data-suffix="+">30+</span><span class="stat__l">Years detailing</span></div>
-      <div class="stat" data-reveal="0.08"><span class="stat__n" data-count="7">7</span><span class="stat__l">Services</span></div>
+      <div class="stat" data-reveal="0.08"><span class="stat__n" data-count="{len(SERVICES)}">{len(SERVICES)}</span><span class="stat__l">Services</span></div>
       <div class="stat" data-reveal="0.16"><span class="stat__n" data-count="10" data-suffix="H">10H</span><span class="stat__l">Graphene coating</span></div>
       <div class="stat" data-reveal="0.24"><span class="stat__n">100%</span><span class="stat__l">Work done in our studio</span></div>
     </div>
