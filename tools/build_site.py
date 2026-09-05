@@ -535,21 +535,28 @@ def head(title, desc, path, og_img="/assets/images/slider01.jpg", schema=""):
 
 
 def nav(active=""):
-    items = "\n".join(
-        f'        <li><a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{esc(l)}</a></li>'
-        for h, l in NAV
-    )
+    def _li(pairs):
+        return "\n".join(
+            f'        <li><a href="{h}"{" aria-current=\"page\"" if h == active else ""}>{esc(l)}</a></li>'
+            for h, l in pairs)
+
+    _mid = (len(NAV) + 1) // 2
+    items_l = _li(NAV[:_mid])
+    items_r = _li(NAV[_mid:])
     drawer_items = "\n".join(
         f'    <a href="{h}">{esc(l)}</a>' for h, l in NAV + NAV_FOOTER_EXTRA)
     return f"""<a class="skip" href="#main">Skip to content</a>
 <header class="nav">
   <div class="nav__in">
-    <ul class="nav__links">
-{items}
+    <ul class="nav__links nav__links--l">
+{items_l}
     </ul>
     <a class="nav__logo" href="/" aria-label="Formula Mobile Car Detailing — home">
       <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="300">
     </a>
+    <ul class="nav__links nav__links--r">
+{items_r}
+    </ul>
     <div class="nav__act">
       <a class="nav__call" href="tel:{PHONE_LINK}" aria-label="Call {PHONE_DISPLAY}" title="{PHONE_DISPLAY}">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -973,8 +980,14 @@ def build_home():
             <cite>{esc(who)}</cite>
           </blockquote>"""
 
+    # A -50% marquee only looks continuous while ONE copy of the content is
+    # wider than the viewport. Three reviews is about 1300px, so from 1440px up
+    # the loop ran out of cards and left dead space on the right - worse the
+    # wider the screen. Repeat until a single pass clears 3600px (ultrawide), then
+    # double that for the seam.
     _revs = "".join(review_card(b, w) for b, w in TESTIMONIALS)
-    quotes = _revs + _revs   # the second pass is what makes the seam invisible
+    _copies = max(1, -(-3600 // max(1, len(TESTIMONIALS) * 430)))
+    quotes = _revs * _copies * 2
 
     area_links = " ".join(
         '' for s in []
@@ -989,8 +1002,13 @@ def build_home():
              + '<link rel="stylesheet" href="/assets/css/select.css">')
         + nav()
         + f"""
-<section class="hero" data-hero>
-{carousel_html(inline=True)}
+<section class="hero hero--photo" data-hero>
+  <picture class="hero__bg" aria-hidden="true">
+    <source media="(max-width: 720px)" srcset="/assets/images/studio-hero-sm.jpg">
+    <img src="/assets/images/studio-hero.jpg" alt="" fetchpriority="high"
+         width="2000" height="1250">
+  </picture>
+  <div class="hero__scrim" aria-hidden="true"></div>
 
   <div class="hero__splash" data-hero-splash>
     <div class="hero__fiber" aria-hidden="true"></div>
@@ -1002,14 +1020,18 @@ def build_home():
              width="1200" height="400" fetchpriority="high">
       </div>
       <div class="hero__rule" aria-hidden="true"></div>
-      <p class="hero__tag">Mobile Detailing &middot; Melbourne</p>
+      <p class="hero__tag">Paint Correction &middot; Coatings</p>
     </div>
   </div>
 
   <div class="hero__say">
-    <span class="eyebrow">Mobile &middot; Metropolitan Melbourne</span>
+    <span class="eyebrow">Melbourne &middot; In our studio</span>
     <h1 class="hero__h1"><span class="hero__l1 textmono">Servicing Melbourne</span><span class="hero__l2"><span class="textmono">for</span> <span class="slant hl shine">30+ years</span></span></h1>
     <p class="hero__sub">Paint Protection &amp; Ceramic Coating Specialists</p>
+    <div class="hero__cta">
+      <a class="btn btn--lg" href="/booking/">Get a free quote</a>
+      <a class="btn btn--ghost btn--lg" href="/services/select/">Browse our services</a>
+    </div>
   </div>
 
   <div class="hero__cue" aria-hidden="true">
@@ -1125,7 +1147,6 @@ def build_home():
         + footer().replace(
             '<script src="/assets/js/enhance.js" defer></script>',
             '<script src="/assets/js/coating.js" type="module"></script>\n'
-            '<script src="/assets/js/select.js" defer></script>\n'
             '<script src="/assets/js/hero.js" defer></script>\n'
             '<script src="/assets/js/enhance.js" defer></script>')
     )
