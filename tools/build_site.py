@@ -451,6 +451,12 @@ NAV_FOOTER_EXTRA = [("/franchising/", "Franchising")]
 # shell
 # --------------------------------------------------------------------------
 
+def first_sentence(text):
+    """One sentence: a hover panel has room for a line, not a paragraph."""
+    parts = [p.strip() for p in text.split(".") if p.strip()]
+    return (parts[0] + ".") if parts else text
+
+
 def svc_img(slug, fallback=0):
     """Positional indexes into SERVICES break whenever the list changes; the
     four detailing tiers collapsing into one is exactly that. Look up by slug."""
@@ -853,6 +859,17 @@ def coating_html(scrolling=False):
     The films, the copy and the card design are shared; only the layout and
     what advances it differ.
     """
+    # the deck presentation carries the service panels; the scroll
+    # presentation on the service page does not need them
+    svcslant = "" if scrolling else "".join(f"""
+        <a class="svcslant__i" href="/services/{x['slug']}/"
+           style="--img:url('{x['img']}')">
+          <span class="svcslant__in">
+            <span class="svcslant__name">{esc(x['name'])}</span>
+            <span class="svcslant__blurb">{esc(first_sentence(x['blurb']))}</span>
+          </span>
+        </a>""" for x in SERVICES)
+
     mode = "coat--scroll" if scrolling else "coat--deck"
 
     vids = "".join(
@@ -893,16 +910,18 @@ def coating_html(scrolling=False):
       </button>"""
 
     return f"""
-<section class="band band--tight">
+<section class="band band--tight cf2">
   <div class="shell">
     <span class="eyebrow">The process</span>
     <h2>Ceramic coating <span class="slant hl">specialists</span></h2>
     <p class="lede">Four stages, one finish. A coating is only as good as what goes
       under it &mdash; this is the process, start to finish.</p>
+    </div>
+  <div class="svcslant">{svcslant}
   </div>
 </section>
 
-<section class="coat {mode}" data-coating aria-label="The ceramic coating process">
+<section class="coat {mode} cf2" data-coating aria-label="The ceramic coating process">
   <div class="coat__stage">
     {vids}
     <div class="coat__scrim" aria-hidden="true"></div>
@@ -913,6 +932,8 @@ def coating_html(scrolling=False):
     </div>
   </div>
 </section>
+{reasons_html()}
+
 """
 
 
@@ -1044,15 +1065,7 @@ def build_home():
 
 {coating_html()}
 
-<section class="band band--tight">
-  <div class="shell" style="text-align:center">
-    <span class="eyebrow">What we do</span>
-    <h2>Every service, <span class="slant hl">one place</span></h2>
-    <p class="lede" style="margin:0 auto 2rem">Pick the one you're after, or call and
-      our operators will tell you what the car actually needs.</p>
-    <div class="svcbtns">{svcbtns}</div>
-  </div>
-</section>
+
 
 <section class="band mesh band--raise">
   <div class="shell">
@@ -1107,27 +1120,7 @@ def build_home():
   </div>
 </section>
 
-<section class="band band--raise cf2">
-  <div class="shell">
-    <div class="area">
-      <div>
-        <span class="eyebrow">The studio</span>
-        <h2>A dedicated <span class="slant hl">coating studio</span></h2>
-        <p class="lede">Correction and coating work is conducted in our specialty
-          studio, created for these applications &mdash; controlled lighting, a sealed
-          floor and the room to work a panel properly.</p>
-        <p style="margin-top:1.6rem;display:flex;gap:.8rem;flex-wrap:wrap">
-          <a class="btn" href="/booking/">Book a detail</a>
-          <a class="btn btn--ghost" href="/services/">See our services</a>
-        </p>
-      </div>
-      <div class="area__map">
-        <img src="/assets/images/studio.jpg" alt="Formula's coating studio"
-             width="1280" height="880" loading="lazy" decoding="async">
-      </div>
-    </div>
-  </div>
-</section>
+
 
 {faq_block(photo=True)}
 
