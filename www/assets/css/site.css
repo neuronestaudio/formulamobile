@@ -2262,6 +2262,13 @@ body{max-width:100%}
 .galrows .mq:hover .mq__track,
 .galrows .mq:focus-within .mq__track { animation-play-state: paused; }
 
+/* The mirrored bands need their own mobile step-down: the nth-of-type
+   selector above outranks the plain .mq--slant media override, so without
+   this the odd rows shear at 9deg while the even ones stay at 11deg. */
+@media (max-width: 760px) {
+  .galrows .mq--slant:nth-of-type(even) { --slant: 9deg; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .galrows .mq__track { animation: none; }
 }
