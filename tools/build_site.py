@@ -25,10 +25,10 @@ from keywords import CLUSTERS
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "www")
 
-SITE = "https://formulamobilecardetailing.com.au"
+SITE = "https://formuladetailing.com.au"
 PHONE_DISPLAY = "1300 132 750"
 PHONE_LINK = "1300132750"
-EMAIL = "info@formulamobilecardetailing.com.au"
+EMAIL = "info@formuladetailing.com.au"
 GA_ID = "G-ZKYL0YQ0QZ"
 
 # --------------------------------------------------------------------------
@@ -1949,7 +1949,7 @@ def build_sitemap_page():
 
     return (
         head("Sitemap | Formula Mobile Car Detailing",
-             "Every page on formulamobilecardetailing.com.au \u2014 detailing, ceramic "
+             "Every page on formuladetailing.com.au \u2014 detailing, ceramic "
              "coating, paint correction, deluxe detailing, and every Melbourne "
              "suburb we cover.",
              "/sitemap/")
