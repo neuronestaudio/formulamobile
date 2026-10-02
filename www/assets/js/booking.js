@@ -18,7 +18,12 @@
   if (!form) return;
 
   var cfg = window.FORMULA_CFG || {};
-  var WEBHOOK = cfg.ghlWebhook || '';
+  // The post goes to our own /api/lead, which writes the contact to GHL with the
+  // API and then calls the webhook itself. Posting straight to the webhook lost
+  // every lead while its workflow was a draft. cfg.ghlWebhook is still the
+  // "is a CRM configured" switch. The trailing slash is deliberate: vercel.json
+  // sets trailingSlash, so the bare path costs a 308 on every submit.
+  var WEBHOOK = cfg.ghlWebhook ? '/api/lead/' : '';
   var PHONE = cfg.phoneDisplay || '';
   var TIMEOUT_MS = 15000;
 
@@ -211,6 +216,7 @@
       interior_condition: fd.get('interior_condition') || '',
       inquiry: (fd.get('comments') || '').trim(),
       source: 'Website Booking Form',
+      form_name: 'booking',
       page: window.location.pathname,
       submission_id: submissionId,
     };
