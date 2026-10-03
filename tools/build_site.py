@@ -54,14 +54,6 @@ GADS_CONVERSION = ""   # e.g. "AW-XXXXXXXXX/AbCdEfGhIjKlMnOp"
 
 SPLASH = [
     {
-        "img": "/assets/images/slider01.jpg",
-        "tier": "Deluxe Detail",
-        "title": "Inside and out",
-        "copy": "Engine bay, door jams, clay bar, hand polish, extraction through the "
-                "carpets and leather conditioned. The whole vehicle, done properly.",
-        "href": "/services/deluxe-detail/",
-    },
-    {
         "img": "/assets/images/slider02.jpg",
         "tier": "Paint Correction",
         "title": "Swirls gone",
@@ -80,37 +72,6 @@ SPLASH = [
 ]
 
 SERVICES = [
-    {
-        "slug": "deluxe-detail",
-        "name": "Deluxe Detail",
-        "img": "/assets/images/services/full-detail.jpg",
-        "blurb": "The complete service, inside and out. Engine bay degreased, clay bar "
-                 "decontamination, hand polish, and a full interior extraction across "
-                 "every surface.",
-        "intro": "One detail that takes the car end to end \u2014 the wash and "
-                 "decontamination, the paint work, then a full interior extraction "
-                 "across carpet, mats, seats, wheel, dash, console, tints and mirrors.",
-        "groups": [
-            ("Outside", [
-                "Door jams cleaned",
-                "Wheels and under guards degreased and pressure washed",
-                "Engine bay degreased and pressure washed",
-                "Vehicle washed and paint work cleaned with a clay bar",
-                "Paint work chamois dried",
-                "Paint work hand polished",
-                "Tyres glossed and plastics sealed",
-                "Windows cleaned inside and out",
-            ]),
-            ("Inside", [
-                "Door trims, dash, steering wheel, console, vents and visors detailed",
-                "Seats, carpets, floor mats and cargo area cleaned with extraction",
-                "Leather seats cleaned and conditioned",
-                "Roof lining spot cleaned",
-                "Tints and mirrors cleaned",
-                "Ashtrays cleaned",
-            ]),
-        ],
-    },
     {
         "slug": "ceramic-coating",
         "name": "Ceramic Coatings",
@@ -178,7 +139,6 @@ SERVICES = [
 # Only the four slider shots are large, so backdrops are blurred hard and each
 # gets its own grade — the worlds differ, the accent stays Formula red.
 SELECT_LOOKS = {
-    "deluxe-detail":     ("/assets/images/backdrop/full-detail.jpg", "#6b4526"),
     "ceramic-coating":   ("/assets/images/backdrop/ceramic-coating.jpg", "#6b4526"),
     "paint-correction":  ("/assets/images/backdrop/paint-correction.jpg", "#6b4526"),
 }
@@ -210,11 +170,6 @@ FAQS = [
      "created for these applications — the lighting is controlled, which is how "
      "swirls and defects are found in the first place, and the environment is clean "
      "and stable, which is what a coating needs to cure against."),
-    ("What does the Deluxe Detail cover?",
-     "The car end to end. Outside: door jams, wheels and under guards degreased, "
-     "engine bay, a clay bar decontamination, chamois dry and a hand polish. Inside: "
-     "door trims, dash, wheel, console and vents, seats and carpets cleaned with "
-     "extraction, leather conditioned and the roof lining spot cleaned."),
     ("What is paint correction, and how many stages do I need?",
      "Paint correction removes swirl marks from a poor cut and polish, "
      "environmental damage from being left out in the elements, and the marks, "
@@ -608,8 +563,8 @@ def footer():
           <img src="/assets/images/logo.png" alt="Formula Mobile Car Detailing" width="900" height="300">
         </div>
         <p class="muted" style="font-size:.92rem;max-width:32ch">
-          Mobile car detailing across metropolitan Melbourne. Over 30 years bringing
-          paint work back to its best.
+          Ceramic coatings and paint correction in our Melbourne studio. Over 30
+          years bringing paint work back to its best.
         </p>
       </div>
       <div>
@@ -635,7 +590,7 @@ def footer():
           <li class="foot__line"><b>Sunday</b><span>Closed</span></li>
         </ul>
         <p style="margin:1.4rem 0 0">
-          <a class="btn" href="/booking/">Book a detail</a>
+          <a class="btn" href="/booking/">Get a free quote</a>
         </p>
       </div>
     </div>
@@ -1131,9 +1086,9 @@ def build_home():
     )
 
     return (
-        head("Mobile Car Detailing Melbourne | Formula Mobile Car Detailing",
-             "Mobile car detailing across metropolitan Melbourne. Full detailing, paint "
-             "correction and ceramic coatings, conducted in our own studio. Over 30 years. "
+        head("Ceramic Coating & Paint Correction Melbourne | Formula Mobile Car Detailing",
+             "Ceramic coatings and paint correction across metropolitan Melbourne, "
+             "conducted in our own studio. Over 30 years. "
              f"Call {PHONE_DISPLAY}.",
              "/", schema=local_business_schema() + faq_schema()
              + '<link rel="stylesheet" href="/assets/css/select.css">')
@@ -1271,8 +1226,8 @@ def build_services_index():
     trail = [("/", "Home"), ("/services/", "Services")]
     return (
         head("Car Detailing Services Melbourne | Formula Mobile Car Detailing",
-             "Deluxe detailing, "
-             "ceramic coatings and paint correction — mobile across Melbourne.",
+             "Ceramic coatings and paint correction, "
+             "in our Melbourne studio.",
              "/services/", schema=breadcrumb_schema(trail) + faq_schema())
         + nav("/services/")
         + crumbs(trail)
@@ -1280,13 +1235,13 @@ def build_services_index():
 <section class="band band--tight">
   <div class="shell">
     <span class="eyebrow">Our services</span>
-    <h1>Everything from a <span class="slant hl">wash</span> to a <span class="slant hl">full correction</span></h1>
-    <p class="lede">We can accommodate any request you have for your vehicle and put together
-      a package that suits your needs and budget &mdash; whether that's a full detail, an
-      exterior or interior detail, or even just a wash.</p>
+    <h1>Correct it. <span class="slant hl">Coat it.</span></h1>
+    <p class="lede">Two services, done properly in our studio: paint correction to take
+      the swirls, scratches and dullness out, and a ceramic coating to seal the result in
+      for years.</p>
     <p style="margin-top:1.6rem">
       <a class="btn btn--lg" href="/services/select/">
-        Browse all seven
+        Browse our services
         <svg width="13" height="9" viewBox="0 0 13 9" fill="none" aria-hidden="true">
           <path d="M0 4.5h11M7.5 1L11 4.5 7.5 8" stroke="currentColor" stroke-width="1.6"/>
         </svg>
@@ -1517,9 +1472,9 @@ def build_select():
              ("/services/select/", "Choose a service")]
     return f"""{head(
         "Choose a Service | Formula Mobile Car Detailing",
-        "Browse all seven Formula Mobile Car Detailing services — mini and full detailing, "
-        "deluxe detailing, ceramic coatings and paint correction.",
-        "/services/select/", svc_img("deluxe-detail"), breadcrumb_schema(trail))}
+        "Browse Formula's services: ceramic coatings and paint correction, "
+        "done in our Melbourne studio.",
+        "/services/select/", svc_img("ceramic-coating"), breadcrumb_schema(trail))}
 <link rel="stylesheet" href="/assets/css/select.css">
 {carousel_html(inline=False)}
 <script src="/assets/js/select.js" defer></script>
@@ -1687,8 +1642,8 @@ def booking_section(heading="", band="band band--tight"):
 def build_booking():
     trail = [("/", "Home"), ("/booking/", "Book")]
     return (
-        head("Book a Detail | Formula Mobile Car Detailing",
-             "Book mobile car detailing across Melbourne — takes under a minute, and "
+        head("Get a Quote | Formula Mobile Car Detailing",
+             "Ceramic coating or paint correction quote — takes under a minute, and "
              "we'll call or text back to confirm a time.",
              "/booking/", svc_img("ceramic-coating"), breadcrumb_schema(trail))
         + nav()
@@ -2055,7 +2010,7 @@ def build_sitemap_page():
     kw = sum(len(p) for _t, _k, p in CLUSTERS)
     total = kw + len(SERVICES) + len(SUBURBS) + 11
 
-    core = [("/", "Home"), ("/booking/", "Book a detail"), ("/services/", "Services"),
+    core = [("/", "Home"), ("/booking/", "Get a quote"), ("/services/", "Services"),
             ("/services/select/", "Browse services"), ("/gallery/", "Gallery"),
             ("/testimonials/", "Reviews"),
             ("/franchising/", "Franchising"), ("/contact/", "Contact"),
@@ -2063,8 +2018,8 @@ def build_sitemap_page():
 
     return (
         head("Sitemap | Formula Mobile Car Detailing",
-             "Every page on formuladetailing.com.au \u2014 detailing, ceramic "
-             "coating, paint correction, deluxe detailing, and every Melbourne "
+             "Every page on formuladetailing.com.au \u2014 ceramic "
+             "coating, paint correction, and every Melbourne "
              "suburb we cover.",
              "/sitemap/")
         + nav()
@@ -2074,8 +2029,8 @@ def build_sitemap_page():
   <div class="shell">
     <span class="eyebrow">Sitemap</span>
     <h1>Every page, <span class="slant hl">one place</span></h1>
-    <p class="lede">{total} pages covering detailing, ceramic coating, paint correction
-      and deluxe detailing across metropolitan Melbourne.</p>
+    <p class="lede">{total} pages covering ceramic coating and paint correction
+      across metropolitan Melbourne.</p>
     <p style="margin-top:1.4rem">
       <a class="btn btn--ghost" href="/sitemap.xml">View the XML sitemap</a>
     </p>
@@ -2114,7 +2069,7 @@ def build_keyword_page(cluster_title, cluster_key, entry, siblings):
     swapped, because near-duplicates get treated as thin content.
     """
     # cluster keys are not guaranteed to be service slugs
-    _slug = {"mobile-detailing": "deluxe-detail"}.get(cluster_key, cluster_key)
+    _slug = cluster_key
     svc_link = (f'<a class="btn btn--ghost" href="/services/{_slug}/">Service details</a>'
                 if any(x["slug"] == _slug for x in SERVICES) else "")
 
@@ -2151,7 +2106,7 @@ def build_keyword_page(cluster_title, cluster_key, entry, siblings):
     <h1>{esc(h1)}</h1>
     <p class="lede">{esc(intro)}</p>
     <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.8rem">
-      <a class="btn btn--lg" href="/booking/">Book a detail</a>
+      <a class="btn btn--lg" href="/booking/">Get a free quote</a>
       <a class="btn btn--ghost btn--lg" href="tel:{PHONE_LINK}">Call {PHONE_DISPLAY}</a>
     </div>
   </div>

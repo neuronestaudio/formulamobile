@@ -66,5 +66,12 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/services/deluxe-detail/:path*",
+      "destination": "/services/",
+      "permanent": true
+    }
   ]
 }
