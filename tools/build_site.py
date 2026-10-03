@@ -888,7 +888,8 @@ CP_STAGES = [
 
 def process_cards_html():
     cards = "".join(f"""
-        <article class="cp-card">
+        <article class="cp-card cp-card--img">
+          <span class="cp-card-bg" style="--img:url('/assets/images/process/stage-{i}.webp')" aria-hidden="true"></span>
           <div class="cp-card-head"><span class="cp-card-no">{i:02d}</span><span class="cp-card-ic"><svg viewBox="0 0 48 48" aria-hidden="true">{ic}</svg></span></div>
           <h3>{esc(t)}</h3>
           <p>{esc(b)}</p>
