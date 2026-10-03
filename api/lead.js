@@ -22,6 +22,12 @@
  * a recipient, add the address to that contact's additional emails AND to
  * ALERT_EMAILS below. Don't delete that contact.
  *
+ * SMS ALERT: same route, one internal contact per mobile (ALERT_SMS_CONTACTS).
+ * GHL sends it from the sub-account's own phone number, so nothing goes out
+ * until the sub-account has one ("No numbers available in the account"). Don't
+ * test with a lead that uses an alert mobile: the upsert would merge the test
+ * lead into that alert contact.
+ *
  * GOTCHA: custom fields only save when addressed by BARE key ("service") or by
  * field id. The "contact.service" form the API hands you in customFields listings
  * is accepted, returns 200, and silently stores nothing.
@@ -60,6 +66,8 @@ const FIELD_MAP = {
 const ALERT_CONTACT_ID = process.env.GHL_ALERT_CONTACT_ID || 'ySw3jlPWrwQu75Ozvvgd';
 // Each address must be the alert contact's primary or an additional email.
 const ALERT_EMAILS = ['info@formuladetailing.com.au', 'dion@pndulumdigital.com'];
+// Internal contacts that get the SMS alert: "Lead Alert SMS - Dion (internal)".
+const ALERT_SMS_CONTACTS = ['b2kNsOvKrydz7HQrr1fp'];
 
 const str = (v) => (v === undefined || v === null ? '' : String(v)).trim();
 
@@ -96,6 +104,18 @@ function alertEmail(body, { name, phone, email, contactId, locationId }) {
       `<p style="margin:0 0 12px"><strong>New lead from the Formula Mobile Car Detailing website</strong></p>` +
       `<table style="border-collapse:collapse">${table}</table>${link}</div>`
   };
+}
+
+// One text, plain ASCII so it stays a short GSM message: who, how to reach
+// them, what they want.
+function alertSms(body, { name, phone, email }) {
+  const bits = [
+    `New Formula lead: ${name || 'no name'}`,
+    phone || email,
+    [str(body.service), str(body.vehicle)].filter(Boolean).join(', '),
+    [str(body.suburb), str(body.postcode)].filter(Boolean).join(' ')
+  ].filter(Boolean);
+  return bits.join(' | ').replace(/[^ -~]/g, '').slice(0, 300);
 }
 
 // The quote form sends firstname/lastname; the booking form sends one name.
@@ -190,6 +210,7 @@ module.exports = async function handler(req, res) {
 
   // The rest runs side by side; none of it may fail the request.
   const emailed = [];
+  let texted = 0;
   let hooked = false;
   const jobs = [];
 
@@ -224,11 +245,25 @@ module.exports = async function handler(req, res) {
     });
   }
 
+  // Text the alert mobiles. GHL answers 201 and fails the message afterwards if
+  // the sub-account has no number, so "texted" means accepted, not delivered.
+  if (token && locationId) {
+    const message = alertSms(body, { name, phone, email });
+    ALERT_SMS_CONTACTS.forEach((id) => {
+      jobs.push(postJson(`${GHL}/conversations/messages`, auth, { type: 'SMS', contactId: id, message }, 6000)
+        .then((a) => {
+          if (a.ok) texted += 1;
+          else console.error('GHL alert sms failed', id, a.status, a.text.slice(0, 300));
+        })
+        .catch((err) => console.error('GHL alert sms threw', id, err && err.message)));
+    });
+  }
+
   await Promise.all(jobs);
 
   // Always log the lead so it exists in the deployment logs even if GHL is down.
   console.log('LEAD', JSON.stringify({
-    saved, hooked, emailed, contactId, email, phone, name,
+    saved, hooked, emailed, texted, contactId, email, phone, name,
     service: str(body.service), suburb: str(body.suburb), vehicle: str(body.vehicle)
   }));
 
