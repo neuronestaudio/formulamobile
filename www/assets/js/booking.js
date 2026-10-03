@@ -81,7 +81,7 @@
     });
   }
 
-  function show(i) {
+  function show(i, initial) {
     syncSkipped();
     at = Math.min(Math.max(i, 0), steps.length - 1);
     steps.forEach(function (s, k) { s.hidden = k !== at; });
@@ -97,6 +97,12 @@
     if (submitBtn) submitBtn.hidden = !last;
 
     if (live) live.textContent = 'Step ' + (at + 1) + ' of ' + steps.length;
+
+    // The first render happens on page load. Since the form moved onto the
+    // homepage, scrolling to it here yanked every visitor past the hero to the
+    // bottom of the page before they had read a word - so only a step CHANGE
+    // moves focus and scroll.
+    if (initial) return;
 
     // move focus to the new step so keyboard and screen-reader users follow
     var focusable = steps[at].querySelector('input, select, textarea, button, [tabindex]');
@@ -266,5 +272,5 @@
     if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = label; }
   }
 
-  show(0);
+  show(0, true);
 })();
