@@ -19,7 +19,7 @@
     <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/bebas-neue-400.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/dm-sans-latin.woff2" crossorigin>
 <script>document.documentElement.classList.add('js');</script>
-<link rel="stylesheet" href="/assets/css/site.css?v=7b2c914151">
+<link rel="stylesheet" href="/assets/css/site.css?v=34f8f16e84">
 
 <script>
   window.FORMULA_CFG = {
@@ -132,12 +132,15 @@
 </nav>
 <main id="main">
 
-<section class="hero hero--photo" data-hero>
+<section class="hero hero--photo hero--video" data-hero>
   <picture class="hero__bg" aria-hidden="true">
-    <source media="(max-width: 720px)" srcset="/assets/images/studio-hero-sm.jpg">
-    <img src="/assets/images/studio-hero.jpg" alt="" fetchpriority="high"
-         width="2000" height="1250">
+    <source media="(max-width: 720px)" srcset="/assets/video/hero-poster-sm.jpg">
+    <img src="/assets/video/hero-poster.jpg" alt="" fetchpriority="high"
+         width="1920" height="1080">
   </picture>
+  <video class="hero__vid" data-hero-vid muted playsinline loop preload="none"
+         data-src="/assets/video/hero-1080.mp4" data-src-sm="/assets/video/hero-720p.mp4"
+         aria-hidden="true"></video>
   <div class="hero__scrim" aria-hidden="true"></div>
 
   <div class="hero__splash" data-hero-splash>
@@ -858,7 +861,7 @@
   </div>
 </section>
 
-<script src="/assets/js/booking.js?v=eda722de01" defer></script>
+<script src="/assets/js/booking.js?v=b5a876e341" defer></script>
 
 </main>
 <footer class="foot hexbg">
@@ -927,7 +930,7 @@
 <script src="/assets/js/spray.js?v=84325da730" defer></script>
 <script src="/assets/js/tracking.js?v=355c80cb7b" defer></script>
 <script src="/assets/js/coating.js?v=c97ed82058" type="module"></script>
-<script src="/assets/js/hero.js?v=f84cd77ea9" defer></script>
+<script src="/assets/js/hero.js?v=26506f78e0" defer></script>
 <script src="/assets/js/enhance.js?v=16f944f0c4" defer></script>
 </body>
 </html>

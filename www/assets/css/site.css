@@ -2553,3 +2553,18 @@ body{max-width:100%}
   .mq--slant .mq__track{gap:0}
   .slantile{border-radius:0}
 }
+
+/* ---------- hero: the studio film ----------
+   The poster is the film's own opening frame, so the swap from still to motion
+   is invisible. The video only fades in once frames are actually painting. The
+   170% oversize above was for the old photo's wall signage; the film is framed
+   for the box, so it sits at a plain cover. */
+.hero--video .hero__bg img{height:100%;object-position:center}
+.hero--video .hero__vid{position:absolute;inset:0;z-index:-2;width:100%;height:100%;
+  object-fit:cover;display:block;opacity:0;transition:opacity .8s ease}
+.hero--video .hero__vid.is-on{opacity:1}
+.hero--video .hero__scrim{
+  background:
+    linear-gradient(180deg,rgba(8,8,12,.7) 0%,rgba(8,8,12,.3) 34%,rgba(8,8,12,.6) 78%,var(--bg) 100%),
+    radial-gradient(120% 78% at 50% 42%,transparent 0%,rgba(8,8,12,.5) 100%);
+}

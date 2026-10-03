@@ -83,3 +83,35 @@
   }());
 
 })();
+
+/* ---- the studio film behind the hero ---------------------------------
+   No <source> in the HTML: the right file is chosen here, so a phone never
+   starts the landscape download, and a reduced-motion or no-JS visitor
+   downloads nothing and keeps the poster. `muted` is set as a property too,
+   because iOS ignores the attribute when the src is attached late. */
+(function () {
+  'use strict';
+  var v = document.querySelector('[data-hero-vid]');
+  if (!v) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var conn = navigator.connection;
+  if (conn && conn.saveData) return;
+
+  var sm = window.matchMedia('(max-width: 720px)').matches;
+  v.muted = true;
+  v.defaultMuted = true;
+  v.src = sm ? v.getAttribute('data-src-sm') : v.getAttribute('data-src');
+  v.addEventListener('playing', function () { v.classList.add('is-on'); }, { once: true });
+  var p = v.play();
+  if (p && p.catch) p.catch(function () { /* autoplay refused: the poster stays */ });
+
+  // don't burn battery decoding a film nobody can see
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) { var q = v.play(); if (q && q.catch) q.catch(function () {}); }
+        else v.pause();
+      });
+    }).observe(v);
+  }
+})();

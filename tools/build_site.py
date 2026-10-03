@@ -1028,12 +1028,15 @@ def build_home():
              + '<link rel="stylesheet" href="/assets/css/select.css">')
         + nav()
         + f"""
-<section class="hero hero--photo" data-hero>
+<section class="hero hero--photo hero--video" data-hero>
   <picture class="hero__bg" aria-hidden="true">
-    <source media="(max-width: 720px)" srcset="/assets/images/studio-hero-sm.jpg">
-    <img src="/assets/images/studio-hero.jpg" alt="" fetchpriority="high"
-         width="2000" height="1250">
+    <source media="(max-width: 720px)" srcset="/assets/video/hero-poster-sm.jpg">
+    <img src="/assets/video/hero-poster.jpg" alt="" fetchpriority="high"
+         width="1920" height="1080">
   </picture>
+  <video class="hero__vid" data-hero-vid muted playsinline loop preload="none"
+         data-src="/assets/video/hero-1080.mp4" data-src-sm="/assets/video/hero-720p.mp4"
+         aria-hidden="true"></video>
   <div class="hero__scrim" aria-hidden="true"></div>
 
   <div class="hero__splash" data-hero-splash>
