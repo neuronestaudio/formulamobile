@@ -69,7 +69,12 @@
   ],
   "redirects": [
     {
-      "source": "/services/deluxe-detail/:path*",
+      "source": "/services/deluxe-detail",
+      "destination": "/services/",
+      "permanent": true
+    },
+    {
+      "source": "/services/deluxe-detail/:path+",
       "destination": "/services/",
       "permanent": true
     }
