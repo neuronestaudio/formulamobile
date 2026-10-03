@@ -2568,3 +2568,203 @@ body{max-width:100%}
     linear-gradient(180deg,rgba(8,8,12,.7) 0%,rgba(8,8,12,.3) 34%,rgba(8,8,12,.6) 78%,var(--bg) 100%),
     radial-gradient(120% 78% at 50% 42%,transparent 0%,rgba(8,8,12,.5) 100%);
 }
+
+/* ==========================================================================
+   Ported from the CDS site (css/styles.css): the "why ceramic coating" poster
+   and the four-stage glass cards. The rules below are CDS's own, verbatim;
+   this block maps the tokens they expect onto Formula's palette, scoped to the
+   two sections so nothing leaks into the rest of the site.
+   ========================================================================== */
+.why-cc,.cp-band,.wg-lb{
+  --accent:var(--brand);--accent-hot:var(--brand-hot);--accent-soft:rgba(var(--brand-rgb),.14);
+  --line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.14);
+  --text:var(--fg);--muted:var(--fg-muted);--muted-2:#7b7f8a;--bg-2:var(--bg-raise);
+  --chrome-1:#e9e9ee;--chrome-3:#5a5f68;
+  --r-card:var(--radius-lg);--r-pill:999px;--gutter:clamp(16px,4vw,32px);
+}
+.why-cc .wp-title{font-family:var(--font-display);font-weight:400;text-transform:uppercase}
+.why-cc .wp-title em{font-style:normal;background:linear-gradient(180deg,var(--brand-hot),var(--brand-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.why-cc .wp-meta .eyebrow{margin:0}
+.cp-head{max-width:60ch;margin-bottom:clamp(28px,3.4vw,46px)}
+.cp-head h2{margin-top:.4rem}
+/* Coating process — frosted glass panel (glassmorphism over the honeycomb texture) */
+.cp-glass{position:relative;border-radius:clamp(20px,2.6vw,30px);padding:clamp(24px,4vw,54px);overflow:hidden;
+  background:
+    radial-gradient(120% 82% at 12% 0%,rgba(var(--brand-rgb),.11),transparent 55%),
+    radial-gradient(90% 70% at 100% 100%,rgba(255,255,255,.05),transparent 60%),
+    linear-gradient(158deg,rgba(255,255,255,.075) 0%,rgba(255,255,255,.022) 46%,rgba(255,255,255,.055) 100%);
+  border:1px solid rgba(255,255,255,.12);
+  -webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);
+  box-shadow:0 40px 90px -50px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.15)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .cp-glass{background:rgba(18,18,22,.74)}   /* no backdrop-filter support: solid frosted fallback */
+}
+@media(max-width:600px){.cp-glass{padding:clamp(18px,5vw,26px);border-radius:18px}}
+.cp{margin-top:clamp(30px,3.4vw,50px)}
+.cp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.4vw,20px)}
+.cp-card{position:relative;display:flex;flex-direction:column;overflow:hidden;
+  padding:clamp(22px,2vw,30px) clamp(20px,1.8vw,26px) clamp(24px,2.4vw,32px);
+  border-radius:var(--r-card);border:1px solid rgba(255,255,255,.1);
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+  transition:border-color .4s var(--ease),transform .4s var(--ease),box-shadow .4s var(--ease)}
+.cp-card::before{content:"";position:absolute;top:0;left:0;width:46px;height:3px;
+  background:var(--accent);box-shadow:0 0 18px rgba(var(--brand-rgb),.5)}
+.cp-card:hover{transform:translateY(-6px);border-color:rgba(var(--brand-rgb),.4);
+  box-shadow:0 30px 60px -34px rgba(0,0,0,.9),0 0 0 1px rgba(var(--brand-rgb),.28)}
+.cp-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:clamp(16px,1.8vw,24px)}
+.cp-card-no{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(2.6rem,4vw,3.6rem);
+  line-height:.8;letter-spacing:.02em;
+  background:linear-gradient(180deg,var(--chrome-1),var(--chrome-3));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.cp-card-ic{flex:0 0 auto;width:clamp(46px,4vw,56px);height:clamp(46px,4vw,56px);
+  display:grid;place-items:center;border-radius:14px;border:1px solid var(--line-2);
+  background:rgba(var(--brand-rgb),.08);color:var(--accent)}
+.cp-card-ic svg{width:60%;height:60%;display:block;overflow:visible}
+.cp-card-ic svg path,.cp-card-ic svg circle{fill:none;stroke:currentColor;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.cp-card h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;letter-spacing:.014em;
+  font-size:clamp(1.5rem,2.3vw,1.95rem);line-height:1;margin:0 0 10px;color:var(--text)}
+.cp-card p{color:#c7c7d0;font-size:clamp(.92rem,1vw,1rem);line-height:1.6;margin:0}
+.cp-cta{margin-top:clamp(28px,3.4vw,44px);display:flex;justify-content:center}
+@media(max-width:860px){.cp-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){
+  .cp-grid{grid-template-columns:1fr}
+  .cp-cta{justify-content:stretch}
+  .cp-cta .btn{width:100%;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){.cp-card{transition:none}}
+.why-note{display:flex;align-items:center;justify-content:space-between;gap:clamp(22px,4vw,50px);flex-wrap:wrap;
+  margin-top:clamp(26px,3.5vw,42px);padding:clamp(22px,3vw,34px);border-radius:var(--r-card);
+  background:linear-gradient(135deg,rgba(var(--brand-rgb),.1),rgba(255,255,255,.03));border:1px solid rgba(var(--brand-rgb),.24)}
+.why-note-body{max-width:72ch}
+.why-note-tag{display:inline-block;font-family:"DM Sans",sans-serif;font-weight:700;text-transform:uppercase;
+  letter-spacing:.16em;font-size:.68rem;color:var(--accent);margin-bottom:9px}
+.why-note-body p{color:#cfd2d9;font-size:clamp(.95rem,1.15vw,1.06rem);line-height:1.6}
+.why-note-body p b{color:#fff}
+.why-note .btn{flex:none}
+@media(max-width:560px){.why-note{flex-direction:column;align-items:flex-start}}
+/* --- why-ceramic poster (markup: tools/why/build_why.py, behaviour: js/why-gallery.js) ---
+   Editorial poster: print-style meta rule, a headline at poster scale, eight compact numbered
+   pills (they replaced both the vehicle tabs and the eight big cards), and per reason one line
+   of copy + a carousel mixed across the four albums. The outlined keyword behind the slide row
+   is the text-behind-subject device the slides themselves use, applied at section scale. */
+.why-cc{position:relative;isolation:isolate;overflow:hidden}
+.why-cc::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(58% 46% at 88% 4%,rgba(var(--brand-rgb),.13),transparent 70%),radial-gradient(40% 36% at 4% 96%,rgba(var(--brand-rgb),.07),transparent 70%)}
+.why-cc::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wp-head{margin-bottom:clamp(26px,3.6vw,48px)}
+.wp-meta{display:flex;align-items:center;justify-content:space-between;gap:14px 24px;flex-wrap:wrap;padding-bottom:16px;
+  border-bottom:1px solid var(--line-2);margin-bottom:clamp(20px,3vw,40px)}
+.wp-issue{font-family:"DM Sans",sans-serif;font-weight:500;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted-2)}
+.wp-issue i{font-style:normal;color:var(--accent);margin-inline:10px}
+.why-cc .wp-title{font-size:clamp(2.7rem,9.6vw,8.8rem);line-height:.86;letter-spacing:.004em;margin:0;text-wrap:balance}
+.wp-lede{max-width:50ch;margin:clamp(18px,2.6vw,34px) 0 0 auto}
+.wg{margin-top:0}
+.wg-tabs{position:relative;display:flex;flex-wrap:wrap;gap:7px}
+.wg-tab{flex:none;appearance:none;cursor:pointer;white-space:nowrap;font-family:"DM Sans",sans-serif;font-weight:600;font-size:.83rem;letter-spacing:-.003em;
+  color:#c4c4ce;padding:9px 15px 9px 12px;border-radius:var(--r-pill);border:1px solid var(--line);background:rgba(255,255,255,.035);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+  transition:color .25s var(--ease),background .35s var(--ease),border-color .3s var(--ease),box-shadow .35s var(--ease),transform .2s var(--ease)}
+.wg-tab i{font-style:normal;font-size:.68rem;font-weight:600;letter-spacing:.06em;margin-right:8px;color:var(--accent-hot);font-variant-numeric:tabular-nums}
+.wg-tab:hover{color:#fff;border-color:var(--line-2)}
+.wg-tab:active{transform:scale(.97)}
+.wg-tab.is-on{color:#fff;border-color:transparent;background:linear-gradient(135deg,var(--accent-hot),var(--accent) 70%);
+  box-shadow:0 12px 28px -14px rgba(var(--brand-rgb),.85),inset 0 1px 0 rgba(255,255,255,.24)}
+.wg-tab.is-on i{color:rgba(255,255,255,.78)}
+.wg-tab:focus-visible,.wg-arrow:focus-visible,.wg-slide a:focus-visible,.wg-track:focus-visible{outline:2px solid var(--accent-hot);outline-offset:3px}
+.wg-stage{position:relative;margin-top:clamp(22px,3vw,40px)}
+.wg-ghost{position:absolute;right:-.03em;top:.1em;z-index:0;pointer-events:none;user-select:none;white-space:nowrap;text-transform:uppercase;
+  font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(4.4rem,15vw,13.5rem);line-height:.8;letter-spacing:.01em;
+  color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.13)}
+.wg-ghost.is-in{animation:wgGhost 1s var(--ease) both}
+@keyframes wgGhost{from{opacity:0;transform:translate3d(6%,0,0)}}
+.wg-panel{position:relative;z-index:1}
+.wg-why{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:start;gap:clamp(14px,2vw,26px);max-width:min(620px,58%);
+  min-height:clamp(84px,8vw,112px);margin-bottom:clamp(16px,2vw,26px)}
+.wg-no{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(3rem,5.6vw,5.2rem);line-height:.78;
+  background:linear-gradient(160deg,#ff5b66,var(--accent) 55%,#8a0f18);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wg-why h3{font-family:"Bebas Neue",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:1;
+  font-size:clamp(1.55rem,2.5vw,2.3rem);margin:0 0 8px}
+.wg-why p{margin:0;color:#c9c9d2;font-size:clamp(.96rem,1.08vw,1.06rem);line-height:1.55;text-wrap:pretty}
+.wg-track{display:flex;gap:16px;list-style:none;margin:0;padding:8px 0 18px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;cursor:grab;
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 90px),transparent)}
+.wg-track::-webkit-scrollbar{display:none}
+.wg-track.at-end{-webkit-mask-image:none;mask-image:none}
+.wg-track.is-drag{cursor:grabbing;scroll-snap-type:none}
+.wg-track.is-drag a{pointer-events:none}
+.wg-slide{flex:0 0 calc((100% - 48px)/3.4);min-width:0;scroll-snap-align:start}
+.wg-panel:not([hidden]) .wg-slide{animation:wgIn .8s var(--ease) both;animation-delay:calc(var(--i,0)*70ms)}
+@keyframes wgIn{from{opacity:0;transform:translate3d(0,26px,0) scale(.965)}}
+.wg-slide a{position:relative;display:block;aspect-ratio:4/5;overflow:hidden;border-radius:var(--r-card);border:1px solid var(--line);background:var(--bg-2);
+  box-shadow:0 30px 60px -40px #000;transition:transform .5s var(--ease),border-color .3s var(--ease),box-shadow .5s var(--ease);-webkit-user-drag:none}
+.wg-slide img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease);-webkit-user-drag:none;user-select:none}
+/* a band of light sweeps the slide on hover: what a coating does to paint */
+.wg-slide a::after{content:"";position:absolute;inset:-30% -60%;pointer-events:none;transform:translate3d(-62%,0,0);
+  background:linear-gradient(105deg,transparent 44%,rgba(255,255,255,.2) 50%,transparent 56%);transition:transform 1.1s var(--ease)}
+.wg-zoom{position:absolute;top:12px;right:12px;z-index:1;display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:#fff;
+  background:rgba(12,12,16,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12);opacity:0;transform:translateY(-4px);transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.wg-zoom svg{width:17px;height:17px}
+.wg-fig{display:flex;align-items:baseline;gap:10px;margin-top:12px;font-family:"DM Sans",sans-serif;font-weight:500;font-size:.7rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2)}
+.wg-fig b{font-weight:600;color:var(--accent-hot);letter-spacing:.08em;font-variant-numeric:tabular-nums}
+@media(hover:hover){
+  .wg-slide a:hover{transform:translateY(-6px);border-color:rgba(var(--brand-rgb),.55);box-shadow:0 34px 64px -34px #000,0 22px 54px -28px rgba(var(--brand-rgb),.45)}
+  .wg-slide a:hover img{transform:scale(1.035)}
+  .wg-slide a:hover::after{transform:translate3d(62%,0,0)}
+  .wg-slide a:hover .wg-zoom{opacity:1;transform:none}
+}
+.wg-foot{display:flex;align-items:center;gap:clamp(16px,3vw,36px);margin-top:6px}
+.wg-progress{position:relative;flex:1;height:2px;border-radius:2px;background:var(--line);overflow:hidden}
+.wg-progress span{position:absolute;top:0;bottom:0;left:0;width:30%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent-hot));
+  box-shadow:0 0 12px rgba(var(--brand-rgb),.7);transition:left .25s linear,width .25s linear}
+.wg-nav{display:flex;align-items:center;gap:10px}
+.wg-count{font-family:"DM Sans",sans-serif;font-size:.84rem;letter-spacing:.08em;color:var(--muted-2);font-variant-numeric:tabular-nums;margin-right:6px}
+.wg-count b{color:var(--text);font-weight:600}
+.wg-arrow{appearance:none;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;cursor:pointer;color:var(--text);
+  border:1px solid var(--line-2);background:rgba(255,255,255,.04);transition:background .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease),opacity .3s}
+.wg-arrow svg{width:20px;height:20px}
+.wg-arrow:hover:not(:disabled){background:var(--accent);border-color:var(--accent);transform:scale(1.06)}
+.wg-arrow:active:not(:disabled){transform:scale(.96)}
+.wg-arrow:disabled{opacity:.3;cursor:default}
+.why-cc .why-note{margin-top:clamp(40px,5.4vw,68px)}
+@media(max-width:1000px){.wg-slide{flex-basis:calc((100% - 32px)/2.35)}.wg-why{max-width:78%}}
+@media(max-width:700px){
+  /* the eight reasons are ONE swipeable row of pills here; they used to be eight stacked cards, about two screens tall */
+  .wg-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gutter)*-1);padding:2px var(--gutter);scroll-padding-inline:var(--gutter);
+    -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+  .wg-tabs::-webkit-scrollbar{display:none}
+  .wg-tab{padding:8px 13px 8px 11px;font-size:.8rem}
+  .wp-lede{margin-left:0}
+  .wg-why{max-width:none;min-height:0;gap:14px}
+  .wg-ghost{top:auto;bottom:calc(100% - .34em);right:-.02em;-webkit-text-stroke-color:rgba(255,255,255,.09)}
+  .wg-slide{flex-basis:78%}.wg-track{gap:12px;-webkit-mask-image:none;mask-image:none}
+  .wg-arrow{width:42px;height:42px}
+}
+@media(prefers-reduced-motion:reduce){.wg-slide,.wg-ghost.is-in{animation:none!important}.wg-slide a,.wg-slide img,.wg-slide a::after,.wg-progress span{transition:none}}
+html.wg-lock{overflow:hidden}
+.wg-lb{width:100vw;max-width:100vw;height:100vh;height:100dvh;max-height:none;margin:0;padding:0;border:0;background:transparent;color:#fff;overflow:hidden}
+.wg-lb[open]{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:clamp(6px,2vw,28px);padding:clamp(12px,3vw,40px)}
+.wg-lb::backdrop{background:rgba(5,5,7,.93);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.wg-lb figure{margin:0;min-width:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.wg-lb figure img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(100dvh - 150px);border-radius:14px;
+  box-shadow:0 40px 100px -30px #000,0 0 0 1px rgba(255,255,255,.08)}
+.wg-lb figcaption{max-width:62ch;text-align:center;font-size:.95rem;line-height:1.5;color:#cfd2d9}
+.wg-lb figcaption b{display:block;font-family:"DM Sans",sans-serif;font-weight:600;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-hot);margin-bottom:4px}
+.wg-lb-a,.wg-lb-x{appearance:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;cursor:pointer;color:#fff;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);transition:background .3s var(--ease),transform .3s var(--ease)}
+.wg-lb-a svg,.wg-lb-x svg{width:22px;height:22px}
+.wg-lb-a:hover,.wg-lb-x:hover{background:var(--accent);transform:scale(1.06)}
+.wg-lb:focus{outline:none}
+.wg-lb-a:focus-visible,.wg-lb-x:focus-visible{outline:2px solid var(--accent-hot);outline-offset:3px}
+.wg-lb-x{position:absolute;top:clamp(12px,2.4vw,28px);right:clamp(12px,2.4vw,28px);z-index:2}
+@media(max-width:700px){
+  .wg-lb[open]{grid-template-columns:minmax(0,1fr);padding:64px 12px 20px}
+  .wg-lb-a{position:absolute;bottom:18px;width:48px;height:48px}
+  .wg-lb-a[data-dir="-1"]{left:calc(50% - 60px)}.wg-lb-a[data-dir="1"]{right:calc(50% - 60px)}
+  .wg-lb figure{padding-bottom:70px}.wg-lb figure img{max-height:calc(100dvh - 250px)}
+}

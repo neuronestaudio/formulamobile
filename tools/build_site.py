@@ -820,35 +820,141 @@ ICONS = {
 }
 
 
+_CHEV = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" '
+         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="%s"/></svg>')
+_CHEV_L, _CHEV_R = _CHEV % "M15 6l-6 6 6 6", _CHEV % "M9 6l6 6-6 6"
+_ZOOM = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '
+         'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+         '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>')
+
+
 def reasons_html():
-    """Ten reasons, laid out as the reference deck does: numbered chip, icon,
-    title, body — in glass, on the ceramic coating page."""
-    cards = "".join(f"""
-        <article class="rsn" data-reveal="{i * 0.04:.2f}">
-          <span class="rsn__n">{i:02d}</span>
-          <svg class="rsn__ic" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-               aria-hidden="true">{ICONS.get(icon, "")}</svg>
-          <h3 class="rsn__t">{esc(title)}</h3>
-          <p class="rsn__d">{esc(body)}</p>
-        </article>""" for i, (icon, title, body) in enumerate(COATING_REASONS, start=1))
+    """Why ceramic coat: the poster the CDS site runs - reason pills, a slide
+    carousel per reason mixed across four education albums, the outlined
+    keyword behind the row, and a lightbox. It replaced a static grid of ten
+    glass cards, which read as a wall of text. Data: tools/why_albums.py;
+    behaviour: assets/js/why-gallery.js. Without JS every slide is still a
+    plain link to its full-size image and the track still scrolls."""
+    from why_albums import ALBUMS, REASONS
+    by = {a[0]: a for a in ALBUMS}
+    n_slides = sum(len(a[3]) for a in ALBUMS)
+
+    tabs = "".join(
+        f'\n        <button type="button" class="wg-tab{" is-on" if i == 0 else ""}" role="tab" '
+        f'id="wg-t-{i + 1}" aria-controls="wg-p-{i + 1}" aria-selected="{"true" if i == 0 else "false"}" '
+        f'data-name="{esc(title)}" data-ghost="{esc(ghost)}"{"" if i == 0 else " tabindex=\"-1\""}>'
+        f'<i>{i + 1:02d}</i>{esc(pill)}</button>'
+        for i, (title, pill, ghost, _c, _r) in enumerate(REASONS))
+
+    panels = []
+    for i, (title, _p, _g, copy, refs) in enumerate(REASONS):
+        slides = "".join(
+            f'\n            <li class="wg-slide" style="--i:{min(k, 5)}">'
+            f'<a href="/assets/why/{slug}-{idx:02d}.webp" data-cap="{esc(by[slug][1] + ": " + by[slug][3][idx - 1][2])}">'
+            f'<img src="/assets/why/{slug}-{idx:02d}-s.webp" alt="{esc(by[slug][1] + " - " + by[slug][3][idx - 1][2])}" '
+            f'width="640" height="800" loading="lazy" decoding="async"><span class="wg-zoom">{_ZOOM}</span></a>'
+            f'<span class="wg-fig"><b>{k + 1:02d}</b>{esc(by[slug][1])}</span></li>'
+            for k, (slug, idx) in enumerate(refs))
+        panels.append(f"""
+        <div class="wg-panel" role="tabpanel" id="wg-p-{i + 1}" aria-labelledby="wg-t-{i + 1}"{"" if i == 0 else " hidden"}>
+          <div class="wg-why"><span class="wg-no" aria-hidden="true">{i + 1:02d}</span><div><h3>{esc(title)}</h3><p>{esc(copy)}</p></div></div>
+          <ul class="wg-track" tabindex="0" aria-label="{esc(title)}: slides">{slides}
+          </ul>
+        </div>""")
 
     return f"""
-<section class="band rsn-band">
+<section class="band why-cc">
   <div class="shell">
-    <div style="max-width:56ch;margin-bottom:2.6rem" data-reveal>
-      <span class="eyebrow">Why coat it</span>
-      <h2>Ten reasons to <span class="slant hl">ceramic coat</span></h2>
-      <p class="lede">What a coating actually does for the paint, and how long ours last.</p>
+    <header class="wp-head" data-reveal>
+      <div class="wp-meta"><span class="eyebrow">Why ceramic coating</span><span class="wp-issue">{len(REASONS)} reasons<i>/</i>{n_slides} slides<i>/</i>four cars</span></div>
+      <h2 class="wp-title">More than a shine.<br><em>Real protection.</em></h2>
+      <p class="lede wp-lede">A ceramic coating bonds to your clear coat as a hard, ultra-slick sacrificial layer. Here are the {len(REASONS)} reasons owners get it done &mdash; pick one, swipe the slides, tap any of them to read it full size.</p>
+    </header>
+    <div class="wg" data-wg data-reveal>
+      <div class="wg-tabs" role="tablist" aria-label="Reasons to ceramic coat a car">{tabs}
+      </div>
+      <div class="wg-stage">
+        <div class="wg-ghost" aria-hidden="true">{esc(REASONS[0][2])}</div>{"".join(panels)}
+        <div class="wg-foot">
+          <div class="wg-progress" aria-hidden="true"><span></span></div>
+          <div class="wg-nav">
+            <span class="wg-count" aria-live="polite"><b>01</b> / {len(REASONS[0][4]):02d}</span>
+            <button type="button" class="wg-arrow" data-dir="-1" aria-label="Previous slide" disabled>{_CHEV_L}</button>
+            <button type="button" class="wg-arrow" data-dir="1" aria-label="Next slide">{_CHEV_R}</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="rsn-grid">{cards}
-    </div>
-    <p style="margin-top:2.4rem">
+    <dialog class="wg-lb" aria-label="Slide viewer" tabindex="-1">
+      <button type="button" class="wg-lb-x" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <button type="button" class="wg-lb-a" data-dir="-1" aria-label="Previous slide">{_CHEV_L}</button>
+      <figure><img alt="" width="1122" height="1402"><figcaption><b class="wg-lb-meta"></b><span class="wg-lb-text"></span></figcaption></figure>
+      <button type="button" class="wg-lb-a" data-dir="1" aria-label="Next slide">{_CHEV_R}</button>
+    </dialog>
+    <div class="why-note" data-reveal>
+      <div class="why-note-body">
+        <span class="why-note-tag">Straight up</span>
+        <p>A ceramic coating is a sacrificial shield, not armour. It won't stop heavy stone chips or deep car-park scratches &mdash; that's what paint protection film is for. What it <b>will</b> do is keep your paint slicker, glossier and far easier to clean, and protect it from the everyday things that wreck a finish.</p>
+      </div>
       <a class="btn btn--lg" href="/booking/">Book a ceramic coating</a>
-    </p>
+    </div>
   </div>
 </section>
+<script src="/assets/js/why-gallery.js" defer></script>
 """
+
+
+# The homepage's four stages, as glass cards. Shorter than COATING_STAGES (the
+# ceramic page's scroll films keep the full text) but the same facts.
+_CP_ICONS = [
+    '<path d="M8 36h32"/><path d="M11 36c4-8 22-8 26 0"/><circle cx="19" cy="17" r="1.6"/><circle cx="27" cy="12" r="1.3"/><circle cx="33" cy="19" r="1.5"/><path d="M19 25v-4"/><path d="M27 20v-4"/><path d="M33 27v-4"/>',
+    '<circle cx="24" cy="26" r="11"/><path d="M24 15V7"/><circle cx="24" cy="6" r="2.2"/><path d="M24 26a5 5 0 1 1-4-4.9"/><path d="M31 21a9 9 0 0 0-5-3.4"/>',
+    '<path d="M9 32c6-7 24-7 30 0"/><path d="M12 26c5-6 19-6 24 0"/><path d="M15 20c4-4 14-4 18 0"/><path d="M24 6c2.8 3.4 4.4 5.6 4.4 7.8a4.4 4.4 0 0 1-8.8 0c0-2.2 1.6-4.4 4.4-7.8z"/>',
+    '<path d="M24 6l14 4.4v9.6c0 8.6-6.4 14-14 17-7.6-3-14-8.4-14-17v-9.6z"/><path d="M18 24l4.2 4.2L31 18"/>',
+]
+CP_STAGES = [
+    ("Decontaminate",
+     "Pressure wash, hand wash, rinse, then a clay bar to pull bonded grime out of the "
+     "paint. A coating bonds to whatever it is laid on, so the surface has to be "
+     "genuinely clean first."),
+    ("Correct",
+     "Machine cut removes scratches, spider webbing and dullness; machine glaze "
+     "de-swirls and puts the gloss back. Whatever the paint looks like now is what "
+     "the coating locks in."),
+    ("Coat",
+     "Graphene Pro 10H N1 or Quartz 9H Pro, applied by hand panel by panel. It "
+     "chemically bonds to the duco: up to 1000nm of protection at 10H hardness."),
+    ("Protect",
+     "The coating cures in our Melbourne studio into a hydro barrier against UV, "
+     "bird droppings and wash marks. You leave with the routine that keeps it "
+     "beading and glossy for years."),
+]
+
+
+def process_cards_html():
+    cards = "".join(f"""
+        <article class="cp-card">
+          <div class="cp-card-head"><span class="cp-card-no">{i:02d}</span><span class="cp-card-ic"><svg viewBox="0 0 48 48" aria-hidden="true">{ic}</svg></span></div>
+          <h3>{esc(t)}</h3>
+          <p>{esc(b)}</p>
+        </article>""" for i, ((t, b), ic) in enumerate(zip(CP_STAGES, _CP_ICONS), start=1))
+    return f"""
+<section class="band cp-band" aria-label="The ceramic coating process">
+  <div class="shell">
+    <div class="cp-glass">
+      <div class="cp-head" data-reveal>
+        <span class="eyebrow">The coating process</span>
+        <h2>Four stages,<br>one flawless finish.</h2>
+        <p class="lede">A proper ceramic coating is a process, not a bottle in a box. Here is exactly how your car goes from tired paint to a sealed, mirror finish.</p>
+      </div>
+      <div class="cp-grid" data-reveal>{cards}
+      </div>
+      <div class="cp-cta" data-reveal>
+        <a class="btn btn--lg" href="/booking/">Get your coating quote</a>
+      </div>
+    </div>
+  </div>
+</section>"""
 
 
 def coating_html(scrolling=False):
@@ -914,19 +1020,10 @@ def coating_html(scrolling=False):
           <path d="M0 5.5h13M9 1l4 4.5L9 10" stroke="currentColor" stroke-width="1.7"/></svg>
       </button>"""
 
-    return f"""
-<section class="band band--tight cf2">
-  <div class="shell">
-    <span class="eyebrow">The process</span>
-    <h2>Ceramic coating <span class="slant hl">specialists</span></h2>
-    <p class="lede">Four stages, one finish. A coating is only as good as what goes
-      under it &mdash; this is the process, start to finish.</p>
-    </div>
-  <div class="svcslant">{svcslant}
-  </div>
-</section>
-
-<section class="coat {mode} cf2" data-coating aria-label="The ceramic coating process">
+    # the ceramic page scrolls through the four stage films; the homepage shows
+    # the same four stages as glass cards, then the reasons poster (the ceramic
+    # page adds that itself, after the films)
+    films = f"""<section class="coat {mode} cf2" data-coating aria-label="The ceramic coating process">
   <div class="coat__stage">
     {vids}
     <div class="coat__scrim" aria-hidden="true"></div>
@@ -936,8 +1033,22 @@ def coating_html(scrolling=False):
       <div class="coat__pips" role="tablist" aria-label="Coating stages">{pips}</div>{arrow_next}
     </div>
   </div>
+</section>"""
+
+    return f"""
+<section class="band band--tight cf2">
+  <div class="shell">
+    <span class="eyebrow">The process</span>
+    <h2>Ceramic coating <span class="slant hl">specialists</span></h2>
+    <p class="lede">Every service is done properly, in our studio. Pick one to see
+      what it involves.</p>
+    </div>
+  <div class="svcslant">{svcslant}
+  </div>
 </section>
-{reasons_html()}
+
+{films if scrolling else process_cards_html()}
+{"" if scrolling else reasons_html()}
 
 """
 
