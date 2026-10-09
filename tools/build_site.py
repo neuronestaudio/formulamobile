@@ -405,7 +405,16 @@ NAV = [
     ("/testimonials/", "Reviews"),
     ("/contact/", "Contact"),
 ]
-NAV_FOOTER_EXTRA = [("/franchising/", "Franchising")]
+NAV_FOOTER_EXTRA = []   # franchising stays live but is only linked from the sitemap
+
+FOOTER_GUIDES = [
+    ("/services/#faq", "Common questions"),
+    ("/ceramic-coating-cost-melbourne/", "What a coating costs"),
+    ("/ceramic-coating-longevity-melbourne/", "How long a coating lasts"),
+    ("/ceramic-coating-vs-wax-melbourne/", "Ceramic coating vs wax"),
+    ("/ceramic-coating-maintenance-melbourne/", "Looking after a coating"),
+    ("/swirl-mark-removal-melbourne/", "Swirl mark removal"),
+]
 
 # --------------------------------------------------------------------------
 # shell
@@ -553,7 +562,9 @@ def footer():
         f'        <li><a href="/services/{s["slug"]}/">{esc(s["name"])}</a></li>'
         for s in SERVICES
     ) + '\n        <li><a href="/services/select/">Browse all services &rarr;</a></li>'
-    areas = ""   # the business does not travel; there are no area pages
+    # the business does not travel, so there are no area pages; the column
+    # carries the question-led guides instead
+    guides = "\n".join(f'          <li><a href="{h}">{esc(l)}</a></li>' for h, l in FOOTER_GUIDES)
     return f"""</main>
 <footer class="foot hexbg">
   <div class="shell">
@@ -574,10 +585,9 @@ def footer():
         </ul>
       </div>
       <div>
-        <h4>Areas</h4>
+        <h4>Guides &amp; FAQ</h4>
         <ul>
-{areas}
-          <li><a href="/franchising/">Franchising</a></li>
+{guides}
         </ul>
       </div>
       <div>
@@ -747,7 +757,7 @@ def faq_block(heading="Common questions", photo=False):
     # stays opt-in because this block is also emitted on 25 keyword pages.
     band = 'band band--tight cf2' if photo else 'band band--tight'
     return f"""
-<section class="{band}">
+<section class="{band}" id="faq">
   <div class="shell">
     <div style="max-width:52ch;margin-bottom:2.2rem" data-reveal>
       <span class="eyebrow">FAQ</span>

@@ -2817,3 +2817,6 @@ html.wg-lock{overflow:hidden}
 .cp-card-bg::after{
   background:linear-gradient(180deg,rgba(10,10,13,.12) 0%,rgba(10,10,13,.2) 30%,rgba(10,10,13,.82) 56%,rgba(10,10,13,.95) 100%)}
 @media(max-width:520px){.cp-card--img{min-height:400px}}
+
+/* footer "Common questions" lands below the sticky header, not under it */
+#faq{scroll-margin-top:calc(var(--nav-h) - 1rem)}
