@@ -2373,19 +2373,55 @@ def build_warranties():
 def build_privacy():
     return (
         head("Privacy Policy | Formula Mobile Car Detailing",
-             "How Formula Mobile Car Detailing handles your information.", "/privacy/")
+             "How Formula Mobile Car Detailing collects, uses and protects your personal information, including cookies and analytics.", "/privacy/")
         + nav()
         + f"""
 <section class="band band--tight">
   <div class="shell" style="max-width:70ch">
     <span class="eyebrow">Privacy</span>
     <h1>Privacy <span class="slant hl">policy</span></h1>
-    <p class="lede">This is a placeholder. The client needs to supply or approve the final
-      privacy policy wording before launch.</p>
-    <p class="muted">What we collect via the enquiry form: your name, email, phone, suburb and
-      the details you provide about your vehicle. We use it to respond to your enquiry.
-      Analytics are collected via Google Analytics ({GA_ID}).</p>
-    <p class="muted">Questions: <a href="mailto:{EMAIL}">{EMAIL}</a> or {PHONE_DISPLAY}.</p>
+    <p class="muted">Last updated 6 November 2026</p>
+    <p class="lede">Formula Mobile Car Detailing ("we", "us", "our") respects your privacy. This policy explains what personal information we collect through this website, why we collect it and what you can do about it. We handle personal information in line with the Australian Privacy Principles in the <em>Privacy Act 1988</em> (Cth).</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">1. Information we collect</h2>
+    <p><strong>Information you give us.</strong> When you request a quote, make a booking, call or email us, we collect what you provide: usually your name, phone number, email address, suburb, details about your vehicle and the work you want done, and any photos or messages you send.</p>
+    <p><strong>Information collected automatically.</strong> When you visit the site, we and our technology providers may collect technical information such as your IP address, browser and device type, the pages you view, the page that referred you and the time of your visit, using cookies and similar technologies (see section 4). If you arrive from an ad, the ad platform may pass us a click identifier or campaign details.</p>
+    <p>We do not ask for sensitive information (such as health or financial details). Please do not include it in a form or message.</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">2. How we use it</h2>
+    <ul style="list-style:disc;padding-left:1.25rem;display:grid;gap:.5rem;margin:.75rem 0 0">
+      <li>To respond to your enquiry, prepare a quote and book in your job.</li>
+      <li>To carry out the work, send reminders and invoices, and follow up on warranties and aftercare.</li>
+      <li>To contact you about your enquiry by phone, SMS or email. You can ask us to stop at any time.</li>
+      <li>To understand how people use our website and how well our advertising works, and to show our ads to people likely to be interested.</li>
+      <li>To keep the site secure, prevent spam and meet our legal obligations.</li>
+    </ul>
+    <p>Any marketing email or SMS we send follows the <em>Spam Act 2003</em> (Cth) and includes a way to unsubscribe. We may use photos of completed work in our gallery or on social media, without your number plate or personal details. Tell us if you would prefer we did not.</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">3. Who we share it with</h2>
+    <p>We do not sell your personal information. We share it only with service providers that help us run the business, and only as far as they need it:</p>
+    <ul style="list-style:disc;padding-left:1.25rem;display:grid;gap:.5rem;margin:.75rem 0 0">
+      <li><strong>Customer management and messaging:</strong> GoHighLevel (LeadConnector), which stores enquiries and sends our follow-up SMS and email.</li>
+      <li><strong>Analytics and advertising:</strong> Google (including Google Analytics and Google Ads) and Meta (Facebook and Instagram).</li>
+      <li><strong>Website hosting:</strong> Vercel.</li>
+      <li>Our marketing agency, accountants and other professional advisers, and government bodies where the law requires it.</li>
+    </ul>
+    <p>Some of these providers store or process data outside Australia, including in the United States. By sending us your information you acknowledge it may be handled overseas.</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">4. Cookies, analytics and advertising</h2>
+    <p>This site may use cookies and tags, including Google Analytics ({GA_ID}), to measure visits and understand which pages and ads bring enquiries. When we advertise on Google, Facebook or Instagram, these providers may use cookies or pixels to measure results and to show our ads to people who have visited the site. They may combine this with other information they hold, under their own privacy policies.</p>
+    <ul style="list-style:disc;padding-left:1.25rem;display:grid;gap:.5rem;margin:.75rem 0 0">
+      <li>You can block or delete cookies in your browser settings.</li>
+      <li>Opt out of Google Analytics with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out add-on</a>.</li>
+      <li>Manage your ad settings with <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google</a> and <a href="https://www.facebook.com/adpreferences" target="_blank" rel="noopener">Meta</a>, or opt out of interest-based ads at <a href="https://youradchoices.com.au" target="_blank" rel="noopener">youradchoices.com.au</a>.</li>
+      <li>Read <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">how Google uses information from sites that use its services</a> and the <a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener">Meta Privacy Policy</a>.</li>
+    </ul>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">5. Storage and security</h2>
+    <p>Your information is kept in the secure, access-controlled systems of the providers above. We take reasonable steps to protect it from misuse, loss and unauthorised access, and keep it only as long as we need it or the law requires (for example, tax records). If a data breach is likely to cause you serious harm, we will notify you and the Office of the Australian Information Commissioner (OAIC) as required.</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">6. Access, correction and deletion</h2>
+    <p>You can ask for a copy of the personal information we hold about you, ask us to correct it, or ask us to delete it unless we must keep it by law. Reply STOP to any SMS or use the unsubscribe link in any email to stop marketing. We respond to requests within 30 days and may need to confirm your identity first.</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">7. Complaints</h2>
+    <p>If you are unhappy with how we have handled your information, contact us first and we will try to fix it. If you are still not satisfied, you can complain to the OAIC at <a href="https://www.oaic.gov.au" target="_blank" rel="noopener">oaic.gov.au</a> or on 1300 363 992.</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">8. Changes to this policy</h2>
+    <p>We may update this policy from time to time. The current version is always on this page, dated at the top.</p>
+    <h2 style="margin-top:2.25rem;font-size:1.35rem">9. Contact us</h2>
+    <p>Formula Mobile Car Detailing<br>Melbourne, Victoria, Australia<br>Email: <a href="mailto:{EMAIL}">{EMAIL}</a><br>Phone: {PHONE_DISPLAY}</p>
   </div>
 </section>
 """ + footer())
